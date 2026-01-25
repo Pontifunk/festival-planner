@@ -3,8 +3,13 @@ const DEFAULT_FESTIVAL = "tomorrowland";
 const DEFAULT_YEAR = "2026";
 const DEFAULT_WEEKEND = "w1";
 
-const DONATION_URL = "https://buymeacoffee.com/DEINNAME"; // TODO
-const FEEDBACK_URL = "https://github.com/DEINUSER/DEINREPO/issues/new"; // TODO
+// Set these to your real URLs
+const DONATION_URL = "https://buymeacoffee.com/DEINNAME"; // TODO: set
+const FEEDBACK_URL = "https://github.com/Puntifunk/festival-planner/issues/new";
+
+// Canonical routing style for GitHub Pages:
+// Always keep trailing slash so /w1/ serves /w1/index.html with 200
+const CANONICAL_TRAILING_SLASH = true;
 
 // ====== DOM ======
 const weekendSelect = document.getElementById("weekendSelect");
@@ -30,7 +35,7 @@ let ratings = {};        // { actId: "liked"|"maybe"|"disliked" }
 // ====== INIT ======
 init();
 
-async function init(){
+async function init() {
   // buttons
   donateBtn.href = DONATION_URL;
   feedbackBtn.href = FEEDBACK_URL;
@@ -44,12 +49,11 @@ async function init(){
   if (!route.year) route.year = DEFAULT_YEAR;
   if (!route.weekend) route.weekend = DEFAULT_WEEKEND;
 
-  // Clean up ?path=... after fallback redirect
-  const params = new URLSearchParams(location.search);
-  if (params.get("path")) {
-    const cleanPath = `/${route.festival}/${route.year}/${route.weekend}`;
-    history.replaceState({}, "", cleanPath);
-  }
+  // If we came via GitHub Pages 404 fallback (?path=...), normalize URL
+  normalizeUrlIfNeeded();
+
+  // Ensure canonical trailing slash (optional but recommended)
+  ensureCanonicalUrl();
 
   weekendSelect.value = route.weekend;
 
@@ -61,14 +65,12 @@ async function init(){
     lang = langSelect.value;
     localStorage.setItem("fp_lang", lang);
     await applyTranslations(lang);
-    render(); // rerender labels in UI if needed
+    render();
   });
 
   weekendSelect.addEventListener("change", async () => {
     route.weekend = weekendSelect.value;
-    // Update URL (nice for SEO + share)
-    const newPath = `/${route.festival}/${route.year}/${route.weekend}`;
-    history.replaceState({}, "", newPath);
+    setCanonicalRoute(route);
     await loadAndRender();
   });
 
@@ -76,15 +78,69 @@ async function init(){
   ratingFilter.addEventListener("change", render);
 }
 
-async function loadAndRender(){
-  lineup = await fetchLineup(route.festival, route.year, route.weekend);
+function normalizeUrlIfNeeded() {
+  const params = new URLSearchParams(location.search);
+  const p = params.get("path");
+  if (!p) return;
+
+  // When redirected from 404.html we land on /?path=/tomorrowland/2026/w1...
+  // We ignore the incoming 'path' query and rebuild a canonical one.
+  params.delete("path");
+  const qs = params.toString();
+  const canonical = canonicalPath(route) + (qs ? `?${qs}` : "");
+  history.replaceState({}, "", canonical);
+}
+
+function ensureCanonicalUrl() {
+  if (!CANONICAL_TRAILING_SLASH) return;
+
+  const desired = canonicalPath(route);
+  const currentPath = location.pathname;
+
+  // If user is already on desired path, do nothing
+  if (currentPath === desired) return;
+
+  // Only normalize if we're on the same logical route, otherwise keep current
+  // Example: if at "/" we also want to canonicalize to desired default route
+  if (currentPath === "/" || currentPath === "/index.html") {
+    history.replaceState({}, "", desired);
+    return;
+  }
+
+  // If path matches without trailing slash, normalize
+  const noSlash = desired.endsWith("/") ? desired.slice(0, -1) : desired;
+  if (currentPath === noSlash) {
+    history.replaceState({}, "", desired);
+  }
+}
+
+function setCanonicalRoute(r) {
+  history.replaceState({}, "", canonicalPath(r));
+}
+
+function canonicalPath(r) {
+  // Canonical deep link for GitHub Pages:
+  // /tomorrowland/2026/w1/   (trailing slash)
+  const base = `/${r.festival}/${r.year}/${r.weekend}`;
+  return CANONICAL_TRAILING_SLASH ? `${base}/` : base;
+}
+
+async function loadAndRender() {
+  try {
+    lineup = await fetchLineup(route.festival, route.year, route.weekend);
+  } catch (e) {
+    console.error(e);
+    lineup = { acts: [], lastCheckedAt: null, lastUpdated: null };
+  }
+
   // load ratings for this namespace
   ratings = await dbGetAll(makeDbKeyPrefix(route));
+
   renderHeaderStamps(lineup);
   render();
 }
 
-function render(){
+function render() {
   if (!lineup) return;
 
   const q = (searchInput.value || "").trim().toLowerCase();
@@ -123,7 +179,7 @@ function render(){
   renderFavorites();
 }
 
-function renderFavorites(){
+function renderFavorites() {
   const favActs = (lineup.acts || [])
     .filter(a => (ratings[a.id] || "unrated") === "liked");
 
@@ -139,7 +195,7 @@ function renderFavorites(){
           </div>
         </div>
       `).join("")
-    : `<div class="muted">Noch keine Favoriten.</div>`;
+    : `<div class="muted">${escapeHtml(t("no_favorites") || "Noch keine Favoriten.")}</div>`;
 
   // bind quicklinks in favorites too
   Array.from(favoritesList.querySelectorAll(".qbtn")).forEach(btn => {
@@ -154,7 +210,7 @@ function renderFavorites(){
   });
 }
 
-function renderActRow(a){
+function renderActRow(a) {
   const r = ratings[a.id] || "unrated";
   const badge = badgeFor(r);
   return `
@@ -175,19 +231,19 @@ function renderActRow(a){
   `;
 }
 
-function badgeFor(r){
-  if (r === "liked") return { cls:"ok", text: t("liked") };
-  if (r === "maybe") return { cls:"warn", text: t("maybe") };
-  if (r === "disliked") return { cls:"bad", text: t("disliked") };
-  return { cls:"", text: t("unrated") };
+function badgeFor(r) {
+  if (r === "liked") return { cls: "ok", text: t("liked") };
+  if (r === "maybe") return { cls: "warn", text: t("maybe") };
+  if (r === "disliked") return { cls: "bad", text: t("disliked") };
+  return { cls: "", text: t("unrated") };
 }
 
-async function cycleRating(actId){
+async function cycleRating(actId) {
   const current = ratings[actId] || "unrated";
   const next = current === "unrated" ? "liked"
-            : current === "liked" ? "maybe"
-            : current === "maybe" ? "disliked"
-            : "unrated";
+    : current === "liked" ? "maybe"
+      : current === "maybe" ? "disliked"
+        : "unrated";
 
   if (next === "unrated") {
     delete ratings[actId];
@@ -199,13 +255,13 @@ async function cycleRating(actId){
   render();
 }
 
-function renderHeaderStamps(data){
+function renderHeaderStamps(data) {
   lastCheckedPill.textContent = `${t("last_checked")}: ${formatDateTime(data.lastCheckedAt)}`;
   lastUpdatedPill.textContent = `${t("lineup_status")}: ${data.lastUpdated || "–"}`;
 }
 
 // ====== ROUTING ======
-function parseRoute(pathname){
+function parseRoute(pathname) {
   // Support GitHub Pages SPA fallback via /?path=/festival/year/weekend
   const params = new URLSearchParams(location.search);
   const overridePath = params.get("path");
@@ -213,24 +269,26 @@ function parseRoute(pathname){
 
   const parts = (effectivePath || "/").split("/").filter(Boolean);
 
-  return {
-    festival: parts[0] || "",
-    year: parts[1] || "",
-    weekend: parts[2] || ""
-  };
+  // If user is on /tomorrowland/2026/w1/index.html we want weekend = w1
+  // parts would be: ["tomorrowland","2026","w1","index.html"]
+  const festival = parts[0] || "";
+  const year = parts[1] || "";
+  const weekend = parts[2] || "";
+
+  return { festival, year, weekend };
 }
 
 // ====== DATA LOADING ======
-async function fetchLineup(festival, year, weekend){
+async function fetchLineup(festival, year, weekend) {
   const url = `/data/${festival}/${year}/${weekend}.json`;
-  const res = await fetch(url, { cache: "no-store" }); // keep simple for v1
+  const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
   return await res.json();
 }
 
 // ====== i18n ======
 let dict = {};
-async function applyTranslations(newLang){
+async function applyTranslations(newLang) {
   const res = await fetch(`/i18n/${newLang}.json`, { cache: "no-store" });
   dict = res.ok ? await res.json() : {};
   document.documentElement.lang = newLang;
@@ -245,52 +303,63 @@ async function applyTranslations(newLang){
   searchInput.placeholder = t("search");
 }
 
-function t(key){
+function t(key) {
   return dict[key] || key;
 }
 
 // ====== MUSIC LINKS ======
-function makeSpotifySearchUrl(name){ return `https://open.spotify.com/search/${encodeURIComponent(name)}`; }
-function makeAppleMusicSearchUrl(name){ return `https://music.apple.com/search?term=${encodeURIComponent(name)}`; }
-function makeYouTubeSearchUrl(name){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(name + " dj set")}`; }
-function openLink(url){ window.open(url, "_blank", "noopener"); }
+function makeSpotifySearchUrl(name) {
+  return `https://open.spotify.com/search/${encodeURIComponent(name)}`;
+}
+function makeAppleMusicSearchUrl(name) {
+  return `https://music.apple.com/search?term=${encodeURIComponent(name)}`;
+}
+function makeYouTubeSearchUrl(name) {
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(name + " dj set")}`;
+}
+function openLink(url) {
+  window.open(url, "_blank", "noopener");
+}
 
 // ====== UTIL ======
-function formatDateTime(iso){
+function formatDateTime(iso) {
   if (!iso) return "–";
   try { return new Date(iso).toLocaleString(); } catch { return iso; }
 }
-function escapeHtml(s){
+function escapeHtml(s) {
   return String(s || "")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
 }
-function escapeAttr(s){ return escapeHtml(s).replaceAll("`","&#096;"); }
+function escapeAttr(s) {
+  return escapeHtml(s).replaceAll("`", "&#096;");
+}
 
 // ====== INDEXEDDB (minimal) ======
 const DB_NAME = "festival_planner";
 const DB_STORE = "ratings";
 const DB_VERSION = 1;
 
-function makeDbKeyPrefix(r){
+function makeDbKeyPrefix(r) {
   return `${r.festival}::${r.year}::${r.weekend}::`;
 }
-function makeDbKey(r, actId){
+function makeDbKey(r, actId) {
   return `${makeDbKeyPrefix(r)}${actId}`;
 }
 
-function db(){
+function db() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE);
+      const d = req.result;
+      if (!d.objectStoreNames.contains(DB_STORE)) d.createObjectStore(DB_STORE);
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
 }
-async function dbPut(key, value){
+
+async function dbPut(key, value) {
   const d = await db();
   return new Promise((resolve, reject) => {
     const tx = d.transaction(DB_STORE, "readwrite");
@@ -299,7 +368,8 @@ async function dbPut(key, value){
     tx.onerror = () => reject(tx.error);
   });
 }
-async function dbDelete(key){
+
+async function dbDelete(key) {
   const d = await db();
   return new Promise((resolve, reject) => {
     const tx = d.transaction(DB_STORE, "readwrite");
@@ -308,7 +378,8 @@ async function dbDelete(key){
     tx.onerror = () => reject(tx.error);
   });
 }
-async function dbGetAll(prefix){
+
+async function dbGetAll(prefix) {
   const d = await db();
   return new Promise((resolve, reject) => {
     const tx = d.transaction(DB_STORE, "readonly");
