@@ -44,6 +44,13 @@ async function init(){
   if (!route.year) route.year = DEFAULT_YEAR;
   if (!route.weekend) route.weekend = DEFAULT_WEEKEND;
 
+  // Clean up ?path=... after fallback redirect
+  const params = new URLSearchParams(location.search);
+  if (params.get("path")) {
+    const cleanPath = `/${route.festival}/${route.year}/${route.weekend}`;
+    history.replaceState({}, "", cleanPath);
+  }
+
   weekendSelect.value = route.weekend;
 
   // load
@@ -199,8 +206,13 @@ function renderHeaderStamps(data){
 
 // ====== ROUTING ======
 function parseRoute(pathname){
-  // expected: /festival/year/weekend
-  const parts = (pathname || "/").split("/").filter(Boolean);
+  // Support GitHub Pages SPA fallback via /?path=/festival/year/weekend
+  const params = new URLSearchParams(location.search);
+  const overridePath = params.get("path");
+  const effectivePath = overridePath ? overridePath : pathname;
+
+  const parts = (effectivePath || "/").split("/").filter(Boolean);
+
   return {
     festival: parts[0] || "",
     year: parts[1] || "",
