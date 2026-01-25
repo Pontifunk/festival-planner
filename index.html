@@ -2,14 +2,33 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <title>Festival Planner</title>
-  <meta name="description" content="Privacy-first EDM Festival Lineup Planner. Listen, rate, and plan — no account, no tracking.">
-  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="description" content="Privacy-first EDM Festival Lineup Planner. Discover, rate and plan festival acts — no account, no tracking.">
 
+  <!-- PWA / Manifest -->
+  <link rel="manifest" href="/manifest.webmanifest">
+
+  <!-- Theme / App colors -->
+  <meta name="theme-color" content="#2c1a60">
+
+  <!-- iOS PWA support -->
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Festival Planner">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Android / general PWA support -->
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Basic SEO / Social (minimal, safe) -->
+  <meta name="robots" content="index, follow">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="/styles.css">
 </head>
+
 <body>
   <header class="topbar">
     <div class="brand">
@@ -87,5 +106,11 @@
   </main>
 
   <script src="/app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js");
+    }
+  </script>
+
 </body>
 </html>
