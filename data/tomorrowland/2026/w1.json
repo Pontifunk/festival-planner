@@ -1,0 +1,11 @@
+{
+  "festival": "tomorrowland",
+  "year": "2026",
+  "weekend": "w1",
+  "lastUpdated": "2026-01-25",
+  "lastCheckedAt": "2026-01-25T18:00:00Z",
+  "acts": [
+    { "id": "w1-fri-2000-exampledj", "name": "Example DJ", "day": "Fri", "date": "2026-07-17", "stage": "Mainstage", "timeStart": "20:00", "timeEnd": "21:00" },
+    { "id": "w1-sat-2230-example2", "name": "Example DJ 2", "day": "Sat", "date": "2026-07-18", "stage": "Atmosphere", "timeStart": "22:30", "timeEnd": "23:30" }
+  ]
+}

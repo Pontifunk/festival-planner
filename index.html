@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Festival Planner</title>
+  <meta name="description" content="Privacy-first EDM Festival Lineup Planner. Listen, rate, and plan — no account, no tracking.">
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">FP</div>
+      <div>
+        <div class="title" data-i18n="app_title">Festival Planner</div>
+        <div class="subtitle" data-i18n="disclaimer">Inoffizielles Tool…</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <label class="ctrl">
+        <span data-i18n="weekend">Wochenende</span>
+        <select id="weekendSelect">
+          <option value="w1">W1</option>
+          <option value="w2">W2</option>
+        </select>
+      </label>
+
+      <label class="ctrl">
+        <span data-i18n="language">Sprache</span>
+        <select id="langSelect">
+          <option value="de">DE</option>
+          <option value="en">EN</option>
+        </select>
+      </label>
+
+      <div class="pills">
+        <div class="pill" id="lastCheckedPill">–</div>
+        <div class="pill" id="lastUpdatedPill">–</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="intro" data-i18n="intro"></div>
+
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="Search" />
+        <select id="ratingFilter">
+          <option value="all">All</option>
+          <option value="liked">Liked</option>
+          <option value="maybe">Maybe</option>
+          <option value="disliked">Disliked</option>
+          <option value="unrated">Unrated</option>
+        </select>
+      </div>
+
+      <div id="actsList" class="list"></div>
+    </section>
+
+    <aside class="panel side">
+      <div class="card">
+        <div class="cardTitle" data-i18n="favorites">Favoriten</div>
+        <div id="favoritesList" class="favList"></div>
+      </div>
+
+      <div class="card">
+        <div class="cardTitle">Support</div>
+        <p class="muted">Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterstützen.</p>
+        <a class="btn primary" id="donateBtn" href="#" target="_blank" rel="noopener noreferrer">Spenden</a>
+      </div>
+
+      <div class="card">
+        <div class="cardTitle" data-i18n="feedback">Feedback</div>
+        <a class="btn" id="feedbackBtn" href="#" target="_blank" rel="noopener noreferrer">GitHub Issues</a>
+      </div>
+
+      <div class="footerLinks">
+        <a href="/legal/privacy.html" data-i18n="privacy">Datenschutz</a>
+        <a href="/legal/imprint.html" data-i18n="imprint">Impressum</a>
+      </div>
+    </aside>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
