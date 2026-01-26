@@ -125,17 +125,18 @@
           <div class="changesHistoryTitle" data-i18n="weekend_changes_history">Verlauf</div>
           <div id="weekendChangesHistory" class="changesHistoryList"></div>
         </div>
-        <div class="changesNote">
-          <div class="changesHistoryTitle" data-i18n="planner_note_title">Planung & Export</div>
-          <div class="changesNoteBody">
+      </div>
+      
+      <div class="card" id="plannerExportBox">
+        <div class="cardTitle" data-i18n="planner_note_title">Import & Export</div>
+        <div class="changesNoteBody">
           <p data-i18n="planner_note_intro">Hier kannst du deine Ratings exportieren und wieder importieren.</p>
-            <div class="exportRow">
-              <button class="btn" id="exportRatingsBtn" data-i18n="export_ratings">Ratings exportieren</button>
-              <label class="btn" for="importRatingsInput" data-i18n="import_ratings">Ratings importieren</label>
-              <input id="importRatingsInput" type="file" accept="application/json" hidden />
-            </div>
-            <div id="importStatus" class="muted"></div>
+          <div class="exportRow">
+            <button class="btn" id="exportRatingsBtn" data-i18n="export_ratings">Ratings exportieren</button>
+            <label class="btn" for="importRatingsInput" data-i18n="import_ratings">Ratings importieren</label>
+            <input id="importRatingsInput" type="file" accept="application/json" hidden />
           </div>
+          <div id="importStatus" class="muted"></div>
         </div>
       </div>
 
