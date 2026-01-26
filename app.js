@@ -25,6 +25,11 @@ const changesSummary = document.getElementById("changesSummary");
 const changesDetails = document.getElementById("changesDetails");
 const changesDetailsBody = document.getElementById("changesDetailsBody");
 
+const weekendDiffBox = document.getElementById("weekendDiffBox");
+const weekendDiffSummary = document.getElementById("weekendDiffSummary");
+const weekendDiffDetails = document.getElementById("weekendDiffDetails");
+const weekendDiffDetailsBody = document.getElementById("weekendDiffDetailsBody");
+
 const errorBox = document.getElementById("errorBox");
 
 const weekendTabs = Array.from(document.querySelectorAll(".tabBtn"));
@@ -59,6 +64,7 @@ const state = {
   },
   artists: { list: [], byId: new Map() },
   changes: null,
+  weekendDiff: null,
   ratings: {}
 };
 
@@ -103,7 +109,8 @@ async function init() {
     await Promise.all([
       loadSnapshotIndex(),
       loadArtistsLatest(),
-      loadChangesLatest()
+      loadChangesLatest(),
+      loadWeekendDiff()
     ]);
   } catch (e) {
     showError("Fehler beim Laden der Grunddaten.");
@@ -114,6 +121,7 @@ async function init() {
   await Promise.all(WEEKENDS.map((w) => loadSnapshotForWeekend(w)));
 
   renderChangesBox();
+  renderWeekendDiffBox();
   setActiveWeekend(state.activeWeekend, false);
 }
 
@@ -278,6 +286,11 @@ async function loadChangesLatest() {
   state.changes = data;
 }
 
+async function loadWeekendDiff() {
+  const url = `/data/${state.festival}/${state.year}/changes/weekend_diff.json`;
+  state.weekendDiff = await tryFetchJson(url, { cache: "no-store" });
+}
+
 // ====== RENDER ======
 function renderActiveWeekend() {
   updateFiltersUI(state.activeWeekend);
@@ -285,6 +298,7 @@ function renderActiveWeekend() {
   renderFavorites();
   updateSearchResults();
   renderStatusPills();
+  renderWeekendDiffBox();
 }
 
 function renderWeekend(weekend) {
@@ -447,6 +461,36 @@ function renderChangesBox() {
   }
 
   changesBox.hidden = false;
+}
+
+function renderWeekendDiffBox() {
+  if (!weekendDiffBox || !weekendDiffSummary || !weekendDiffDetails || !weekendDiffDetailsBody) return;
+  if (!state.weekendDiff || !state.weekendDiff.summary) {
+    weekendDiffBox.hidden = true;
+    return;
+  }
+
+  const summary = state.weekendDiff.summary;
+  weekendDiffSummary.innerHTML =
+    `${t("weekend_diff_w1_only")}: <strong>${summary.w1Only ?? 0}</strong> \u00b7 ` +
+    `${t("weekend_diff_w2_only")}: <strong>${summary.w2Only ?? 0}</strong> \u00b7 ` +
+    `${t("weekend_diff_common")}: <strong>${summary.common ?? 0}</strong>`;
+
+  const w1Only = state.weekendDiff.w1Only || [];
+  const w2Only = state.weekendDiff.w2Only || [];
+
+  if (w1Only.length || w2Only.length) {
+    const listW1 = w1Only.map(a => a.artist || a.artistId).join("\n");
+    const listW2 = w2Only.map(a => a.artist || a.artistId).join("\n");
+    weekendDiffDetailsBody.textContent =
+      `${t("weekend_diff_w1_only")}: ${w1Only.length}\n${listW1}\n\n` +
+      `${t("weekend_diff_w2_only")}: ${w2Only.length}\n${listW2}`;
+    weekendDiffDetails.hidden = false;
+  } else {
+    weekendDiffDetails.hidden = true;
+  }
+
+  weekendDiffBox.hidden = false;
 }
 
 function renderStatusPills() {
@@ -1140,12 +1184,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
-
-
-
-
-
 
 
 

@@ -47,7 +47,13 @@ jobs:
       - name: Generate artists index
         run: |
           set -euxo pipefail
-          npm --prefix scripts run artists          
+          npm --prefix scripts run artists    
+          
+      - name: Generate changes (diff)
+        working-directory: scripts
+        run: |
+          set -euxo pipefail
+          npm run changes          
 
       - name: Commit & push if changed
         run: |
