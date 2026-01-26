@@ -138,6 +138,18 @@
           <summary class="changesHistoryTitle" data-i18n="weekend_changes_history">Verlauf</summary>
           <div id="weekendChangesHistory" class="changesHistoryList"></div>
         </details>
+        <details class="changesNote">
+          <summary class="changesHistoryTitle" data-i18n="planner_note_title">Planung & Export</summary>
+          <div class="changesNoteBody">
+            <p data-i18n="planner_note_intro">Für eine saubere Planung lohnt sich ein zweistufiges Modell: Artist-Ratings + Slot-Planung.</p>
+            <ul>
+              <li data-i18n="planner_note_artist">Artist-Ebene: Rating pro artistId (weekend-unabhängig).</li>
+              <li data-i18n="planner_note_slot">Slot-Ebene: Status/Notiz pro slotId (konkretes Set).</li>
+              <li data-i18n="planner_note_robust">Robust bei Verschiebungen: Artist bleibt, Slot kann remapped werden.</li>
+              <li data-i18n="planner_note_export">Export enthält beide Ebenen (future-proof).</li>
+            </ul>
+          </div>
+        </details>
       </div>
 
       <div class="card">
