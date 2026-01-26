@@ -211,8 +211,8 @@ select:focus,input:focus,button:focus,a:focus{
   font-size:13px;
 }
 
-.toolbar{display:flex;gap:10px;align-items:center;margin:10px 0 14px}
-.toolbar input{flex:1}
+.toolbar{display:flex;gap:10px;align-items:center;margin:10px 0 14px;flex-wrap:wrap}
+.toolbar input{flex:1}\r\n.toolbar .ctrl{min-width:140px}
 
 /* ===== CHANGES / SEARCH ===== */
 .changesBox{margin:10px 0 14px}
@@ -511,8 +511,7 @@ select:focus,input:focus,button:focus,a:focus{
 
   .topbar{align-items:flex-start}
   .brand{min-width: unset}
-  .controls{gap:10px}
-
+  .controls{gap:10px}\r\n  .toolbar .ctrl{min-width:unset;width:100%}\r\n  .toolbar select, .toolbar input{width:100%}\r\n
   .act{
     flex-direction:column;
     align-items:flex-start;

@@ -1,4 +1,4 @@
-{
+﻿{
   "app_title": "Festival Planner",
   "intro": "Unabhängiges Tool zur Entdeckung und Planung von Festival-Line-ups. Höre Acts an, bewerte sie und erstelle deine Favoritenliste – ohne Account, ohne Tracking.",
   "festival": "Festival",
@@ -24,16 +24,25 @@
   "open_spotify": "Spotify",
   "open_apple": "Apple Music",
   "open_youtube": "YouTube",
+  "support": "Support",
   "donate": "Spenden",
   "support_text": "Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterstützen.",
   "feedback": "Feedback",
   "privacy": "Datenschutz",
   "imprint": "Impressum",
   "disclaimer": "Inoffizielles Tool. Angaben können sich ändern. Maßgeblich sind die Infos des Veranstalters.",
-  "changes_title": "Changes seit letztem Snapshot",
+  "changes_title": "Änderungen seit letztem Snapshot",
   "changes_details": "Details",
+  "changes_added": "Hinzugefügt",
+  "changes_removed": "Entfernt",
+  "changes_replaced": "Ersetzt",
   "weekend_1": "Weekend 1",
   "weekend_2": "Weekend 2",
   "snapshot_label": "Snapshot",
-  "lineup": "Lineup"
+  "lineup": "Line-up",
+  "day_label": "Tag",
+  "stage_label": "Bühne",
+  "all_days": "Alle Tage",
+  "all_stages": "Alle Bühnen",
+  "slots": "Slots"
 }

@@ -16,8 +16,7 @@ const lastUpdatedPill = document.getElementById("lastUpdatedPill");
 
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
-const ratingFilter = document.getElementById("ratingFilter");
-
+const ratingFilter = document.getElementById("ratingFilter");\r\nconst dayFilter = document.getElementById("dayFilter");\r\nconst stageFilter = document.getElementById("stageFilter");\r\n
 const changesBox = document.getElementById("changesBox");
 const changesSummary = document.getElementById("changesSummary");
 const changesDetails = document.getElementById("changesDetails");
@@ -76,8 +75,7 @@ async function init() {
 
   langSelect.value = lang;
   initCustomSelect(langSelect);
-  initCustomSelect(ratingFilter);
-  initCustomSelect(snapshotSelectW1);
+  initCustomSelect(ratingFilter);\r\n  initCustomSelect(dayFilter);\r\n  initCustomSelect(stageFilter);\r\n  initCustomSelect(snapshotSelectW1);
   initCustomSelect(snapshotSelectW2);
 
   await applyTranslations(lang);
@@ -147,6 +145,19 @@ function bindUi() {
   });
 
   ratingFilter.addEventListener("change", () => renderActiveWeekend());
+
+  dayFilter.addEventListener("change", () => {
+    const w = state.weekends[state.activeWeekend];
+    w.filters.day = dayFilter.value || "all";
+    w.filters.stage = "all";
+    renderActiveWeekend();
+  });
+
+  stageFilter.addEventListener("change", () => {
+    const w = state.weekends[state.activeWeekend];
+    w.filters.stage = stageFilter.value || "all";
+    renderActiveWeekend();
+  });
 }
 // ====== LOADING ======
 async function loadSnapshotIndex() {
@@ -249,6 +260,7 @@ async function loadChangesLatest() {
 
 // ====== RENDER ======
 function renderActiveWeekend() {
+  updateFiltersUI(state.activeWeekend);
   renderWeekend(state.activeWeekend);
   renderFavorites();
   updateSearchResults();
@@ -272,11 +284,11 @@ function renderWeekend(weekend) {
     return;
   }
 
-  const grouped = groupSlots(w.snapshot.slots, ratingFilter.value);
+  const grouped = groupSlots(w.snapshot.slots, ratingFilter.value, w.filters);
   w.grouped = grouped;
   w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
 
-  metaEl.textContent = `Snapshot: ${w.selectedFile || "–"} · Slots: ${w.snapshot.slots.length}`;
+  metaEl.textContent = `${t("snapshot_label")}: ${w.selectedFile || "–"} · ${t("slots") || "Slots"}: ${w.snapshot.slots.length}`;
 
   container.innerHTML = grouped.map(group => renderDayGroup(group, weekend)).join("");
 
@@ -399,7 +411,7 @@ function renderChangesBox() {
   const removed = summary.removed ?? 0;
   const replaced = summary.replaced ?? 0;
 
-  changesSummary.innerHTML = `Added <strong>${added}</strong> · Removed <strong>${removed}</strong> · Replaced <strong>${replaced}</strong>`;
+  changesSummary.innerHTML = `${t("changes_added") || "Added"} <strong>${added}</strong> · ${t("changes_removed") || "Removed"} <strong>${removed}</strong> · ${t("changes_replaced") || "Replaced"} <strong>${replaced}</strong>`;
 
   const details = state.changes.details || state.changes.items || state.changes.changes || null;
   if (details) {
@@ -421,9 +433,48 @@ function renderStatusPills() {
   }
 
   const slotCount = w.snapshot?.slots?.length ?? 0;
-  lastUpdatedPill.textContent = `${t("lineup_status")}: ${slotCount} Slots`;
+  lastUpdatedPill.textContent = `${t("lineup_status")}: ${slotCount} ${t("slots") || "Slots"}`;
 }
 
+function updateFiltersUI(weekend) {
+  const w = state.weekends[weekend];
+  if (!w?.snapshot?.slots) return;
+
+  const slots = w.snapshot.slots;
+  const dates = Array.from(new Set(slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
+
+  const dayVal = dates.includes(w.filters.day) ? w.filters.day : "all";
+  const dayOptions = [
+    { value: "all", label: t("all_days") || "All days" },
+    ...dates.map(d => ({ value: d, label: formatDate(d) }))
+  ];
+  setSelectOptions(dayFilter, dayOptions, dayVal);
+  w.filters.day = dayVal;
+
+  const stageSet = new Set();
+  slots.forEach(s => {
+    const date = s.date || extractDate(s.start) || "Unknown";
+    if (w.filters.day !== "all" && date !== w.filters.day) return;
+    stageSet.add(normalizeStage(s.stage));
+  });
+  const stages = Array.from(stageSet).sort((a, b) => a.localeCompare(b));
+  const stageVal = stages.includes(w.filters.stage) ? w.filters.stage : "all";
+  const stageOptions = [
+    { value: "all", label: t("all_stages") || "All stages" },
+    ...stages.map(s => ({ value: s, label: s }))
+  ];
+  setSelectOptions(stageFilter, stageOptions, stageVal);
+  w.filters.stage = stageVal;
+}
+
+function setSelectOptions(selectEl, options, selectedValue) {
+  if (!selectEl) return;
+  selectEl.innerHTML = options.map(o => `
+      <option value="${escapeAttr(o.value)}">${escapeHtml(o.label)}</option>
+    `).join("");
+  selectEl.value = selectedValue;
+  rebuildCustomSelect(selectEl);
+}
 // ====== INTERACTIONS ======
 function bindSlotInteractions(container, weekend) {
   Array.from(container.querySelectorAll(".rbtn")).forEach(btn => {
@@ -542,7 +593,7 @@ function setActiveWeekend(weekend, updateRoute = true) {
 }
 
 // ====== GROUPING ======
-function groupSlots(slots, ratingFilterValue) {
+function groupSlots(slots, ratingFilterValue, filters) {
   const byDate = new Map();
 
   slots.forEach(slot => {
@@ -552,6 +603,9 @@ function groupSlots(slots, ratingFilterValue) {
 
     const date = slot.date || extractDate(slot.start) || "Unknown";
     const stage = normalizeStage(slot.stage);
+
+    if (filters?.day && filters.day !== "all" && date !== filters.day) return;
+    if (filters?.stage && filters.stage !== "all" && stage !== filters.stage) return;
 
     if (!byDate.has(date)) byDate.set(date, new Map());
     const stageMap = byDate.get(date);

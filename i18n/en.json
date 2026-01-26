@@ -1,4 +1,4 @@
-{
+﻿{
   "app_title": "Festival Planner",
   "disclaimer": "Unofficial tool. Information may change. The organizer's information is authoritative.",
   "intro": "Independent tool to discover and plan festival lineups. Listen to acts, rate them, and build your favorites list — no account, no tracking.",
@@ -27,8 +27,16 @@
   "lineup_status": "Lineup status",
   "changes_title": "Changes since last snapshot",
   "changes_details": "Details",
+  "changes_added": "Added",
+  "changes_removed": "Removed",
+  "changes_replaced": "Replaced",
   "weekend_1": "Weekend 1",
   "weekend_2": "Weekend 2",
   "snapshot_label": "Snapshot",
-  "lineup": "Lineup"
+  "lineup": "Line-up",
+  "day_label": "Day",
+  "stage_label": "Stage",
+  "all_days": "All days",
+  "all_stages": "All stages",
+  "slots": "Slots"
 }

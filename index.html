@@ -66,6 +66,18 @@
 
       <div class="toolbar">
         <input id="searchInput" type="search" placeholder="Suche nach Artist" />
+        <div class="ctrl">
+          <span data-i18n="day_label">Tag</span>
+          <select id="dayFilter" aria-label="Tag" class="selectNative" data-custom-select>
+            <option value="all" data-i18n="all_days">Alle Tage</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <span data-i18n="stage_label">Bühne</span>
+          <select id="stageFilter" aria-label="Bühne" class="selectNative" data-custom-select>
+            <option value="all" data-i18n="all_stages">Alle Bühnen</option>
+          </select>
+        </div>
         <select id="ratingFilter" aria-label="Filter" class="selectNative" data-custom-select>
           <option value="all" data-i18n="filter_all">Alle</option>
           <option value="liked" data-i18n="filter_liked">Gefällt mir</option>
@@ -75,7 +87,7 @@
         </select>
       </div>
 
-      <div id="searchResults" class="searchResults" hidden></div>
+      <div id="searchResults" class="searchResults" hidden></div> class="searchResults" hidden></div>
 
       <div class="weekendTabs" role="tablist" aria-label="Weekends">
         <button class="tabBtn isActive" data-weekend="W1" role="tab" aria-selected="true" data-i18n="weekend_1">Weekend 1</button>
