@@ -29,6 +29,7 @@ let route = parseRoute(location.pathname);
 let lineup = null;
 let ratings = {}; // { actId: "liked"|"maybe"|"disliked" }
 let selectUid = 0;
+const customSelectMap = new WeakMap();
 
 // ====== INIT ======
 init();
@@ -53,6 +54,9 @@ async function init() {
   if (!route.festival) route.festival = DEFAULT_FESTIVAL;
   if (!route.year) route.year = DEFAULT_YEAR;
   if (!route.weekend) route.weekend = DEFAULT_WEEKEND;
+  route.festival = cleanSegment(route.festival, /^[a-z0-9-]+$/i, DEFAULT_FESTIVAL);
+  route.year = cleanSegment(route.year, /^\d{4}$/, DEFAULT_YEAR);
+  route.weekend = cleanSegment(route.weekend, /^w\d+$/i, DEFAULT_WEEKEND);
 
   normalizeUrlIfNeeded();
   ensureCanonicalUrl();
@@ -92,6 +96,8 @@ function initCustomSelect(selectEl) {
   const trigger = document.createElement("button");
   trigger.type = "button";
   trigger.className = "selectTrigger";
+  trigger.id = `select-trigger-${selectUid++}`;
+  trigger.setAttribute("role", "combobox");
   trigger.setAttribute("aria-haspopup", "listbox");
   trigger.setAttribute("aria-expanded", "false");
 
@@ -100,17 +106,18 @@ function initCustomSelect(selectEl) {
   list.setAttribute("role", "listbox");
   list.tabIndex = -1;
   list.id = `select-list-${selectUid++}`;
+  list.setAttribute("aria-labelledby", trigger.id);
   trigger.setAttribute("aria-controls", list.id);
 
   const opts = Array.from(selectEl.options);
-  opts.forEach((opt, idx) => {
+  opts.forEach((opt) => {
     const item = document.createElement("div");
     item.className = "selectOption";
+    item.id = `select-opt-${selectUid++}`;
     item.setAttribute("role", "option");
     item.setAttribute("data-value", opt.value);
     item.textContent = opt.textContent;
     item.tabIndex = -1;
-    if (opt.value === selectEl.value) item.classList.add("isActive");
     list.appendChild(item);
   });
 
@@ -118,17 +125,23 @@ function initCustomSelect(selectEl) {
   wrapper.appendChild(trigger);
   wrapper.appendChild(list);
 
-  const closeAll = () => {
+  customSelectMap.set(selectEl, { wrapper, trigger, list });
+
+  const closeAll = (returnFocus = false) => {
     wrapper.classList.remove("isOpen");
     trigger.setAttribute("aria-expanded", "false");
+    list.tabIndex = -1;
+    if (returnFocus) trigger.focus();
   };
 
   const open = () => {
     wrapper.classList.add("isOpen");
     trigger.setAttribute("aria-expanded", "true");
+    list.tabIndex = 0;
+    list.focus();
   };
 
-  const toggle = () => (wrapper.classList.contains("isOpen") ? closeAll() : open());
+  const toggle = () => (wrapper.classList.contains("isOpen") ? closeAll(true) : open());
 
   const setValue = (val, focusTrigger = true) => {
     if (selectEl.value === val) return;
@@ -138,9 +151,41 @@ function initCustomSelect(selectEl) {
     if (focusTrigger) trigger.focus();
   };
 
+  const move = (dir) => {
+    const values = opts.map(o => o.value);
+    const idx = Math.max(0, values.indexOf(selectEl.value));
+    const next = Math.min(values.length - 1, Math.max(0, idx + dir));
+    setValue(values[next], false);
+  };
+
   trigger.addEventListener("click", (e) => {
     e.preventDefault();
     toggle();
+  });
+
+  trigger.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); open(); move(1); }
+    if (e.key === "ArrowUp") { e.preventDefault(); open(); move(-1); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    if (e.key === "Escape") { e.preventDefault(); closeAll(true); }
+  });
+
+  list.addEventListener("click", (e) => {
+    const item = e.target.closest(".selectOption");
+    if (!item) return;
+    setValue(item.getAttribute("data-value"));
+    closeAll(true);
+  });
+
+  list.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+    if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); closeAll(true); }
+    if (e.key === "Escape") { e.preventDefault(); closeAll(true); }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!wrapper.contains(e.target)) closeAll();
   });
 
   trigger.addEventListener("blur", () => {
@@ -149,57 +194,33 @@ function initCustomSelect(selectEl) {
     }, 0);
   });
 
-  list.addEventListener("click", (e) => {
-    const item = e.target.closest(".selectOption");
-    if (!item) return;
-    setValue(item.getAttribute("data-value"));
-    closeAll();
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!wrapper.contains(e.target)) closeAll();
-  });
-
-  const move = (dir) => {
-    const values = opts.map(o => o.value);
-    const idx = Math.max(0, values.indexOf(selectEl.value));
-    const next = Math.min(values.length - 1, Math.max(0, idx + dir));
-    setValue(values[next], false);
-  };
-
-  trigger.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowDown") { e.preventDefault(); open(); move(1); }
-    if (e.key === "ArrowUp") { e.preventDefault(); open(); move(-1); }
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
-    if (e.key === "Escape") { e.preventDefault(); closeAll(); }
-  });
-
-  list.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
-    if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); closeAll(); trigger.focus(); }
-    if (e.key === "Escape") { e.preventDefault(); closeAll(); trigger.focus(); }
-  });
-
   syncCustomSelect(selectEl);
 }
 
 function syncCustomSelect(selectEl) {
-  const wrapper = selectEl.nextSibling && selectEl.nextSibling.classList && selectEl.nextSibling.classList.contains("selectWrap")
+  const bound = customSelectMap.get(selectEl);
+  const wrapper = bound?.wrapper || (selectEl.nextSibling?.classList?.contains("selectWrap")
     ? selectEl.nextSibling
-    : selectEl.parentNode.querySelector(".selectWrap");
+    : selectEl.parentNode.querySelector(".selectWrap"));
   if (!wrapper) return;
   const trigger = wrapper.querySelector(".selectTrigger");
   const list = wrapper.querySelector(".selectList");
   const options = Array.from(list.querySelectorAll(".selectOption"));
   const map = new Map(Array.from(selectEl.options).map(o => [o.value, o.textContent]));
+  let activeId = "";
+
   options.forEach(opt => {
     const val = opt.getAttribute("data-value");
     if (map.has(val)) opt.textContent = map.get(val);
-    opt.classList.toggle("isActive", val === selectEl.value);
+    const isActive = val === selectEl.value;
+    opt.classList.toggle("isActive", isActive);
+    opt.setAttribute("aria-selected", isActive ? "true" : "false");
+    if (isActive) activeId = opt.id;
   });
+
   const active = options.find(opt => opt.classList.contains("isActive"));
   trigger.textContent = active ? active.textContent : selectEl.options[selectEl.selectedIndex]?.textContent || "";
+  if (activeId) trigger.setAttribute("aria-activedescendant", activeId);
 }
 
 function canonicalPath(r) {
@@ -212,13 +233,9 @@ function setCanonicalRoute(r) {
 }
 
 function normalizeUrlIfNeeded() {
-  const params = new URLSearchParams(location.search);
-  const p = params.get("path");
+  const { value: p, rest } = stripQueryParam(location.search, "path");
   if (!p) return;
-
-  params.delete("path");
-  const qs = params.toString();
-  const canonical = canonicalPath(route) + (qs ? `?${qs}` : "");
+  const canonical = canonicalPath(route) + rest;
   history.replaceState({}, "", canonical);
 }
 
@@ -382,8 +399,7 @@ function renderHeaderStamps(data) {
 
 // ====== ROUTING ======
 function parseRoute(pathname) {
-  const params = new URLSearchParams(location.search);
-  const overridePath = params.get("path");
+  const overridePath = getQueryParam("path");
   const effectivePath = overridePath ? overridePath : pathname;
 
   const parts = (effectivePath || "/").split("/").filter(Boolean);
@@ -418,6 +434,54 @@ async function applyTranslations(newLang) {
   document.querySelectorAll("[data-custom-select]").forEach((sel) => syncCustomSelect(sel));
 }
 
+function cleanSegment(value, pattern, fallback) {
+  const v = String(value || "").trim();
+  if (!v || !pattern.test(v)) return fallback;
+  return v;
+}
+
+function getQueryParam(name) {
+  if (typeof URLSearchParams !== "undefined") {
+    return new URLSearchParams(location.search).get(name);
+  }
+  const query = String(location.search || "").replace(/^\?/, "");
+  if (!query) return null;
+  for (const part of query.split("&")) {
+    if (!part) continue;
+    const [k, v = ""] = part.split("=");
+    if (decodeURIComponent(k) === name) {
+      return decodeURIComponent(v.replace(/\+/g, " "));
+    }
+  }
+  return null;
+}
+
+function stripQueryParam(search, name) {
+  if (typeof URLSearchParams !== "undefined") {
+    const params = new URLSearchParams(search);
+    const value = params.get(name);
+    if (value === null) return { value: null, rest: search || "" };
+    params.delete(name);
+    const qs = params.toString();
+    return { value, rest: qs ? `?${qs}` : "" };
+  }
+  const query = String(search || "").replace(/^\?/, "");
+  if (!query) return { value: null, rest: "" };
+  let value = null;
+  const kept = [];
+  for (const part of query.split("&")) {
+    if (!part) continue;
+    const [k, v = ""] = part.split("=");
+    const key = decodeURIComponent(k);
+    if (key === name) {
+      value = decodeURIComponent(v.replace(/\+/g, " "));
+    } else {
+      kept.push(part);
+    }
+  }
+  return { value, rest: kept.length ? `?${kept.join("&")}` : "" };
+}
+
 function t(key) {
   return dict[key] || key;
 }
@@ -435,10 +499,13 @@ function formatDateTime(iso){
 }
 function escapeHtml(s){
   return String(s || "")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/\"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
-function escapeAttr(s){ return escapeHtml(s).replaceAll("`","&#096;"); }
+function escapeAttr(s){ return escapeHtml(s).replace(/`/g,"&#096;"); }
 
 // ====== INDEXEDDB (minimal) ======
 const DB_NAME = "festival_planner";

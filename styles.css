@@ -163,8 +163,15 @@ select:focus,input:focus,button:focus,a:focus{
   background:transparent;
 }
 
+.selectList:focus{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(107,92,255,.25);
+  border-color:rgba(107,92,255,.55);
+}
+
 .selectOption:hover{background:rgba(255,255,255,.08)}
-.selectOption.isActive{background:rgba(107,92,255,.22); color:var(--text)}
+.selectOption.isActive,
+.selectOption[aria-selected="true"]{background:rgba(107,92,255,.22); color:var(--text)}
 
 /* pills: make them compact (fix iOS “bubble” look) */
 .pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
