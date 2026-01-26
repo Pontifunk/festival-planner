@@ -759,9 +759,13 @@ function toMinutes(value) {
 }
 
 function normalizeStage(stage) {
-  if (typeof stage === "string") return stage.trim() || "Unknown Stage";
+  if (typeof stage === "string") {
+    const s = stage.trim();
+    if (!s || s === "[object Object]") return "Unknown Stage";
+    return s;
+  }
   if (stage && typeof stage === "object") {
-    return String(stage.name || stage.title || stage.label || "Unknown Stage").trim();
+    return String(stage.name || stage.title || stage.label || stage.stageName || stage.stage_name || "Unknown Stage").trim();
   }
   return "Unknown Stage";
 }

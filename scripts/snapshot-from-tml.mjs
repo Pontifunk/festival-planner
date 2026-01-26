@@ -31,6 +31,16 @@ function normalizeArtist(name) {
     .replace(/\s+/g, " ");
 }
 
+function normalizeStageValue(stage) {
+  if (!stage) return "";
+  if (typeof stage === "string") return stage.trim();
+  if (typeof stage === "object") {
+    const name = stage.name || stage.title || stage.label || stage.stageName || stage.stage_name;
+    return name ? String(name).trim() : "";
+  }
+  return String(stage).trim();
+}
+
 function hash16(str) {
   return crypto.createHash("sha256").update(str).digest("hex").slice(0, 16);
 }
@@ -106,7 +116,7 @@ function extractSlotsFromPayload(payload, context) {
           if (hasArtist && (hasStage || hasTime)) {
             // best-effort mapping:
             const artist = item.artist || item.name || item.title;
-            const stage = item.stage || item.stageName || item.stage_name;
+            const stage = normalizeStageValue(item.stage || item.stageName || item.stage_name);
             const start = item.start || item.startTime || item.start_time || item.time || "";
             const end = item.end || item.endTime || item.end_time || "";
 
@@ -114,7 +124,7 @@ function extractSlotsFromPayload(payload, context) {
               found.push({
                 weekend: context.weekend,
                 date: context.date,
-                stage: String(stage).trim(),
+                stage,
                 start: String(start).trim(),
                 end: String(end).trim(),
                 artist: String(artist).trim()
