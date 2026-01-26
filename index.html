@@ -130,26 +130,33 @@
       <div id="weekendChangesBox" class="card" hidden>
         <div class="cardTitle" data-i18n="weekend_changes_title">Änderungen Weekend</div>
         <div id="weekendChangesSummary" class="changesSummary"></div>
-        <details id="weekendChangesDetails" class="changesDetails">
-          <summary data-i18n="changes_details">Details</summary>
+        <div id="weekendChangesDetails" class="changesDetails">
+          <div class="changesDetailsTitle" data-i18n="changes_details">Details</div>
           <pre id="weekendChangesDetailsBody" class="changesDetailsBody"></pre>
-        </details>
-        <details class="changesHistory" id="weekendChangesHistoryWrap">
-          <summary class="changesHistoryTitle" data-i18n="weekend_changes_history">Verlauf</summary>
+        </div>
+        <div class="changesHistory">
+          <div class="changesHistoryTitle" data-i18n="weekend_changes_history">Verlauf</div>
           <div id="weekendChangesHistory" class="changesHistoryList"></div>
-        </details>
-        <details class="changesNote">
-          <summary class="changesHistoryTitle" data-i18n="planner_note_title">Planung & Export</summary>
-          <div class="changesNoteBody">
-            <p data-i18n="planner_note_intro">Für eine saubere Planung lohnt sich ein zweistufiges Modell: Artist-Ratings + Slot-Planung.</p>
-            <ul>
-              <li data-i18n="planner_note_artist">Artist-Ebene: Rating pro artistId (weekend-unabhängig).</li>
-              <li data-i18n="planner_note_slot">Slot-Ebene: Status/Notiz pro slotId (konkretes Set).</li>
-              <li data-i18n="planner_note_robust">Robust bei Verschiebungen: Artist bleibt, Slot kann remapped werden.</li>
-              <li data-i18n="planner_note_export">Export enthält beide Ebenen (future-proof).</li>
-            </ul>
+        </div>
+      </div>
+
+      <div class="card" id="plannerExportBox">
+        <div class="cardTitle" data-i18n="planner_note_title">Planung & Export</div>
+        <div class="changesNoteBody">
+          <p data-i18n="planner_note_intro">Für eine saubere Planung lohnt sich ein zweistufiges Modell: Artist-Ratings + Slot-Planung.</p>
+          <ul>
+            <li data-i18n="planner_note_artist">Artist-Ebene: Rating pro artistId (weekend-unabhängig).</li>
+            <li data-i18n="planner_note_slot">Slot-Ebene: Status/Notiz pro slotId (konkretes Set).</li>
+            <li data-i18n="planner_note_robust">Robust bei Verschiebungen: Artist bleibt, Slot kann remapped werden.</li>
+            <li data-i18n="planner_note_export">Export enthält beide Ebenen (future-proof).</li>
+          </ul>
+          <div class="exportRow">
+            <button class="btn" id="exportRatingsBtn" data-i18n="export_ratings">Ratings exportieren</button>
+            <label class="btn" for="importRatingsInput" data-i18n="import_ratings">Ratings importieren</label>
+            <input id="importRatingsInput" type="file" accept="application/json" hidden />
           </div>
-        </details>
+          <div id="importStatus" class="muted"></div>
+        </div>
       </div>
 
       <div class="card">

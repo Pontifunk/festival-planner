@@ -30,7 +30,9 @@ const weekendChangesSummary = document.getElementById("weekendChangesSummary");
 const weekendChangesDetails = document.getElementById("weekendChangesDetails");
 const weekendChangesDetailsBody = document.getElementById("weekendChangesDetailsBody");
 const weekendChangesHistory = document.getElementById("weekendChangesHistory");
-const weekendChangesHistoryWrap = document.getElementById("weekendChangesHistoryWrap");
+const exportRatingsBtn = document.getElementById("exportRatingsBtn");
+const importRatingsInput = document.getElementById("importRatingsInput");
+const importStatus = document.getElementById("importStatus");
 
 const errorBox = document.getElementById("errorBox");
 
@@ -186,6 +188,13 @@ function bindUi() {
     };
     stageFilter.addEventListener("change", onStageChange);
     stageFilter.addEventListener("input", onStageChange);
+  }
+
+  if (exportRatingsBtn) {
+    exportRatingsBtn.addEventListener("click", () => exportRatings());
+  }
+  if (importRatingsInput) {
+    importRatingsInput.addEventListener("change", (e) => importRatings(e));
   }
 }
 // ====== LOADING ======
@@ -512,7 +521,6 @@ function renderWeekendChangesHistory() {
   const weekend = state.activeWeekend;
   if (!idx?.entries?.length) {
     weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
-    if (weekendChangesHistoryWrap) weekendChangesHistoryWrap.open = false;
     return;
   }
 
@@ -523,7 +531,6 @@ function renderWeekendChangesHistory() {
 
   if (!entries.length) {
     weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
-    if (weekendChangesHistoryWrap) weekendChangesHistoryWrap.open = false;
     return;
   }
 
@@ -542,6 +549,62 @@ function renderWeekendChangesHistory() {
       </div>
     `;
   }).join("");
+}
+
+function exportRatings() {
+  const payload = {
+    app: "festival-planner",
+    exportVersion: 1,
+    createdAt: new Date().toISOString(),
+    festival: state.festival,
+    year: state.year,
+    ratings
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `festival-planner-ratings-${state.festival}-${state.year}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function importRatings(e) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    const incoming = data?.ratings;
+    if (!incoming || typeof incoming !== "object") {
+      throw new Error("Invalid ratings file");
+    }
+
+    const merged = { ...ratings, ...incoming };
+    ratings = merged;
+
+    const prefix = makeDbKeyPrefix(state);
+    await Promise.all(Object.keys(incoming).map((id) => {
+      const rate = incoming[id];
+      if (rate === "unrated" || rate === null || typeof rate === "undefined") {
+        return dbDelete(prefix + id);
+      }
+      return dbPut(prefix + id, rate);
+    }));
+
+    if (importStatus) {
+      importStatus.textContent = t("import_done") || "Import abgeschlossen.";
+    }
+    renderActiveWeekend();
+  } catch {
+    if (importStatus) {
+      importStatus.textContent = t("import_failed") || "Import fehlgeschlagen.";
+    }
+  } finally {
+    e.target.value = "";
+  }
 }
 
 function renderStatusPills() {
@@ -1235,7 +1298,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 
