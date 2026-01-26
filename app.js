@@ -8,6 +8,9 @@ const FEEDBACK_URL = "https://github.com/Pontifunk/festival-planner/issues/new/c
 
 const CANONICAL_TRAILING_SLASH = true;
 const WEEKENDS = ["W1", "W2"];
+const VALID_RATINGS = new Set(["liked", "maybe", "disliked", "unrated"]);
+const BASE_PREFIX = getBasePrefix();
+const withBase = (path) => `${BASE_PREFIX}${path}`;
 
 // ====== DOM ======
 const langSelect = document.getElementById("langSelect");
@@ -63,6 +66,7 @@ let favoritesOnly = false;
 let lastFilterValue = "all";
 let toastTimer = null;
 let menuOpen = false;
+let menuScrollY = 0;
 
 const state = {
   festival: DEFAULT_FESTIVAL,
@@ -235,7 +239,7 @@ function bindUi() {
 }
 // ====== LOADING ======
 async function loadSnapshotIndex() {
-  const url = `/data/${state.festival}/${state.year}/snapshots/index.json`;
+  const url = withBase(`/data/${state.festival}/${state.year}/snapshots/index.json`);
   const index = await fetchJson(url, { cache: "no-store" });
   state.snapshotIndex = index;
 
@@ -250,7 +254,7 @@ async function loadSnapshotIndex() {
 }
 
 async function loadLatestSnapshotForWeekend(weekend) {
-  const latestUrl = `/data/${state.festival}/${state.year}/snapshots/latest.json`;
+  const latestUrl = withBase(`/data/${state.festival}/${state.year}/snapshots/latest.json`);
   const latest = await tryFetchJson(latestUrl, { cache: "no-store" });
   if (latest && normalizeWeekend(latest.meta?.weekend) === weekend) {
     const match = state.weekends[weekend].options.find(o => o.createdAt === latest.meta?.createdAt);
@@ -268,7 +272,7 @@ async function loadLatestSnapshotForWeekend(weekend) {
 }
 
 async function loadSnapshotFile(file) {
-  const url = `/data/${state.festival}/${state.year}/snapshots/${file}`;
+  const url = withBase(`/data/${state.festival}/${state.year}/snapshots/${file}`);
   return await fetchJson(url, { cache: "default" });
 }
 
@@ -293,8 +297,17 @@ async function loadSnapshotForWeekend(weekend, file = null) {
     w.selectedFile = selectedFile;
     const sel = snapshotSelectForWeekend(weekend);
     if (sel) {
+      if (!Array.from(sel.options).some(o => o.value === selectedFile)) {
+        const label = snap?.meta?.createdAt
+          ? `${formatDateTime(snap.meta.createdAt)} \u00b7 ${snap?.slots?.length ?? 0} Slots`
+          : selectedFile;
+        const opt = document.createElement("option");
+        opt.value = selectedFile;
+        opt.textContent = label;
+        sel.insertBefore(opt, sel.firstChild);
+      }
       sel.value = selectedFile;
-      syncCustomSelect(sel);
+      rebuildCustomSelect(sel);
     }
   } catch (e) {
     w.error = "Snapshot konnte nicht geladen werden.";
@@ -303,7 +316,7 @@ async function loadSnapshotForWeekend(weekend, file = null) {
 }
 
 async function loadArtistsLatest() {
-  const base = `/data/${state.festival}/${state.year}/artists`;
+  const base = withBase(`/data/${state.festival}/${state.year}/artists`);
   const latest = await tryFetchJson(`${base}/latest.json`, { cache: "no-store" });
   let data = latest;
 
@@ -321,12 +334,12 @@ async function loadArtistsLatest() {
 }
 
 async function loadChangesIndex() {
-  const url = `/data/${state.festival}/${state.year}/changes/index.json`;
+  const url = withBase(`/data/${state.festival}/${state.year}/changes/index.json`);
   state.changesIndex = await tryFetchJson(url, { cache: "no-store" });
 }
 
 async function loadWeekendChanges() {
-  const base = `/data/${state.festival}/${state.year}/changes`;
+  const base = withBase(`/data/${state.festival}/${state.year}/changes`);
   const [w1, w2] = await Promise.all([
     tryFetchJson(`${base}/latest_W1.json`, { cache: "no-store" }),
     tryFetchJson(`${base}/latest_W2.json`, { cache: "no-store" })
@@ -531,11 +544,13 @@ function showToast(message) {
 function openMenu() {
   if (!menuSheet || !menuOverlay || !menuBtn) return;
   menuOpen = true;
+  menuScrollY = window.scrollY || 0;
   menuSheet.classList.add("isOpen");
   menuOverlay.hidden = false;
   menuBtn.setAttribute("aria-expanded", "true");
   menuSheet.setAttribute("aria-hidden", "false");
   document.body.classList.add("menuOpen");
+  document.body.style.top = `-${menuScrollY}px`;
 }
 
 function closeMenu() {
@@ -546,6 +561,8 @@ function closeMenu() {
   menuBtn.setAttribute("aria-expanded", "false");
   menuSheet.setAttribute("aria-hidden", "true");
   document.body.classList.remove("menuOpen");
+  document.body.style.top = "";
+  if (menuScrollY) window.scrollTo(0, menuScrollY);
 }
 
 function toggleMenu() {
@@ -606,7 +623,7 @@ function renderWeekendChangesBox() {
     const weekendLabel = state.activeWeekend === "W2"
       ? (t("weekend_2") || "Weekend 2")
       : (t("weekend_1") || "Weekend 1");
-    weekendChangesTitle.textContent = `${t("weekend_changes_title") || "Änderungen"} \u2013 ${weekendLabel}`;
+    weekendChangesTitle.textContent = `${t("weekend_changes_title") || "\u00c4nderungen"} \u2013 ${weekendLabel}`;
   }
 
   const summary = data?.summary || { added: 0, removed: 0, replaced: 0 };
@@ -645,14 +662,14 @@ function renderWeekendChangesHistory() {
   weekendChangesHistory.innerHTML = entries.map(e => {
     const when = formatDateTime(e.createdAt);
     const s = e.summary || {};
-    const href = `/data/${state.festival}/${state.year}/changes/${e.file}`;
+    const href = withBase(`/data/${state.festival}/${state.year}/changes/${e.file}`);
     return `
       <div class="changesHistoryItem">
         <a href="${escapeAttr(href)}" target="_blank" rel="noopener">${escapeHtml(when)}</a>
         <span>
           ${t("changes_added") || "Added"}: <strong>${s.added ?? 0}</strong>
-          · ${t("changes_removed") || "Removed"}: <strong>${s.removed ?? 0}</strong>
-          · ${t("changes_replaced") || "Replaced"}: <strong>${s.replaced ?? 0}</strong>
+          \u00b7 ${t("changes_removed") || "Removed"}: <strong>${s.removed ?? 0}</strong>
+          \u00b7 ${t("changes_replaced") || "Replaced"}: <strong>${s.replaced ?? 0}</strong>
         </span>
       </div>
     `;
@@ -710,7 +727,8 @@ async function importRatings(e) {
       incoming = {};
       Object.keys(data.artists).forEach((artistId) => {
         const entry = data.artists[artistId];
-        if (entry && entry.rating) incoming[artistId] = entry.rating;
+        const rate = entry?.rating ? String(entry.rating).toLowerCase() : "";
+        if (VALID_RATINGS.has(rate)) incoming[artistId] = rate;
       });
     } else if (data?.ratings && typeof data.ratings === "object") {
       incoming = data.ratings;
@@ -720,12 +738,26 @@ async function importRatings(e) {
       throw new Error("Invalid ratings file");
     }
 
-    const merged = { ...ratings, ...incoming };
+    const filtered = {};
+    Object.keys(incoming).forEach((id) => {
+      const rate = String(incoming[id] || "").toLowerCase();
+      if (VALID_RATINGS.has(rate)) filtered[id] = rate;
+    });
+
+    const merged = { ...ratings };
+    Object.keys(filtered).forEach((id) => {
+      const rate = filtered[id];
+      if (rate === "unrated") {
+        delete merged[id];
+      } else {
+        merged[id] = rate;
+      }
+    });
     ratings = merged;
 
     const prefix = makeDbKeyPrefix(state);
-    await Promise.all(Object.keys(incoming).map((id) => {
-      const rate = incoming[id];
+    await Promise.all(Object.keys(filtered).map((id) => {
+      const rate = filtered[id];
       if (rate === "unrated" || rate === null || typeof rate === "undefined") {
         return dbDelete(prefix + id);
       }
@@ -1041,20 +1073,27 @@ function countGroupedSlots(grouped) {
 }
 
 // ====== ROUTING ======
+function getBasePrefix() {
+  const parts = location.pathname.split("/").filter(Boolean);
+  const baseParts = parts.length >= 3 ? parts.slice(0, parts.length - 3) : parts;
+  return baseParts.length ? `/${baseParts.join("/")}` : "";
+}
+
 function parseRoute(pathname) {
   const overridePath = getQueryParam("path");
   const effectivePath = overridePath ? overridePath : pathname;
 
   const parts = (effectivePath || "/").split("/").filter(Boolean);
+  const tail = parts.length >= 3 ? parts.slice(-3) : parts;
   return {
-    festival: parts[0] || "",
-    year: parts[1] || "",
-    weekend: parts[2] || ""
+    festival: tail[0] || "",
+    year: tail[1] || "",
+    weekend: tail[2] || ""
   };
 }
 
 function canonicalPath(r) {
-  const base = `/${r.festival}/${r.year}/${r.weekend}`;
+  const base = `${BASE_PREFIX}/${r.festival}/${r.year}/${r.weekend}`;
   return CANONICAL_TRAILING_SLASH ? `${base}/` : base;
 }
 
@@ -1075,10 +1114,13 @@ function ensureCanonicalUrl() {
 
   const desired = canonicalPath(route);
   const currentPath = location.pathname;
+  const baseRoot = BASE_PREFIX ? `${BASE_PREFIX}/` : "/";
+  const baseRootNoSlash = BASE_PREFIX || "/";
+  const baseIndex = BASE_PREFIX ? `${BASE_PREFIX}/index.html` : "/index.html";
 
   if (currentPath === desired) return;
 
-  if (currentPath === "/" || currentPath === "/index.html") {
+  if (currentPath === baseRoot || currentPath === baseRootNoSlash || currentPath === baseIndex) {
     history.replaceState({}, "", desired);
     return;
   }
@@ -1092,7 +1134,7 @@ function ensureCanonicalUrl() {
 // ====== i18n ======
 let dict = {};
 async function applyTranslations(newLang) {
-  const res = await fetch(`/i18n/${newLang}.json`, { cache: "no-store" });
+  const res = await fetch(withBase(`/i18n/${newLang}.json`), { cache: "no-store" });
   dict = res.ok ? await res.json() : {};
   document.documentElement.lang = newLang;
 
@@ -1191,7 +1233,13 @@ function formatDateTime(iso) {
 
 function formatDate(dateStr) {
   if (!dateStr) return "\u2013";
-  try { return new Date(dateStr).toLocaleDateString(); } catch { return dateStr; }
+  try {
+    const isoDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
+    const d = isoDateOnly ? new Date(`${dateStr}T00:00:00`) : new Date(dateStr);
+    return d.toLocaleDateString();
+  } catch {
+    return dateStr;
+  }
 }
 
 function extractDate(value) {
@@ -1502,3 +1550,4 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
+

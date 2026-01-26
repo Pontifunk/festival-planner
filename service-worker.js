@@ -1,4 +1,6 @@
-const CACHE_NAME = "festival-planner-v13";
+const CACHE_NAME = "festival-planner-v14";
+const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
+const withBase = (path) => `${BASE_PATH}${path}`;
 
 const CORE_ASSETS = [
   "/",
@@ -13,7 +15,7 @@ const CORE_ASSETS = [
   "/legal/imprint.html",
   "/i18n/de.json",
   "/i18n/en.json",
-];
+].map(withBase);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)));

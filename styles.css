@@ -610,6 +610,7 @@ select:focus,input:focus,button:focus,a:focus{
   inset:0;
   background:rgba(0,0,0,.35);
   z-index:60;
+  touch-action:none;
 }
 .menuSheet{
   position:fixed;
@@ -622,6 +623,11 @@ select:focus,input:focus,button:focus,a:focus{
   border:1px solid var(--border);
   border-bottom:none;
   padding:10px 14px calc(16px + env(safe-area-inset-bottom));
+  max-height:calc(100dvh - 16px);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  touch-action:pan-y;
   transform:translateY(100%);
   transition:transform .25s ease;
   z-index:70;
@@ -707,6 +713,8 @@ select:focus,input:focus,button:focus,a:focus{
 
 body.menuOpen{
   overflow:hidden;
+  position:fixed;
+  width:100%;
   touch-action:none;
 }
 
