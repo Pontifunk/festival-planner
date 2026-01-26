@@ -655,6 +655,7 @@ function bindRatingMenus(container, weekend) {
   if (!container) return;
   if (container.dataset.ratingMenusBound === "true") return;
   container.dataset.ratingMenusBound = "true";
+  const ratingCycle = ["unrated", "liked", "maybe", "disliked"];
 
   const closeAll = () => {
     container.querySelectorAll(".ratingSelect.isOpen").forEach(sel => {
@@ -691,6 +692,20 @@ function bindRatingMenus(container, weekend) {
         await setRating(id, rate);
         if (state.activeWeekend === weekend) renderActiveWeekend();
       }
+      closeAll();
+      return;
+    }
+
+    const slotEl = e.target.closest(".slot");
+    if (slotEl && container.contains(slotEl)) {
+      if (e.target.closest(".ratingSelect, .ratingMenu, .qbtn, a, button, input, label")) return;
+      const id = slotEl.getAttribute("data-artist-id") || "";
+      if (!id) return;
+      const current = ratings[id] || "unrated";
+      const idx = ratingCycle.indexOf(current);
+      const next = ratingCycle[(idx + 1) % ratingCycle.length];
+      await setRating(id, next);
+      if (state.activeWeekend === weekend) renderActiveWeekend();
       closeAll();
     }
   });
