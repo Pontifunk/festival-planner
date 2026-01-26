@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <title>Festival Planner</title>
-  <meta name="description" content="Privacy-first EDM Festival Lineup Planner. Discover, rate and plan festival acts â€” no account, no tracking.">
+  <meta name="description" content="Privacy-first EDM Festival Lineup Planner. Discover, rate and plan festival acts — no account, no tracking.">
 
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#2c1a60">
@@ -27,19 +27,11 @@
       <div class="logo">FP</div>
       <div class="brandText">
         <div class="title" data-i18n="app_title">Festival Planner</div>
-        <div class="subtitle" data-i18n="disclaimer">Inoffizielles Tool. Angaben kÃ¶nnen sich Ã¤ndern. MaÃŸgeblich sind die Infos des Veranstalters.</div>
+        <div class="subtitle" data-i18n="disclaimer">Inoffizielles Tool. Angaben können sich ändern. Maßgeblich sind die Infos des Veranstalters.</div>
       </div>
     </div>
 
     <div class="controls">
-      <div class="ctrl">
-        <span data-i18n="weekend">Wochenende</span>
-        <select id="weekendSelect" aria-label="Wochenende" class="selectNative" data-custom-select>
-          <option value="w1">W1</option>
-          <option value="w2">W2</option>
-        </select>
-      </div>
-
       <div class="ctrl">
         <span data-i18n="language">Sprache</span>
         <select id="langSelect" aria-label="Sprache" class="selectNative" data-custom-select>
@@ -49,8 +41,8 @@
       </div>
 
       <div class="pills" aria-label="Status">
-        <div class="pill" id="lastCheckedPill">â€“</div>
-        <div class="pill" id="lastUpdatedPill">â€“</div>
+        <div class="pill" id="lastCheckedPill">–</div>
+        <div class="pill" id="lastUpdatedPill">–</div>
       </div>
     </div>
   </header>
@@ -58,21 +50,61 @@
   <main class="layout">
     <section class="panel">
       <div class="intro" data-i18n="intro">
-        UnabhÃ¤ngiges Tool zur Entdeckung und Planung von Festival-Line-ups. HÃ¶re Acts an, bewerte sie und erstelle deine Favoritenliste â€“ ohne Account, ohne Tracking.
+        Unabhängiges Tool zur Entdeckung und Planung von Festival-Line-ups. Höre Acts an, bewerte sie und erstelle deine Favoritenliste – ohne Account, ohne Tracking.
       </div>
 
+      <div id="changesBox" class="card changesBox" hidden>
+        <div class="cardTitle" data-i18n="changes_title">Changes seit letztem Snapshot</div>
+        <div id="changesSummary" class="changesSummary"></div>
+        <details id="changesDetails" class="changesDetails">
+          <summary data-i18n="changes_details">Details</summary>
+          <pre id="changesDetailsBody" class="changesDetailsBody"></pre>
+        </details>
+      </div>
+
+      <div id="errorBox" class="errorBox" hidden></div>
+
       <div class="toolbar">
-        <input id="searchInput" type="search" placeholder="Suche" />
+        <input id="searchInput" type="search" placeholder="Suche nach Artist" />
         <select id="ratingFilter" aria-label="Filter" class="selectNative" data-custom-select>
           <option value="all" data-i18n="filter_all">Alle</option>
-          <option value="liked" data-i18n="filter_liked">GefÃ¤llt mir</option>
+          <option value="liked" data-i18n="filter_liked">Gefällt mir</option>
           <option value="maybe" data-i18n="filter_maybe">Vielleicht</option>
           <option value="disliked" data-i18n="filter_disliked">Mag ich nicht</option>
           <option value="unrated" data-i18n="filter_unrated">Unbewertet</option>
         </select>
       </div>
 
-      <div id="actsList" class="list"></div>
+      <div id="searchResults" class="searchResults" hidden></div>
+
+      <div class="weekendTabs" role="tablist" aria-label="Weekends">
+        <button class="tabBtn isActive" data-weekend="W1" role="tab" aria-selected="true" data-i18n="weekend_1">Weekend 1</button>
+        <button class="tabBtn" data-weekend="W2" role="tab" aria-selected="false" data-i18n="weekend_2">Weekend 2</button>
+      </div>
+
+      <section class="weekendPanel isActive" id="panelW1" data-weekend="W1" role="tabpanel">
+        <div class="weekendHeader">
+          <div class="weekendTitle" data-i18n="weekend_1">Weekend 1</div>
+          <div class="ctrl">
+            <span data-i18n="snapshot_label">Snapshot</span>
+            <select id="snapshotSelectW1" aria-label="Snapshot W1" class="selectNative" data-custom-select></select>
+          </div>
+        </div>
+        <div id="weekendMetaW1" class="weekendMeta"></div>
+        <div id="actsListW1" class="list"></div>
+      </section>
+
+      <section class="weekendPanel" id="panelW2" data-weekend="W2" role="tabpanel">
+        <div class="weekendHeader">
+          <div class="weekendTitle" data-i18n="weekend_2">Weekend 2</div>
+          <div class="ctrl">
+            <span data-i18n="snapshot_label">Snapshot</span>
+            <select id="snapshotSelectW2" aria-label="Snapshot W2" class="selectNative" data-custom-select></select>
+          </div>
+        </div>
+        <div id="weekendMetaW2" class="weekendMeta"></div>
+        <div id="actsListW2" class="list"></div>
+      </section>
     </section>
 
     <aside class="panel side">
@@ -83,7 +115,7 @@
 
       <div class="card">
         <div class="cardTitle" data-i18n="support">Support</div>
-        <p class="muted" data-i18n="support_text">Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterstÃ¼tzen.</p>
+        <p class="muted" data-i18n="support_text">Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterstützen.</p>
         <a class="btn primary" id="donateBtn" href="#" target="_blank" rel="noopener noreferrer" data-i18n="donate">Spenden</a>
       </div>
 

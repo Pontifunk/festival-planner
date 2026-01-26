@@ -214,6 +214,114 @@ select:focus,input:focus,button:focus,a:focus{
 .toolbar{display:flex;gap:10px;align-items:center;margin:10px 0 14px}
 .toolbar input{flex:1}
 
+/* ===== CHANGES / SEARCH ===== */
+.changesBox{margin:10px 0 14px}
+.changesSummary{font-size:13px;color:var(--muted)}
+.changesSummary strong{color:var(--text)}
+.changesDetails{margin-top:8px}
+.changesDetails summary{cursor:pointer;color:var(--text);font-weight:700}
+.changesDetailsBody{white-space:pre-wrap;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px;font-size:12px;color:var(--muted)}
+
+.errorBox{
+  margin:10px 0 14px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(224,86,91,.35);
+  background:rgba(224,86,91,.10);
+  color:var(--danger);
+  font-size:13px;
+}
+
+.searchResults{
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(255,255,255,.03);
+  padding:6px;
+  margin-bottom:12px;
+  max-height:220px;
+  overflow:auto;
+}
+.searchItem{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 10px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:13px;
+}
+.searchItem:hover{background:rgba(255,255,255,.08)}
+.searchMeta{color:var(--muted);font-size:12px}
+
+/* ===== WEEKEND TABS ===== */
+.weekendTabs{
+  display:flex;
+  gap:8px;
+  margin:6px 0 12px;
+}
+.tabBtn{
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:8px 12px;
+  font-weight:900;
+  font-size:12px;
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  cursor:pointer;
+}
+.tabBtn.isActive{
+  background:rgba(107,92,255,.20);
+  border-color:rgba(107,92,255,.45);
+  color:var(--text);
+}
+
+.weekendPanel{display:none}
+.weekendPanel.isActive{display:block}
+
+.weekendHeader{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin:8px 0 10px;
+}
+.weekendTitle{font-weight:900;font-size:18px}
+.weekendMeta{color:var(--muted);font-size:12px;margin-bottom:8px}
+
+/* ===== GROUPING ===== */
+.dayGroup{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px;
+  background:rgba(255,255,255,.03);
+}
+.dayGroup + .dayGroup{margin-top:10px}
+.dayHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 6px 10px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+}
+.dayTitle{font-weight:900}
+.dayLink{font-size:12px;color:var(--accent)}
+
+.stageGroup{margin-top:8px}
+.stageTitle{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  color:var(--muted);
+  margin:6px 0;
+}
+.slotList{display:flex;flex-direction:column;gap:8px}
+.slot.isTarget{
+  outline:2px solid rgba(107,92,255,.7);
+  box-shadow:0 0 0 4px rgba(107,92,255,.25);
+}
+
 /* ===== LIST / ACT ===== */
 .list{display:flex;flex-direction:column;gap:10px}
 

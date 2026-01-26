@@ -24,5 +24,11 @@
   "support_text": "If Festival Planner helps you, you can optionally support the project.",
   "donate": "Donate",
   "last_checked": "Last checked",
-  "lineup_status": "Lineup status"
+  "lineup_status": "Lineup status",
+  "changes_title": "Changes since last snapshot",
+  "changes_details": "Details",
+  "weekend_1": "Weekend 1",
+  "weekend_2": "Weekend 2",
+  "snapshot_label": "Snapshot",
+  "lineup": "Lineup"
 }
