@@ -485,7 +485,11 @@ function renderWeekendChangesBox() {
   }
 
   const summary = data.summary;
+  const weekendLabel = state.activeWeekend === "W2"
+    ? (t("weekend_2") || "Weekend 2")
+    : (t("weekend_1") || "Weekend 1");
   weekendChangesSummary.innerHTML =
+    `${escapeHtml(weekendLabel)} \u00b7 ` +
     `${t("changes_added") || "Added"}: <strong>${summary.added ?? 0}</strong> \u00b7 ` +
     `${t("changes_removed") || "Removed"}: <strong>${summary.removed ?? 0}</strong> \u00b7 ` +
     `${t("changes_replaced") || "Replaced"}: <strong>${summary.replaced ?? 0}</strong>`;
@@ -1231,7 +1235,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 
