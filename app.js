@@ -30,6 +30,7 @@ const weekendChangesSummary = document.getElementById("weekendChangesSummary");
 const weekendChangesDetails = document.getElementById("weekendChangesDetails");
 const weekendChangesDetailsBody = document.getElementById("weekendChangesDetailsBody");
 const weekendChangesHistory = document.getElementById("weekendChangesHistory");
+const weekendChangesHistoryWrap = document.getElementById("weekendChangesHistoryWrap");
 
 const errorBox = document.getElementById("errorBox");
 
@@ -507,6 +508,7 @@ function renderWeekendChangesHistory() {
   const weekend = state.activeWeekend;
   if (!idx?.entries?.length) {
     weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
+    if (weekendChangesHistoryWrap) weekendChangesHistoryWrap.open = false;
     return;
   }
 
@@ -517,15 +519,17 @@ function renderWeekendChangesHistory() {
 
   if (!entries.length) {
     weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
+    if (weekendChangesHistoryWrap) weekendChangesHistoryWrap.open = false;
     return;
   }
 
   weekendChangesHistory.innerHTML = entries.map(e => {
     const when = formatDateTime(e.createdAt);
     const s = e.summary || {};
+    const href = `/data/${state.festival}/${state.year}/changes/${e.file}`;
     return `
       <div class="changesHistoryItem">
-        <span>${escapeHtml(when)}</span>
+        <a href="${escapeAttr(href)}" target="_blank" rel="noopener">${escapeHtml(when)}</a>
         <span>
           ${t("changes_added") || "Added"}: <strong>${s.added ?? 0}</strong>
           · ${t("changes_removed") || "Removed"}: <strong>${s.removed ?? 0}</strong>
@@ -1227,7 +1231,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 
