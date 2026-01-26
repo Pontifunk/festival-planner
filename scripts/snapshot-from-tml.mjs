@@ -167,6 +167,7 @@ async function fetchDay(browser, url) {
 
   const page = await browser.newPage();
   const jsonPayloads = [];
+  const jsonUrls = [];
 
   page.on("response", async (res) => {
     try {
@@ -182,6 +183,7 @@ async function fetchDay(browser, url) {
 
       const data = await res.json();
       jsonPayloads.push(data);
+      jsonUrls.push(res.url());
     } catch {
       // ignore non-json or blocked
     }
@@ -208,6 +210,15 @@ async function fetchDay(browser, url) {
       `Lineup payload found but no slots extracted for ${url}. You may need to adjust mapping rules.`
     );
   }
+
+  const uniqueDates = [...new Set(slots.map(s => s.date))].sort();
+  const mismatchCount = slots.filter(s => s.date !== date).length;
+  const urlSamples = jsonUrls.slice(0, 3).join(", ");
+  console.log(
+    `Debug ${date} ${weekend}: payloads=${jsonPayloads.length} slots=${slots.length} ` +
+    `uniqueDates=${uniqueDates.join("|") || "-"} mismatches=${mismatchCount} ` +
+    `jsonUrls=${urlSamples || "-"}`
+  );
 
   return slots;
 }
