@@ -20,15 +20,8 @@ const ratingFilter = document.getElementById("ratingFilter");
 const dayFilter = document.getElementById("dayFilter");
 const stageFilter = document.getElementById("stageFilter");
 
-const changesBox = document.getElementById("changesBox");
-const changesSummary = document.getElementById("changesSummary");
-const changesDetails = document.getElementById("changesDetails");
-const changesDetailsBody = document.getElementById("changesDetailsBody");
-
 const weekendChangesBox = document.getElementById("weekendChangesBox");
 const weekendChangesSummary = document.getElementById("weekendChangesSummary");
-const weekendChangesDetails = document.getElementById("weekendChangesDetails");
-const weekendChangesDetailsBody = document.getElementById("weekendChangesDetailsBody");
 const weekendChangesHistory = document.getElementById("weekendChangesHistory");
 const weekendChangesTitle = weekendChangesBox?.querySelector(".cardTitle");
 const exportRatingsBtn = document.getElementById("exportRatingsBtn");
@@ -68,7 +61,6 @@ const state = {
     W2: { options: [], selectedFile: null, snapshot: null, grouped: [], artistSlots: new Map(), artistFirstEl: new Map(), filters: { day: "all", stage: "all" }, error: null }
   },
   artists: { list: [], byId: new Map() },
-  changes: null,
   changesIndex: null,
   weekendChanges: { W1: null, W2: null },
   ratings: {}
@@ -104,7 +96,11 @@ async function init() {
   route.year = cleanSegment(route.year, /^\d{4}$/, DEFAULT_YEAR);
 
   const routeWeekend = normalizeWeekend(route.weekend);
-  if (routeWeekend) state.activeWeekend = routeWeekend;
+  if (routeWeekend) {
+    state.activeWeekend = routeWeekend;
+  } else {
+    route.weekend = DEFAULT_WEEKEND.toLowerCase();
+  }
 
   normalizeUrlIfNeeded();
   ensureCanonicalUrl();
@@ -115,7 +111,6 @@ async function init() {
     await Promise.all([
       loadSnapshotIndex(),
       loadArtistsLatest(),
-      loadChangesLatest(),
       loadChangesIndex(),
       loadWeekendChanges()
     ]);
@@ -127,7 +122,6 @@ async function init() {
 
   await Promise.all(WEEKENDS.map((w) => loadSnapshotForWeekend(w)));
 
-  renderChangesBox();
   renderWeekendChangesBox();
   setActiveWeekend(state.activeWeekend, false);
 }
@@ -283,21 +277,6 @@ async function loadArtistsLatest() {
     state.artists.list = data.artists;
     state.artists.byId = new Map(data.artists.map(a => [a.artistId, a]));
   }
-}
-
-async function loadChangesLatest() {
-  const base = `/data/${state.festival}/${state.year}/changes`;
-  const latest = await tryFetchJson(`${base}/latest.json`, { cache: "no-store" });
-  let data = latest;
-
-  if (!data) {
-    const index = await tryFetchJson(`${base}/index.json`, { cache: "no-store" });
-    if (index?.latest) {
-      data = await tryFetchJson(`${base}/${index.latest}`, { cache: "no-store" });
-    }
-  }
-
-  state.changes = data;
 }
 
 async function loadChangesIndex() {
@@ -462,32 +441,8 @@ function renderFavorites() {
   bindQuicklinks(favoritesList);
 }
 
-function renderChangesBox() {
-  if (!state.changes || !changesBox) {
-    changesBox.hidden = true;
-    return;
-  }
-
-  const summary = state.changes.summary || {};
-  const added = summary.added ?? 0;
-  const removed = summary.removed ?? 0;
-  const replaced = summary.replaced ?? 0;
-
-  changesSummary.innerHTML = `${t("changes_added") || "Added"} <strong>${added}</strong> \u00b7 ${t("changes_removed") || "Removed"} <strong>${removed}</strong> \u00b7 ${t("changes_replaced") || "Replaced"} <strong>${replaced}</strong>`;
-
-  const details = state.changes.details || state.changes.items || state.changes.changes || null;
-  if (details) {
-    changesDetailsBody.textContent = JSON.stringify(details, null, 2);
-    changesDetails.hidden = false;
-  } else {
-    changesDetails.hidden = true;
-  }
-
-  changesBox.hidden = false;
-}
-
 function renderWeekendChangesBox() {
-  if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesDetails || !weekendChangesDetailsBody || !weekendChangesHistory) return;
+  if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesHistory) return;
   const data = state.weekendChanges?.[state.activeWeekend] || null;
 
   if (weekendChangesTitle) {
@@ -506,8 +461,6 @@ function renderWeekendChangesBox() {
     `${t("changes_added") || "Added"}: <strong>${summary.added ?? 0}</strong> \u00b7 ` +
     `${t("changes_removed") || "Removed"}: <strong>${summary.removed ?? 0}</strong> \u00b7 ` +
     `${t("changes_replaced") || "Replaced"}: <strong>${summary.replaced ?? 0}</strong>`;
-
-  weekendChangesDetails.hidden = true;
 
   renderWeekendChangesHistory();
   weekendChangesBox.hidden = false;
@@ -584,6 +537,13 @@ function exportRatings() {
 async function importRatings(e) {
   const file = e.target.files?.[0];
   if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+    if (importStatus) {
+      importStatus.textContent = t("import_failed") || "Import fehlgeschlagen.";
+    }
+    e.target.value = "";
+    return;
+  }
   try {
     const text = await file.text();
     const data = JSON.parse(text);
@@ -1319,6 +1279,3 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
-
-

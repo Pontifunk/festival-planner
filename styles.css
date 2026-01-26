@@ -551,5 +551,21 @@ select:focus,input:focus,button:focus,a:focus{
   .pill{max-width: 100%;}
 }
 
+@media (max-width: 720px){
+  .topbar{position:static;padding:12px;gap:10px}
+  .controls{width:100%;justify-content:flex-start}
+  .controls .ctrl{width:100%}
+  .pills{width:100%}
+  .layout{padding:10px}
+  .panel{padding:12px}
+  .weekendHeader{flex-direction:column;align-items:flex-start}
+  .weekendHeader .ctrl{width:100%}
+  .weekendTabs{flex-wrap:wrap}
+  .tabBtn{flex:1 1 auto;text-align:center}
+  .ratingBar{flex-wrap:wrap}
+  .rbtn{flex:1 1 auto}
+  .quicklinks{justify-content:flex-start}
+}
+
 
 
