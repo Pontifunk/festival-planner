@@ -1,0 +1,15 @@
+{
+  "latest": "20260126_085311Z_W2.json",
+  "snapshots": [
+    {
+      "file": "20260126_085311Z_W1.json",
+      "createdAt": "2026-01-26T08:53:11.608Z",
+      "slotCount": 996
+    },
+    {
+      "file": "20260126_085311Z_W2.json",
+      "createdAt": "2026-01-26T08:53:11.608Z",
+      "slotCount": 996
+    }
+  ]
+}
