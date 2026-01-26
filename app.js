@@ -453,6 +453,7 @@ function updateFiltersUI(weekend) {
   const w = state.weekends[weekend];
   if (!w?.snapshot?.slots) return;
   if (!dayFilter || !stageFilter) return;
+  if (!w.filters) w.filters = { day: "all", stage: "all" };
 
   const slots = w.snapshot.slots;
   const dates = Array.from(new Set(slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
@@ -1115,3 +1116,4 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
+
