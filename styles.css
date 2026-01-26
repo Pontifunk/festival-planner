@@ -204,7 +204,9 @@ select:focus,input:focus,button:focus,a:focus{
   padding:14px;
 }
 
-.side{display:flex;flex-direction:column;gap:14px}
+.side{display:flex;flex-direction:column;gap:12px}
+.side .card{padding:12px}
+.side .cardTitle{margin-bottom:8px}
 .introCard{
   display:flex;
   gap:10px;
