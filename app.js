@@ -33,7 +33,11 @@ let ratings = {}; // { actId: "liked"|"maybe"|"disliked" }
 init();
 
 async function init() {
-  donateBtn.href = DONATION_URL;
+  if (DONATION_URL && !DONATION_URL.includes("DEINNAME")) {
+    donateBtn.href = DONATION_URL;
+  } else {
+    donateBtn.style.display = "none";
+  }
   feedbackBtn.href = FEEDBACK_URL;
 
   langSelect.value = lang;
