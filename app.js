@@ -489,10 +489,6 @@ function renderChangesBox() {
 function renderWeekendChangesBox() {
   if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesDetails || !weekendChangesDetailsBody || !weekendChangesHistory) return;
   const data = state.weekendChanges?.[state.activeWeekend] || null;
-  if (!data || !data.summary) {
-    weekendChangesBox.hidden = true;
-    return;
-  }
 
   if (weekendChangesTitle) {
     const weekendLabel = state.activeWeekend === "W2"
@@ -501,7 +497,7 @@ function renderWeekendChangesBox() {
     weekendChangesTitle.textContent = `${t("weekend_changes_title") || "Änderungen"} \u2013 ${weekendLabel}`;
   }
 
-  const summary = data.summary;
+  const summary = data?.summary || { added: 0, removed: 0, replaced: 0 };
   const weekendLabel = state.activeWeekend === "W2"
     ? (t("weekend_2") || "Weekend 2")
     : (t("weekend_1") || "Weekend 1");
@@ -1323,7 +1319,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 
