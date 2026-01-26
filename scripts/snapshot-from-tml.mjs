@@ -66,6 +66,11 @@ function extractDayParam(url) {
   return m[1];
 }
 
+function extractDateFromString(value) {
+  const m = String(value || "").match(/(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : "";
+}
+
 /**
  * Heuristik: finde “wahrscheinlichstes” JSON Payload Objekt,
  * das Slot-ähnliche Daten enthält (stage/time/artist).
@@ -120,10 +125,14 @@ function extractSlotsFromPayload(payload, context) {
             const start = item.start || item.startTime || item.start_time || item.time || "";
             const end = item.end || item.endTime || item.end_time || "";
 
+            const dateFromStart = extractDateFromString(start) || extractDateFromString(end);
+            const date = dateFromStart || context.date;
+            const weekend = weekendFromDate(date) || context.weekend;
+
             if (artist && stage && start) {
               found.push({
-                weekend: context.weekend,
-                date: context.date,
+                weekend,
+                date,
                 stage,
                 start: String(start).trim(),
                 end: String(end).trim(),
@@ -235,8 +244,15 @@ async function main() {
       console.log(`Fetched ${daySlots.length} slots from ${url}`);
     }
 
+    // Globales Dedup (falls die API mehrere Tage gleichzeitig liefert)
+    const uniq = new Map();
+    for (const s of allSlots) {
+      const key = `${s.date}|${s.stage}|${s.start}|${s.end}|${s.artist}`;
+      if (!uniq.has(key)) uniq.set(key, s);
+    }
+
     // IDs ergänzen
-    const slotsWithIds = allSlots.map(s => ({ ...s, ...makeIds(s) }));
+    const slotsWithIds = [...uniq.values()].map(s => ({ ...s, ...makeIds(s) }));
 
     // Optional: getrennte Snapshots pro Weekend
     const byWeekend = slotsWithIds.reduce((acc, s) => {
@@ -288,3 +304,6 @@ main().catch(err => {
   console.error(err);
   process.exit(1);
 });
+
+
+
