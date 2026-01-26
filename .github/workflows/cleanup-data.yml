@@ -1,0 +1,38 @@
+name: Cleanup generated data
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Remove generated data
+        run: |
+          set -euxo pipefail
+          rm -f data/tomorrowland/2026/changes/* || true
+          rm -f data/tomorrowland/2026/snapshots/* || true
+          rm -f data/tomorrowland/2026/artists/* || true
+
+      - name: Commit & push if changed
+        run: |
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/tomorrowland/2026/changes data/tomorrowland/2026/snapshots data/tomorrowland/2026/artists
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: cleanup generated data"
+          git push
