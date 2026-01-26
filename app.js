@@ -16,7 +16,10 @@ const lastUpdatedPill = document.getElementById("lastUpdatedPill");
 
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
-const ratingFilter = document.getElementById("ratingFilter");\r\nconst dayFilter = document.getElementById("dayFilter");\r\nconst stageFilter = document.getElementById("stageFilter");\r\n
+const ratingFilter = document.getElementById("ratingFilter");
+const dayFilter = document.getElementById("dayFilter");
+const stageFilter = document.getElementById("stageFilter");
+
 const changesBox = document.getElementById("changesBox");
 const changesSummary = document.getElementById("changesSummary");
 const changesDetails = document.getElementById("changesDetails");
@@ -75,7 +78,10 @@ async function init() {
 
   langSelect.value = lang;
   initCustomSelect(langSelect);
-  initCustomSelect(ratingFilter);\r\n  initCustomSelect(dayFilter);\r\n  initCustomSelect(stageFilter);\r\n  initCustomSelect(snapshotSelectW1);
+  initCustomSelect(ratingFilter);
+  initCustomSelect(dayFilter);
+  initCustomSelect(stageFilter);
+  initCustomSelect(snapshotSelectW1);
   initCustomSelect(snapshotSelectW2);
 
   await applyTranslations(lang);
@@ -146,9 +152,22 @@ function bindUi() {
 
   ratingFilter.addEventListener("change", () => renderActiveWeekend());
 
-  if (dayFilter) {\r\n    dayFilter.addEventListener("change", () => {\r\n      const w = state.weekends[state.activeWeekend];\r\n      w.filters.day = dayFilter.value || "all";\r\n      w.filters.stage = "all";\r\n      renderActiveWeekend();\r\n    });\r\n  }
+  if (dayFilter) {
+    dayFilter.addEventListener("change", () => {
+      const w = state.weekends[state.activeWeekend];
+      w.filters.day = dayFilter.value || "all";
+      w.filters.stage = "all";
+      renderActiveWeekend();
+    });
+  }
 
-  if (stageFilter) {\r\n    stageFilter.addEventListener("change", () => {\r\n      const w = state.weekends[state.activeWeekend];\r\n      w.filters.stage = stageFilter.value || "all";\r\n      renderActiveWeekend();\r\n    });\r\n  }
+  if (stageFilter) {
+    stageFilter.addEventListener("change", () => {
+      const w = state.weekends[state.activeWeekend];
+      w.filters.stage = stageFilter.value || "all";
+      renderActiveWeekend();
+    });
+  }
 }
 // ====== LOADING ======
 async function loadSnapshotIndex() {
@@ -208,7 +227,11 @@ async function loadSnapshotForWeekend(weekend, file = null) {
 
     w.snapshot = snap;
     w.selectedFile = selectedFile;
-    const sel = snapshotSelectForWeekend(weekend);\r\n    if (sel) {\r\n      sel.value = selectedFile;\r\n      syncCustomSelect(sel);\r\n    }
+    const sel = snapshotSelectForWeekend(weekend);
+    if (sel) {
+      sel.value = selectedFile;
+      syncCustomSelect(sel);
+    }
   } catch (e) {
     w.error = "Snapshot konnte nicht geladen werden.";
     w.snapshot = null;
@@ -426,7 +449,11 @@ function renderStatusPills() {
   lastUpdatedPill.textContent = `${t("lineup_status")}: ${slotCount} ${t("slots") || "Slots"}`;
 }
 
-function updateFiltersUI(weekend) {\r\n  const w = state.weekends[weekend];\r\n  if (!w?.snapshot?.slots) return;\r\n  if (!dayFilter || !stageFilter) return;\r\n
+function updateFiltersUI(weekend) {
+  const w = state.weekends[weekend];
+  if (!w?.snapshot?.slots) return;
+  if (!dayFilter || !stageFilter) return;
+
   const slots = w.snapshot.slots;
   const dates = Array.from(new Set(slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
 
