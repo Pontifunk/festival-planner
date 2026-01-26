@@ -511,13 +511,7 @@ function renderWeekendChangesBox() {
     `${t("changes_removed") || "Removed"}: <strong>${summary.removed ?? 0}</strong> \u00b7 ` +
     `${t("changes_replaced") || "Replaced"}: <strong>${summary.replaced ?? 0}</strong>`;
 
-  const details = data.details || data.items || data.changes || data;
-  if (details) {
-    weekendChangesDetailsBody.textContent = JSON.stringify(details, null, 2);
-    weekendChangesDetails.hidden = false;
-  } else {
-    weekendChangesDetails.hidden = true;
-  }
+  weekendChangesDetails.hidden = true;
 
   renderWeekendChangesHistory();
   weekendChangesBox.hidden = false;
@@ -567,9 +561,11 @@ function exportRatings() {
     artists[artistId] = {
       name,
       rating: ratings[artistId],
+      tags: [],
       updatedAt: createdAt
     };
   });
+
   const payload = {
     app: "festival-planner",
     exportVersion: 2,
@@ -1327,7 +1323,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 

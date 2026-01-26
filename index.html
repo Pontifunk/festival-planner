@@ -121,10 +121,7 @@
       <div id="weekendChangesBox" class="card" hidden>
         <div class="cardTitle" data-i18n="weekend_changes_title">Änderungen Weekend</div>
         <div id="weekendChangesSummary" class="changesSummary"></div>
-        <div id="weekendChangesDetails" class="changesDetails">
-          <div class="changesDetailsTitle" data-i18n="changes_details">Details</div>
-          <pre id="weekendChangesDetailsBody" class="changesDetailsBody"></pre>
-        </div>
+        <div id="weekendChangesDetails" class="changesDetails" hidden></div>
         <div class="changesHistory">
           <div class="changesHistoryTitle" data-i18n="weekend_changes_history">Verlauf</div>
           <div id="weekendChangesHistory" class="changesHistoryList"></div>
@@ -132,13 +129,7 @@
         <div class="changesNote">
           <div class="changesHistoryTitle" data-i18n="planner_note_title">Planung & Export</div>
           <div class="changesNoteBody">
-            <p data-i18n="planner_note_intro">Für eine saubere Planung lohnt sich ein zweistufiges Modell: Artist-Ratings + Slot-Planung.</p>
-            <ul>
-              <li data-i18n="planner_note_artist">Artist-Ebene: Rating pro artistId (weekend-unabhängig).</li>
-              <li data-i18n="planner_note_slot">Slot-Ebene: Status/Notiz pro slotId (konkretes Set).</li>
-              <li data-i18n="planner_note_robust">Robust bei Verschiebungen: Artist bleibt, Slot kann remapped werden.</li>
-              <li data-i18n="planner_note_export">Export enthält beide Ebenen (future-proof).</li>
-            </ul>
+          <p data-i18n="planner_note_intro">Hier kannst du deine Ratings exportieren und wieder importieren.</p>
             <div class="exportRow">
               <button class="btn" id="exportRatingsBtn" data-i18n="export_ratings">Ratings exportieren</button>
               <label class="btn" for="importRatingsInput" data-i18n="import_ratings">Ratings importieren</label>
