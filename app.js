@@ -309,7 +309,11 @@ function renderWeekend(weekend) {
   w.grouped = grouped;
   w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
 
-  metaEl.textContent = `${t("snapshot_label")}: ${w.selectedFile || "\u2013"} \u00b7 ${t("slots") || "Slots"}: ${w.snapshot.slots.length}`;
+  const shownCount = countGroupedSlots(grouped);
+  metaEl.textContent =
+    `${t("snapshot_label")}: ${w.selectedFile || "\u2013"} \u00b7 ` +
+    `${t("slots") || "Slots"}: ${w.snapshot.slots.length} \u00b7 ` +
+    `${t("shown") || "Angezeigt"}: ${shownCount}`;
 
   container.innerHTML = grouped.map(group => renderDayGroup(group, weekend)).join("");
 
@@ -662,6 +666,16 @@ function buildArtistSlotMap(slots) {
     map.get(id).push(slot);
   });
   return map;
+}
+
+function countGroupedSlots(grouped) {
+  let count = 0;
+  grouped.forEach(day => {
+    day.stages.forEach(stage => {
+      count += stage.slots.length;
+    });
+  });
+  return count;
 }
 
 // ====== ROUTING ======
@@ -1126,7 +1140,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 
