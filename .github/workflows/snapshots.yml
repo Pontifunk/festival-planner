@@ -3,8 +3,7 @@ name: Generate lineup snapshot
 on:
   workflow_dispatch: {}
   schedule:
-    # Jeden Montag 06:15 UTC
-    - cron: "15 6 * * 1"
+    - cron: "15 6 * * *"   # täglich 06:15 UTC
 
 permissions:
   contents: write
