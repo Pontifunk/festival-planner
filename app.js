@@ -78,6 +78,8 @@ async function init() {
 function initCustomSelect(selectEl) {
   if (!selectEl || selectEl.dataset.customReady) return;
   selectEl.dataset.customReady = "true";
+  selectEl.tabIndex = -1;
+  selectEl.setAttribute("aria-hidden", "true");
 
   const wrapper = document.createElement("div");
   wrapper.className = "selectWrap";
