@@ -74,7 +74,7 @@ a{color:inherit;text-decoration:none}
   background:rgba(255,255,255,.03);
 }
 
-.ctrl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)}
+.ctrl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);position:relative}
 select,input{
   min-height: var(--tap);
   background:rgba(255,255,255,.06);
@@ -89,6 +89,73 @@ select:focus,input:focus,button:focus,a:focus{
   box-shadow:0 0 0 3px rgba(107,92,255,.25);
   border-color:rgba(107,92,255,.55);
 }
+
+/* custom select (premium, cross-OS) */
+.selectNative{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  pointer-events:none;
+}
+
+.selectWrap{
+  position:relative;
+  min-width: 92px;
+}
+
+.selectTrigger{
+  min-height: var(--tap);
+  padding:10px 34px 10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  font-weight:700;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+}
+
+.selectTrigger::after{
+  content:"";
+  position:absolute;
+  right:12px;
+  width:8px;height:8px;
+  border-right:2px solid var(--muted);
+  border-bottom:2px solid var(--muted);
+  transform:rotate(45deg);
+}
+
+.selectWrap.isOpen .selectTrigger::after{transform:rotate(-135deg)}
+
+.selectList{
+  position:absolute;
+  top:calc(100% + 6px);
+  right:0;
+  min-width:100%;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:6px;
+  display:none;
+  box-shadow: var(--shadow);
+  z-index:50;
+}
+
+.selectWrap.isOpen .selectList{display:flex;flex-direction:column;gap:4px}
+
+.selectOption{
+  padding:8px 10px;
+  border-radius:10px;
+  font-size:12px;
+  color:var(--text);
+  cursor:pointer;
+}
+
+.selectOption:hover{background:rgba(255,255,255,.06)}
+.selectOption.isActive{background:rgba(107,92,255,.18); color:var(--text)}
 
 /* pills: make them compact (fix iOS “bubble” look) */
 .pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}

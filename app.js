@@ -41,6 +41,8 @@ async function init() {
   feedbackBtn.href = FEEDBACK_URL;
 
   langSelect.value = lang;
+  initCustomSelect(langSelect);
+  initCustomSelect(weekendSelect);
   await applyTranslations(lang);
 
   if (!route.festival) route.festival = DEFAULT_FESTIVAL;
@@ -51,6 +53,7 @@ async function init() {
   ensureCanonicalUrl();
 
   weekendSelect.value = route.weekend;
+  syncCustomSelect(weekendSelect);
 
   await loadAndRender();
 
@@ -69,6 +72,114 @@ async function init() {
 
   searchInput.addEventListener("input", render);
   ratingFilter.addEventListener("change", render);
+}
+
+// ====== CUSTOM SELECT ======
+function initCustomSelect(selectEl) {
+  if (!selectEl || selectEl.dataset.customReady) return;
+  selectEl.dataset.customReady = "true";
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "selectWrap";
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.className = "selectTrigger";
+  trigger.setAttribute("aria-haspopup", "listbox");
+  trigger.setAttribute("aria-expanded", "false");
+
+  const list = document.createElement("div");
+  list.className = "selectList";
+  list.setAttribute("role", "listbox");
+  list.tabIndex = -1;
+
+  const opts = Array.from(selectEl.options);
+  opts.forEach((opt, idx) => {
+    const item = document.createElement("div");
+    item.className = "selectOption";
+    item.setAttribute("role", "option");
+    item.setAttribute("data-value", opt.value);
+    item.textContent = opt.textContent;
+    item.tabIndex = -1;
+    if (opt.value === selectEl.value) item.classList.add("isActive");
+    list.appendChild(item);
+  });
+
+  selectEl.parentNode.insertBefore(wrapper, selectEl.nextSibling);
+  wrapper.appendChild(trigger);
+  wrapper.appendChild(list);
+
+  const closeAll = () => {
+    wrapper.classList.remove("isOpen");
+    trigger.setAttribute("aria-expanded", "false");
+  };
+
+  const open = () => {
+    wrapper.classList.add("isOpen");
+    trigger.setAttribute("aria-expanded", "true");
+  };
+
+  const toggle = () => (wrapper.classList.contains("isOpen") ? closeAll() : open());
+
+  const setValue = (val, focusTrigger = true) => {
+    if (selectEl.value === val) return;
+    selectEl.value = val;
+    selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+    syncCustomSelect(selectEl);
+    if (focusTrigger) trigger.focus();
+  };
+
+  trigger.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggle();
+  });
+
+  list.addEventListener("click", (e) => {
+    const item = e.target.closest(".selectOption");
+    if (!item) return;
+    setValue(item.getAttribute("data-value"));
+    closeAll();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!wrapper.contains(e.target)) closeAll();
+  });
+
+  const move = (dir) => {
+    const values = opts.map(o => o.value);
+    const idx = Math.max(0, values.indexOf(selectEl.value));
+    const next = Math.min(values.length - 1, Math.max(0, idx + dir));
+    setValue(values[next], false);
+  };
+
+  trigger.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); open(); move(1); }
+    if (e.key === "ArrowUp") { e.preventDefault(); open(); move(-1); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    if (e.key === "Escape") { e.preventDefault(); closeAll(); }
+  });
+
+  list.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+    if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); closeAll(); trigger.focus(); }
+    if (e.key === "Escape") { e.preventDefault(); closeAll(); trigger.focus(); }
+  });
+
+  syncCustomSelect(selectEl);
+}
+
+function syncCustomSelect(selectEl) {
+  const wrapper = selectEl.nextSibling && selectEl.nextSibling.classList && selectEl.nextSibling.classList.contains("selectWrap")
+    ? selectEl.nextSibling
+    : selectEl.parentNode.querySelector(".selectWrap");
+  if (!wrapper) return;
+  const trigger = wrapper.querySelector(".selectTrigger");
+  const list = wrapper.querySelector(".selectList");
+  const options = Array.from(list.querySelectorAll(".selectOption"));
+  options.forEach(opt => opt.classList.toggle("isActive", opt.getAttribute("data-value") === selectEl.value));
+  const active = options.find(opt => opt.classList.contains("isActive"));
+  trigger.textContent = active ? active.textContent : selectEl.options[selectEl.selectedIndex]?.textContent || "";
 }
 
 function canonicalPath(r) {
