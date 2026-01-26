@@ -23,7 +23,7 @@
 </head>
 
 <body>
-  <header class="topbar">
+  <header class="topbar" id="top">
     <div class="brand">
       <div class="logo">FP</div>
       <div class="brandText">
@@ -51,14 +51,20 @@
         <div class="pill" id="lastUpdatedPill">&ndash;</div>
       </div>
     </div>
+
+    <button class="menuBtn" id="menuBtn" type="button" aria-label="Men&uuml;" aria-expanded="false">
+      <span class="menuIcon" aria-hidden="true"></span>
+    </button>
   </header>
 
   <main class="layout">
     <section class="panel">
       <div class="introCard">
-        <div class="introIcon">★</div>
-        <div class="introText" data-i18n="intro">
-          Unabh&auml;ngiges Tool zur Entdeckung und Planung von Festival-Line-ups. H&ouml;re Acts an, bewerte sie und erstelle deine Favoritenliste &ndash; ohne Account, ohne Tracking.
+        <div class="introIcon">&#9733;</div>
+        <div class="introContent">
+          <div class="introTitle" data-i18n="hero_title">Dein pers&ouml;nlicher Tomorrowland-Lineup-Planer.</div>
+          <div class="introSubtitle" data-i18n="hero_subtitle">Bewerte DJs, markiere Favoriten und behalte den &Uuml;berblick &uuml;ber dein Festival-Wochenende &ndash; ohne Account, ohne Tracking.</div>
+          <div class="introOnboarding muted" data-i18n="hero_onboarding">So funktioniert&rsquo;s: &#11088; DJ bewerten &#8594; &#10084;&#65039; Favoriten markieren &#8594; &#127911; besser vorbereitet ins Festival</div>
         </div>
       </div>
 
@@ -100,9 +106,9 @@
         <button class="tabBtn" data-weekend="W2" role="tab" aria-selected="false" data-i18n="weekend_2">Weekend 2</button>
       </div>
 
-      <section class="weekendPanel isActive" id="panelW1" data-weekend="W1" role="tabpanel">
+      <section class="weekendPanel isActive" id="panelW1" data-weekend="W1" role="tabpanel" aria-labelledby="w1Section">
         <div class="weekendHeader">
-          <div class="weekendTitle" data-i18n="weekend_1">Weekend 1</div>
+          <div class="weekendTitle" id="w1Section" data-i18n="weekend_1">Weekend 1</div>
           <div class="ctrl">
             <span data-i18n="snapshot_label">Snapshot</span>
             <select id="snapshotSelectW1" aria-label="Snapshot W1" class="selectNative" data-custom-select></select>
@@ -112,9 +118,9 @@
         <div id="actsListW1" class="list"></div>
       </section>
 
-      <section class="weekendPanel" id="panelW2" data-weekend="W2" role="tabpanel">
+      <section class="weekendPanel" id="panelW2" data-weekend="W2" role="tabpanel" aria-labelledby="w2Section">
         <div class="weekendHeader">
-          <div class="weekendTitle" data-i18n="weekend_2">Weekend 2</div>
+          <div class="weekendTitle" id="w2Section" data-i18n="weekend_2">Weekend 2</div>
           <div class="ctrl">
             <span data-i18n="snapshot_label">Snapshot</span>
             <select id="snapshotSelectW2" aria-label="Snapshot W2" class="selectNative" data-custom-select></select>
@@ -126,7 +132,7 @@
     </section>
 
     <aside class="panel side">
-      <div id="weekendChangesBox" class="card" hidden>
+      <div id="changesBox" class="card" hidden>
         <div class="cardTitle" data-i18n="weekend_changes_title">Änderungen Weekend</div>
         <div id="weekendChangesSummary" class="changesSummary"></div>
         <div class="changesHistory">
@@ -154,7 +160,11 @@
       </div>
 
       <div class="card">
-        <div class="cardTitle" data-i18n="favorites">Favoriten</div>
+        <div class="favHeader">
+          <div class="cardTitle" data-i18n="favorites">Favoriten</div>
+          <button class="favCountPill" id="favoritesToggle" type="button" aria-pressed="false"></button>
+        </div>
+        <div class="favPlanNote muted" id="favoritesPlanNote" data-i18n="plan_note">&#128197; Deine Vorbereitung l&auml;uft &ndash; Tagesplanung kommt bald</div>
         <div id="favoritesList" class="favList"></div>
       </div>
 
@@ -168,8 +178,43 @@
         <a href="/legal/privacy.html" data-i18n="privacy">Datenschutz</a>
         <a href="/legal/imprint.html" data-i18n="imprint">Impressum</a>
       </div>
+      <div class="privacyNote muted" id="privacy" data-i18n="privacy_note">Alle Bewertungen und Favoriten werden ausschlie&szlig;lich lokal in deinem Browser gespeichert. Kein Login, keine Cloud, kein Tracking.</div>
     </aside>
   </main>
+
+  <div class="menuOverlay" id="menuOverlay" hidden></div>
+  <aside class="menuSheet" id="menuSheet" aria-hidden="true">
+    <div class="menuHandle"></div>
+    <div class="menuHeader">
+      <div class="menuTitle">Men&uuml;</div>
+      <button class="menuClose" id="menuCloseBtn" type="button" aria-label="Schlie&szlig;en">&times;</button>
+    </div>
+    <div class="menuGroup">
+      <div class="menuGroupTitle">Navigation</div>
+      <button class="menuItem" data-target="#top" type="button">Top</button>
+      <button class="menuItem" data-action="weekend" data-weekend="W1" type="button">Weekend 1</button>
+      <button class="menuItem" data-action="weekend" data-weekend="W2" type="button">Weekend 2</button>
+      <div class="menuSubTitle">Tage</div>
+      <div id="menuDayLinks" class="menuDayLinks"></div>
+    </div>
+    <div class="menuGroup">
+      <div class="menuGroupTitle">Ansichten</div>
+      <button class="menuItem" data-action="favoritesToggle" type="button">Nur Favoriten</button>
+      <button class="menuItem" data-action="searchFocus" type="button">Suche</button>
+      <button class="menuItem" data-target="#changesBox" type="button">Changes</button>
+    </div>
+    <div class="menuGroup">
+      <div class="menuGroupTitle">Daten</div>
+      <button class="menuItem" data-action="exportRatings" type="button">Ratings exportieren</button>
+      <button class="menuItem" data-action="importRatings" type="button">Ratings importieren</button>
+    </div>
+    <div class="menuGroup">
+      <div class="menuGroupTitle">Info</div>
+      <button class="menuItem" data-target="#privacy" type="button">Privacy</button>
+    </div>
+  </aside>
+
+  <div id="actionToast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script src="/app.js"></script>
   <script>

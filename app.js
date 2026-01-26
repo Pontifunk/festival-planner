@@ -20,7 +20,7 @@ const ratingFilter = document.getElementById("ratingFilter");
 const dayFilter = document.getElementById("dayFilter");
 const stageFilter = document.getElementById("stageFilter");
 
-const weekendChangesBox = document.getElementById("weekendChangesBox");
+const weekendChangesBox = document.getElementById("changesBox");
 const weekendChangesSummary = document.getElementById("weekendChangesSummary");
 const weekendChangesHistory = document.getElementById("weekendChangesHistory");
 const weekendChangesTitle = weekendChangesBox?.querySelector(".cardTitle");
@@ -41,6 +41,14 @@ const actsListW1 = document.getElementById("actsListW1");
 const actsListW2 = document.getElementById("actsListW2");
 
 const favoritesList = document.getElementById("favoritesList");
+const favoritesToggle = document.getElementById("favoritesToggle");
+const favoritesPlanNote = document.getElementById("favoritesPlanNote");
+const actionToast = document.getElementById("actionToast");
+const menuBtn = document.getElementById("menuBtn");
+const menuOverlay = document.getElementById("menuOverlay");
+const menuSheet = document.getElementById("menuSheet");
+const menuCloseBtn = document.getElementById("menuCloseBtn");
+const menuDayLinks = document.getElementById("menuDayLinks");
 const donateBtn = document.getElementById("donateBtn");
 const feedbackBtn = document.getElementById("feedbackBtn");
 
@@ -51,6 +59,10 @@ let selectUid = 0;
 const customSelectMap = new WeakMap();
 let ratings = {};
 let ratingMenuBound = false;
+let favoritesOnly = false;
+let lastFilterValue = "all";
+let toastTimer = null;
+let menuOpen = false;
 
 const state = {
   festival: DEFAULT_FESTIVAL,
@@ -160,8 +172,20 @@ function bindUi() {
     }
   });
 
-  ratingFilter.addEventListener("input", () => renderActiveWeekend());
-  ratingFilter.addEventListener("change", () => renderActiveWeekend());
+  ratingFilter.addEventListener("input", () => {
+    if (favoritesOnly && ratingFilter.value !== "liked") {
+      favoritesOnly = false;
+      updateFavoritesToggleUI();
+    }
+    renderActiveWeekend();
+  });
+  ratingFilter.addEventListener("change", () => {
+    if (favoritesOnly && ratingFilter.value !== "liked") {
+      favoritesOnly = false;
+      updateFavoritesToggleUI();
+    }
+    renderActiveWeekend();
+  });
 
   if (dayFilter) {
     const onDayChange = () => {
@@ -191,6 +215,22 @@ function bindUi() {
   }
   if (importRatingsInput) {
     importRatingsInput.addEventListener("change", (e) => importRatings(e));
+  }
+  if (favoritesToggle) {
+    favoritesToggle.addEventListener("click", () => setFavoritesOnly(!favoritesOnly));
+  }
+  if (menuBtn && menuSheet && menuOverlay) {
+    menuBtn.addEventListener("click", () => toggleMenu());
+    menuOverlay.addEventListener("click", () => closeMenu());
+    if (menuCloseBtn) menuCloseBtn.addEventListener("click", () => closeMenu());
+    menuSheet.addEventListener("click", (e) => {
+      const item = e.target.closest(".menuItem");
+      if (!item) return;
+      handleMenuItem(item);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && menuOpen) closeMenu();
+    });
   }
 }
 // ====== LOADING ======
@@ -322,9 +362,12 @@ function renderWeekend(weekend) {
   }
 
   const activeFilters = w.filters || { day: "all", stage: "all" };
-  const grouped = groupSlots(w.snapshot.slots, ratingFilter.value, activeFilters);
+  const ratingValue = favoritesOnly ? "liked" : ratingFilter.value;
+  const grouped = groupSlots(w.snapshot.slots, ratingValue, activeFilters);
   w.grouped = grouped;
   w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
+  const dayList = Array.from(new Set(w.snapshot.slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
+  updateMenuDayLinks(dayList);
 
   const shownCount = countGroupedSlots(grouped);
   metaEl.textContent =
@@ -353,7 +396,7 @@ function renderDayGroup(group, weekend) {
   }).join("");
 
   return `
-    <div class="dayGroup">
+    <div class="dayGroup" id="day-${escapeAttr(group.date)}">
       <div class="dayHeader">
         <div class="dayTitle">${escapeHtml(dateLabel)}</div>
         <a class="dayLink" href="${dayUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("lineup"))}</a>
@@ -411,6 +454,7 @@ function renderFavorites() {
   const weekend = state.activeWeekend;
   const w = state.weekends[weekend];
   const likedIds = Object.keys(ratings).filter(id => ratings[id] === "liked");
+  updateFavoritesSummary(likedIds.length);
 
   const items = likedIds.map((id) => {
     const slots = w.artistSlots.get(id) || [];
@@ -442,6 +486,116 @@ function renderFavorites() {
     : `<div class="muted">${escapeHtml(t("no_favorites") || "Noch keine Favoriten.")}</div>`;
 
   bindQuicklinks(favoritesList);
+}
+
+function updateFavoritesSummary(count) {
+  if (!favoritesToggle) return;
+  const label = t("favorites_count") || "Deine Favoriten: {count} DJs";
+  favoritesToggle.textContent = label.replace("{count}", String(count));
+  const toggleLabel = t("favorites_toggle") || "Nur Favoriten anzeigen";
+  favoritesToggle.setAttribute("aria-label", toggleLabel);
+  updateFavoritesToggleUI();
+}
+
+function updateFavoritesToggleUI() {
+  if (!favoritesToggle) return;
+  favoritesToggle.classList.toggle("isActive", favoritesOnly);
+  favoritesToggle.setAttribute("aria-pressed", favoritesOnly ? "true" : "false");
+}
+
+function setFavoritesOnly(next) {
+  favoritesOnly = !!next;
+  if (favoritesOnly) {
+    lastFilterValue = ratingFilter.value || "all";
+    ratingFilter.value = "liked";
+    syncCustomSelect(ratingFilter);
+  } else {
+    ratingFilter.value = lastFilterValue || "all";
+    syncCustomSelect(ratingFilter);
+  }
+  updateFavoritesToggleUI();
+  renderActiveWeekend();
+}
+
+function showToast(message) {
+  if (!actionToast) return;
+  actionToast.textContent = message;
+  actionToast.classList.add("isVisible");
+  actionToast.setAttribute("aria-hidden", "false");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    actionToast.classList.remove("isVisible");
+  }, 1300);
+}
+
+function openMenu() {
+  if (!menuSheet || !menuOverlay || !menuBtn) return;
+  menuOpen = true;
+  menuSheet.classList.add("isOpen");
+  menuOverlay.hidden = false;
+  menuBtn.setAttribute("aria-expanded", "true");
+  menuSheet.setAttribute("aria-hidden", "false");
+  document.body.classList.add("menuOpen");
+}
+
+function closeMenu() {
+  if (!menuSheet || !menuOverlay || !menuBtn) return;
+  menuOpen = false;
+  menuSheet.classList.remove("isOpen");
+  menuOverlay.hidden = true;
+  menuBtn.setAttribute("aria-expanded", "false");
+  menuSheet.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("menuOpen");
+}
+
+function toggleMenu() {
+  if (menuOpen) closeMenu();
+  else openMenu();
+}
+
+function handleMenuItem(item) {
+  const action = item.getAttribute("data-action");
+  const target = item.getAttribute("data-target");
+  if (action === "weekend") {
+    const weekend = item.getAttribute("data-weekend");
+    if (weekend) setActiveWeekend(weekend, true);
+    const id = weekend === "W2" ? "#w2Section" : "#w1Section";
+    scrollToTarget(id);
+  } else if (action === "favoritesToggle") {
+    setFavoritesOnly(!favoritesOnly);
+  } else if (action === "searchFocus") {
+    if (searchInput) {
+      searchInput.focus();
+      scrollToTarget("#searchInput");
+    }
+  } else if (action === "exportRatings") {
+    if (exportRatingsBtn) exportRatingsBtn.click();
+  } else if (action === "importRatings") {
+    if (importRatingsInput) importRatingsInput.click();
+  } else if (target) {
+    scrollToTarget(target);
+  }
+  closeMenu();
+}
+
+function scrollToTarget(selector) {
+  if (!selector) return;
+  const el = document.querySelector(selector);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function updateMenuDayLinks(dates) {
+  if (!menuDayLinks) return;
+  if (!dates || !dates.length) {
+    menuDayLinks.innerHTML = `<div class="menuEmpty">Keine Tage</div>`;
+    return;
+  }
+  menuDayLinks.innerHTML = dates.map((d) => {
+    const label = formatDate(d);
+    const target = `#day-${d}`;
+    return `<button class="menuItem isSub" data-target="${escapeAttr(target)}" type="button">${escapeHtml(label)}</button>`;
+  }).join("");
 }
 
 function renderWeekendChangesBox() {
@@ -691,6 +845,7 @@ function bindRatingMenus(container, weekend) {
       if (id && rate) {
         await setRating(id, rate);
         if (state.activeWeekend === weekend) renderActiveWeekend();
+        showToast(t("saved") || "Gespeichert \u2713");
       }
       closeAll();
       return;
@@ -706,6 +861,7 @@ function bindRatingMenus(container, weekend) {
       const next = ratingCycle[(idx + 1) % ratingCycle.length];
       await setRating(id, next);
       if (state.activeWeekend === weekend) renderActiveWeekend();
+      showToast(t("saved") || "Gespeichert \u2713");
       closeAll();
     }
   });
