@@ -1,8 +1,5 @@
-/* Festival Planner Service Worker (minimal, low-traffic) */
-
 const CACHE_NAME = "festival-planner-v1";
 
-// App-Shell: wird cache-first ausgeliefert
 const CORE_ASSETS = [
   "/",
   "/index.html",
@@ -14,15 +11,12 @@ const CORE_ASSETS = [
   "/icons/apple-touch-icon.png",
   "/legal/privacy.html",
   "/legal/imprint.html",
-  // optional: i18n defaults (werden sonst beim ersten Load gecached)
   "/i18n/de.json",
-  "/i18n/en.json"
+  "/i18n/en.json",
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)));
   self.skipWaiting();
 });
 
@@ -39,10 +33,9 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Only handle same-origin requests (no caching of Spotify/YouTube/Apple links)
   if (url.origin !== self.location.origin) return;
 
-  // Lineup + i18n JSON: network-first (fresh if possible), fallback cache
+  // JSON: network-first, fallback cache
   if (url.pathname.endsWith(".json")) {
     event.respondWith(
       fetch(req)
@@ -56,7 +49,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // HTML pages: network-first to avoid stale shell after deploy, fallback cache
+  // Navigations: network-first, fallback cache (avoid stale deploys)
   if (req.mode === "navigate") {
     event.respondWith(
       fetch(req)
@@ -70,8 +63,6 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Other static assets: cache-first
-  event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req))
-  );
+  // Others: cache-first
+  event.respondWith(caches.match(req).then((cached) => cached || fetch(req)));
 });

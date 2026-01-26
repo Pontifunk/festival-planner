@@ -7,25 +7,17 @@
   <title>Festival Planner</title>
   <meta name="description" content="Privacy-first EDM Festival Lineup Planner. Discover, rate and plan festival acts — no account, no tracking.">
 
-  <!-- PWA / Manifest -->
   <link rel="manifest" href="/manifest.webmanifest">
-
-  <!-- Theme / App colors -->
   <meta name="theme-color" content="#2c1a60">
 
-  <!-- iOS PWA support -->
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Festival Planner">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <!-- Android / general PWA support -->
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- Basic SEO / Social (minimal, safe) -->
   <meta name="robots" content="index, follow">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="/styles.css">
 </head>
 
@@ -33,16 +25,16 @@
   <header class="topbar">
     <div class="brand">
       <div class="logo">FP</div>
-      <div>
+      <div class="brandText">
         <div class="title" data-i18n="app_title">Festival Planner</div>
-        <div class="subtitle" data-i18n="disclaimer">Inoffizielles Tool…</div>
+        <div class="subtitle" data-i18n="disclaimer">Inoffizielles Tool. Angaben können sich ändern. Maßgeblich sind die Infos des Veranstalters.</div>
       </div>
     </div>
 
     <div class="controls">
       <label class="ctrl">
         <span data-i18n="weekend">Wochenende</span>
-        <select id="weekendSelect">
+        <select id="weekendSelect" aria-label="Wochenende">
           <option value="w1">W1</option>
           <option value="w2">W2</option>
         </select>
@@ -50,13 +42,13 @@
 
       <label class="ctrl">
         <span data-i18n="language">Sprache</span>
-        <select id="langSelect">
+        <select id="langSelect" aria-label="Sprache">
           <option value="de">DE</option>
           <option value="en">EN</option>
         </select>
       </label>
 
-      <div class="pills">
+      <div class="pills" aria-label="Status">
         <div class="pill" id="lastCheckedPill">–</div>
         <div class="pill" id="lastUpdatedPill">–</div>
       </div>
@@ -65,11 +57,13 @@
 
   <main class="layout">
     <section class="panel">
-      <div class="intro" data-i18n="intro"></div>
+      <div class="intro" data-i18n="intro">
+        Unabhängiges Tool zur Entdeckung und Planung von Festival-Line-ups. Höre Acts an, bewerte sie und erstelle deine Favoritenliste – ohne Account, ohne Tracking.
+      </div>
 
       <div class="toolbar">
-        <input id="searchInput" type="search" placeholder="Search" />
-        <select id="ratingFilter">
+        <input id="searchInput" type="search" placeholder="Suche" />
+        <select id="ratingFilter" aria-label="Filter">
           <option value="all">All</option>
           <option value="liked">Liked</option>
           <option value="maybe">Maybe</option>
@@ -88,9 +82,9 @@
       </div>
 
       <div class="card">
-        <div class="cardTitle">Support</div>
-        <p class="muted">Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterstützen.</p>
-        <a class="btn primary" id="donateBtn" href="#" target="_blank" rel="noopener noreferrer">Spenden</a>
+        <div class="cardTitle" data-i18n="support">Support</div>
+        <p class="muted" data-i18n="support_text">Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterstützen.</p>
+        <a class="btn primary" id="donateBtn" href="#" target="_blank" rel="noopener noreferrer" data-i18n="donate">Spenden</a>
       </div>
 
       <div class="card">
@@ -106,14 +100,10 @@
   </main>
 
   <script src="/app.js"></script>
-  
   <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-      .register("/service-worker.js")
-      .catch(console.error);
-  }
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js").catch(console.error);
+    }
   </script>
-
 </body>
 </html>

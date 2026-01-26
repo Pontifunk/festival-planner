@@ -3,12 +3,9 @@ const DEFAULT_FESTIVAL = "tomorrowland";
 const DEFAULT_YEAR = "2026";
 const DEFAULT_WEEKEND = "w1";
 
-// Set these to your real URLs
-const DONATION_URL = "https://buymeacoffee.com/DEINNAME"; // TODO: set
+const DONATION_URL = "https://buymeacoffee.com/DEINNAME"; // TODO
 const FEEDBACK_URL = "https://github.com/Puntifunk/festival-planner/issues/new";
 
-// Canonical routing style for GitHub Pages:
-// Always keep trailing slash so /w1/ serves /w1/index.html with 200
 const CANONICAL_TRAILING_SLASH = true;
 
 // ====== DOM ======
@@ -29,38 +26,30 @@ const feedbackBtn = document.getElementById("feedbackBtn");
 // ====== STATE ======
 let lang = localStorage.getItem("fp_lang") || "de";
 let route = parseRoute(location.pathname);
-let lineup = null;       // loaded JSON
-let ratings = {};        // { actId: "liked"|"maybe"|"disliked" }
+let lineup = null;
+let ratings = {}; // { actId: "liked"|"maybe"|"disliked" }
 
 // ====== INIT ======
 init();
 
 async function init() {
-  // buttons
   donateBtn.href = DONATION_URL;
   feedbackBtn.href = FEEDBACK_URL;
 
-  // language
   langSelect.value = lang;
   await applyTranslations(lang);
 
-  // route defaults
   if (!route.festival) route.festival = DEFAULT_FESTIVAL;
   if (!route.year) route.year = DEFAULT_YEAR;
   if (!route.weekend) route.weekend = DEFAULT_WEEKEND;
 
-  // If we came via GitHub Pages 404 fallback (?path=...), normalize URL
   normalizeUrlIfNeeded();
-
-  // Ensure canonical trailing slash (optional but recommended)
   ensureCanonicalUrl();
 
   weekendSelect.value = route.weekend;
 
-  // load
   await loadAndRender();
 
-  // events
   langSelect.addEventListener("change", async () => {
     lang = langSelect.value;
     localStorage.setItem("fp_lang", lang);
@@ -78,13 +67,20 @@ async function init() {
   ratingFilter.addEventListener("change", render);
 }
 
+function canonicalPath(r) {
+  const base = `/${r.festival}/${r.year}/${r.weekend}`;
+  return CANONICAL_TRAILING_SLASH ? `${base}/` : base;
+}
+
+function setCanonicalRoute(r) {
+  history.replaceState({}, "", canonicalPath(r));
+}
+
 function normalizeUrlIfNeeded() {
   const params = new URLSearchParams(location.search);
   const p = params.get("path");
   if (!p) return;
 
-  // When redirected from 404.html we land on /?path=/tomorrowland/2026/w1...
-  // We ignore the incoming 'path' query and rebuild a canonical one.
   params.delete("path");
   const qs = params.toString();
   const canonical = canonicalPath(route) + (qs ? `?${qs}` : "");
@@ -97,32 +93,17 @@ function ensureCanonicalUrl() {
   const desired = canonicalPath(route);
   const currentPath = location.pathname;
 
-  // If user is already on desired path, do nothing
   if (currentPath === desired) return;
 
-  // Only normalize if we're on the same logical route, otherwise keep current
-  // Example: if at "/" we also want to canonicalize to desired default route
   if (currentPath === "/" || currentPath === "/index.html") {
     history.replaceState({}, "", desired);
     return;
   }
 
-  // If path matches without trailing slash, normalize
   const noSlash = desired.endsWith("/") ? desired.slice(0, -1) : desired;
   if (currentPath === noSlash) {
     history.replaceState({}, "", desired);
   }
-}
-
-function setCanonicalRoute(r) {
-  history.replaceState({}, "", canonicalPath(r));
-}
-
-function canonicalPath(r) {
-  // Canonical deep link for GitHub Pages:
-  // /tomorrowland/2026/w1/   (trailing slash)
-  const base = `/${r.festival}/${r.year}/${r.weekend}`;
-  return CANONICAL_TRAILING_SLASH ? `${base}/` : base;
 }
 
 async function loadAndRender() {
@@ -133,9 +114,7 @@ async function loadAndRender() {
     lineup = { acts: [], lastCheckedAt: null, lastUpdated: null };
   }
 
-  // load ratings for this namespace
   ratings = await dbGetAll(makeDbKeyPrefix(route));
-
   renderHeaderStamps(lineup);
   render();
 }
@@ -157,14 +136,17 @@ function render() {
 
   actsList.innerHTML = acts.map(a => renderActRow(a)).join("");
 
-  // bind act click + quicklinks + rating toggle
-  Array.from(document.querySelectorAll(".act")).forEach(el => {
-    el.addEventListener("click", async () => {
-      const id = el.getAttribute("data-id");
-      await cycleRating(id);
+  // rating buttons
+  Array.from(document.querySelectorAll(".rbtn")).forEach(btn => {
+    btn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const id = btn.getAttribute("data-id");
+      const rate = btn.getAttribute("data-rate");
+      await setRating(id, rate);
     });
   });
 
+  // quicklinks
   Array.from(document.querySelectorAll(".qbtn")).forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -180,8 +162,7 @@ function render() {
 }
 
 function renderFavorites() {
-  const favActs = (lineup.acts || [])
-    .filter(a => (ratings[a.id] || "unrated") === "liked");
+  const favActs = (lineup.acts || []).filter(a => (ratings[a.id] || "unrated") === "liked");
 
   favoritesList.innerHTML = favActs.length
     ? favActs.map(a => `
@@ -197,7 +178,6 @@ function renderFavorites() {
       `).join("")
     : `<div class="muted">${escapeHtml(t("no_favorites") || "Noch keine Favoriten.")}</div>`;
 
-  // bind quicklinks in favorites too
   Array.from(favoritesList.querySelectorAll(".qbtn")).forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -213,14 +193,25 @@ function renderFavorites() {
 function renderActRow(a) {
   const r = ratings[a.id] || "unrated";
   const badge = badgeFor(r);
+  const active = (val) => (r === val ? "isActive" : "");
+
   return `
     <div class="act" data-id="${escapeAttr(a.id)}">
       <div>
         <div class="actName">${escapeHtml(a.name)}</div>
         <div class="actMeta">${escapeHtml(a.day)} · ${escapeHtml(a.stage)} · ${escapeHtml(a.timeStart || "–")}–${escapeHtml(a.timeEnd || "–")}</div>
       </div>
+
       <div class="badges">
         <div class="badge ${badge.cls}">${badge.text}</div>
+
+        <div class="ratingBar">
+          <button class="rbtn ${active("liked")}" data-rate="liked" data-id="${escapeAttr(a.id)}">${t("liked")}</button>
+          <button class="rbtn ${active("maybe")}" data-rate="maybe" data-id="${escapeAttr(a.id)}">${t("maybe")}</button>
+          <button class="rbtn ${active("disliked")}" data-rate="disliked" data-id="${escapeAttr(a.id)}">${t("disliked")}</button>
+          <button class="rbtn ${active("unrated")}" data-rate="unrated" data-id="${escapeAttr(a.id)}">${t("reset")}</button>
+        </div>
+
         <div class="quicklinks">
           <button class="qbtn sp" data-ql="sp" data-name="${escapeAttr(a.name)}">Spotify</button>
           <button class="qbtn am" data-ql="am" data-name="${escapeAttr(a.name)}">Apple</button>
@@ -238,19 +229,13 @@ function badgeFor(r) {
   return { cls: "", text: t("unrated") };
 }
 
-async function cycleRating(actId) {
-  const current = ratings[actId] || "unrated";
-  const next = current === "unrated" ? "liked"
-    : current === "liked" ? "maybe"
-      : current === "maybe" ? "disliked"
-        : "unrated";
-
-  if (next === "unrated") {
+async function setRating(actId, rate) {
+  if (rate === "unrated") {
     delete ratings[actId];
     await dbDelete(makeDbKey(route, actId));
   } else {
-    ratings[actId] = next;
-    await dbPut(makeDbKey(route, actId), next);
+    ratings[actId] = rate;
+    await dbPut(makeDbKey(route, actId), rate);
   }
   render();
 }
@@ -262,20 +247,16 @@ function renderHeaderStamps(data) {
 
 // ====== ROUTING ======
 function parseRoute(pathname) {
-  // Support GitHub Pages SPA fallback via /?path=/festival/year/weekend
   const params = new URLSearchParams(location.search);
   const overridePath = params.get("path");
   const effectivePath = overridePath ? overridePath : pathname;
 
   const parts = (effectivePath || "/").split("/").filter(Boolean);
-
-  // If user is on /tomorrowland/2026/w1/index.html we want weekend = w1
-  // parts would be: ["tomorrowland","2026","w1","index.html"]
-  const festival = parts[0] || "";
-  const year = parts[1] || "";
-  const weekend = parts[2] || "";
-
-  return { festival, year, weekend };
+  return {
+    festival: parts[0] || "",
+    year: parts[1] || "",
+    weekend: parts[2] || ""
+  };
 }
 
 // ====== DATA LOADING ======
@@ -293,13 +274,11 @@ async function applyTranslations(newLang) {
   dict = res.ok ? await res.json() : {};
   document.documentElement.lang = newLang;
 
-  // replace data-i18n nodes
   Array.from(document.querySelectorAll("[data-i18n]")).forEach(el => {
     const key = el.getAttribute("data-i18n");
     if (key && dict[key]) el.textContent = dict[key];
   });
 
-  // update placeholders
   searchInput.placeholder = t("search");
 }
 
@@ -308,46 +287,32 @@ function t(key) {
 }
 
 // ====== MUSIC LINKS ======
-function makeSpotifySearchUrl(name) {
-  return `https://open.spotify.com/search/${encodeURIComponent(name)}`;
-}
-function makeAppleMusicSearchUrl(name) {
-  return `https://music.apple.com/search?term=${encodeURIComponent(name)}`;
-}
-function makeYouTubeSearchUrl(name) {
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(name + " dj set")}`;
-}
-function openLink(url) {
-  window.open(url, "_blank", "noopener");
-}
+function makeSpotifySearchUrl(name){ return `https://open.spotify.com/search/${encodeURIComponent(name)}`; }
+function makeAppleMusicSearchUrl(name){ return `https://music.apple.com/search?term=${encodeURIComponent(name)}`; }
+function makeYouTubeSearchUrl(name){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(name + " dj set")}`; }
+function openLink(url){ window.open(url, "_blank", "noopener"); }
 
 // ====== UTIL ======
-function formatDateTime(iso) {
+function formatDateTime(iso){
   if (!iso) return "–";
   try { return new Date(iso).toLocaleString(); } catch { return iso; }
 }
-function escapeHtml(s) {
+function escapeHtml(s){
   return String(s || "")
-    .replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
-function escapeAttr(s) {
-  return escapeHtml(s).replaceAll("`", "&#096;");
-}
+function escapeAttr(s){ return escapeHtml(s).replaceAll("`","&#096;"); }
 
 // ====== INDEXEDDB (minimal) ======
 const DB_NAME = "festival_planner";
 const DB_STORE = "ratings";
 const DB_VERSION = 1;
 
-function makeDbKeyPrefix(r) {
-  return `${r.festival}::${r.year}::${r.weekend}::`;
-}
-function makeDbKey(r, actId) {
-  return `${makeDbKeyPrefix(r)}${actId}`;
-}
+function makeDbKeyPrefix(r){ return `${r.festival}::${r.year}::${r.weekend}::`; }
+function makeDbKey(r, actId){ return `${makeDbKeyPrefix(r)}${actId}`; }
 
-function db() {
+function db(){
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
     req.onupgradeneeded = () => {
@@ -358,8 +323,7 @@ function db() {
     req.onerror = () => reject(req.error);
   });
 }
-
-async function dbPut(key, value) {
+async function dbPut(key, value){
   const d = await db();
   return new Promise((resolve, reject) => {
     const tx = d.transaction(DB_STORE, "readwrite");
@@ -368,8 +332,7 @@ async function dbPut(key, value) {
     tx.onerror = () => reject(tx.error);
   });
 }
-
-async function dbDelete(key) {
+async function dbDelete(key){
   const d = await db();
   return new Promise((resolve, reject) => {
     const tx = d.transaction(DB_STORE, "readwrite");
@@ -378,8 +341,7 @@ async function dbDelete(key) {
     tx.onerror = () => reject(tx.error);
   });
 }
-
-async function dbGetAll(prefix) {
+async function dbGetAll(prefix){
   const d = await db();
   return new Promise((resolve, reject) => {
     const tx = d.transaction(DB_STORE, "readonly");
