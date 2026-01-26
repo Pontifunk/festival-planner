@@ -253,11 +253,22 @@ async function main() {
       writeJson(filePath, snapshot);
       const idx = updateSnapshotIndex(file, createdAt, slots.length);
 
-      // optional latest.json als Kopie vom neuesten Snapshot (pro run überschreibt)
-      writeJson(path.join(SNAP_DIR, "latest.json"), snapshot);
-
       console.log(`Wrote snapshot ${file} (slots=${slots.length}) latest=${idx.latest}`);
     }
+
+    // latest.json als kombinierter Snapshot (W1 + W2)
+    const combined = {
+      meta: {
+        festival: "tomorrowland",
+        year: 2026,
+        weekend: "W1+W2",
+        createdAt,
+        source: "belgium.tomorrowland.com (playwright)",
+        version: 1
+      },
+      slots: slotsWithIds
+    };
+    writeJson(path.join(SNAP_DIR, "latest.json"), combined);
   } finally {
     await browser.close();
   }
