@@ -44,6 +44,7 @@ async function init() {
   langSelect.value = lang;
   initCustomSelect(langSelect);
   initCustomSelect(weekendSelect);
+  initCustomSelect(ratingFilter);
   await applyTranslations(lang);
 
   if (!route.festival) route.festival = DEFAULT_FESTIVAL;
@@ -188,7 +189,12 @@ function syncCustomSelect(selectEl) {
   const trigger = wrapper.querySelector(".selectTrigger");
   const list = wrapper.querySelector(".selectList");
   const options = Array.from(list.querySelectorAll(".selectOption"));
-  options.forEach(opt => opt.classList.toggle("isActive", opt.getAttribute("data-value") === selectEl.value));
+  const map = new Map(Array.from(selectEl.options).map(o => [o.value, o.textContent]));
+  options.forEach(opt => {
+    const val = opt.getAttribute("data-value");
+    if (map.has(val)) opt.textContent = map.get(val);
+    opt.classList.toggle("isActive", val === selectEl.value);
+  });
   const active = options.find(opt => opt.classList.contains("isActive"));
   trigger.textContent = active ? active.textContent : selectEl.options[selectEl.selectedIndex]?.textContent || "";
 }
@@ -406,6 +412,7 @@ async function applyTranslations(newLang) {
   });
 
   searchInput.placeholder = t("search");
+  document.querySelectorAll("[data-custom-select]").forEach((sel) => syncCustomSelect(sel));
 }
 
 function t(key) {
