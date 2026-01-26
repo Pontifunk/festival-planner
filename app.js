@@ -384,10 +384,8 @@ function renderSlot(slot, weekend) {
       </div>
 
       <div class="badges">
-        <div class="badge ${badge.cls}">${badge.text}</div>
-
         <div class="ratingSelect" data-id="${escapeAttr(artistId)}">
-          <button class="ratingTrigger" type="button" aria-haspopup="true" aria-expanded="false">
+          <button class="ratingTrigger ${badge.cls}" type="button" aria-haspopup="true" aria-expanded="false">
             ${badge.text}
           </button>
           <div class="ratingMenu" role="menu">
@@ -655,6 +653,8 @@ function bindSlotInteractions(container, weekend) {
 
 function bindRatingMenus(container, weekend) {
   if (!container) return;
+  if (container.dataset.ratingMenusBound === "true") return;
+  container.dataset.ratingMenusBound = "true";
 
   const closeAll = () => {
     container.querySelectorAll(".ratingSelect.isOpen").forEach(sel => {

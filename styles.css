@@ -419,6 +419,9 @@ select:focus,input:focus,button:focus,a:focus{
   font-size:11px;
   cursor:pointer;
 }
+.ratingTrigger.ok{border-color:rgba(86,210,155,.35);color:var(--ok);background:rgba(86,210,155,.10)}
+.ratingTrigger.warn{border-color:rgba(242,201,76,.35);color:var(--warn);background:rgba(242,201,76,.10)}
+.ratingTrigger.bad{border-color:rgba(224,86,91,.35);color:var(--danger);background:rgba(224,86,91,.10)}
 
 .ratingMenu{
   position:absolute;
