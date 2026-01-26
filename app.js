@@ -498,7 +498,7 @@ function renderWeekendChangesBox() {
     const weekendLabel = state.activeWeekend === "W2"
       ? (t("weekend_2") || "Weekend 2")
       : (t("weekend_1") || "Weekend 1");
-    weekendChangesTitle.textContent = `${t("weekend_changes_title") || "Änderungen Weekend"} ${weekendLabel}`;
+    weekendChangesTitle.textContent = `${t("weekend_changes_title") || "Änderungen"} \u2013 ${weekendLabel}`;
   }
 
   const summary = data.summary;
@@ -1327,7 +1327,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 
