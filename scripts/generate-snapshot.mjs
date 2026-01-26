@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 
-const OUT_DIR = "data/tomorrowland/2026/snapshots";
+const OUT_DIR = path.resolve(process.cwd(), "..", "data", "tomorrowland", "2026", "snapshots");
 
 function normalizeArtist(name) {
   return name
