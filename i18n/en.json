@@ -31,6 +31,8 @@
   "changes_removed": "Removed",
   "changes_replaced": "Replaced",
   "weekend_changes_title": "Weekend changes",
+  "weekend_changes_history": "History",
+  "weekend_changes_empty": "No history.",
   "weekend_1": "Weekend 1",
   "weekend_2": "Weekend 2",
   "snapshot_label": "Snapshot",

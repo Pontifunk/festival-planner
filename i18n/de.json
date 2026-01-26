@@ -37,6 +37,8 @@
   "changes_removed": "Entfernt",
   "changes_replaced": "Ersetzt",
   "weekend_changes_title": "Änderungen Weekend",
+  "weekend_changes_history": "Verlauf",
+  "weekend_changes_empty": "Keine Historie.",
   "weekend_1": "Weekend 1",
   "weekend_2": "Weekend 2",
   "snapshot_label": "Snapshot",

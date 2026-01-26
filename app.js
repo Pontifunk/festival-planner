@@ -29,6 +29,7 @@ const weekendChangesBox = document.getElementById("weekendChangesBox");
 const weekendChangesSummary = document.getElementById("weekendChangesSummary");
 const weekendChangesDetails = document.getElementById("weekendChangesDetails");
 const weekendChangesDetailsBody = document.getElementById("weekendChangesDetailsBody");
+const weekendChangesHistory = document.getElementById("weekendChangesHistory");
 
 const errorBox = document.getElementById("errorBox");
 
@@ -64,6 +65,7 @@ const state = {
   },
   artists: { list: [], byId: new Map() },
   changes: null,
+  changesIndex: null,
   weekendChanges: { W1: null, W2: null },
   ratings: {}
 };
@@ -110,6 +112,7 @@ async function init() {
       loadSnapshotIndex(),
       loadArtistsLatest(),
       loadChangesLatest(),
+      loadChangesIndex(),
       loadWeekendChanges()
     ]);
   } catch (e) {
@@ -284,6 +287,11 @@ async function loadChangesLatest() {
   }
 
   state.changes = data;
+}
+
+async function loadChangesIndex() {
+  const url = `/data/${state.festival}/${state.year}/changes/index.json`;
+  state.changesIndex = await tryFetchJson(url, { cache: "no-store" });
 }
 
 async function loadWeekendChanges() {
@@ -468,7 +476,7 @@ function renderChangesBox() {
 }
 
 function renderWeekendChangesBox() {
-  if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesDetails || !weekendChangesDetailsBody) return;
+  if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesDetails || !weekendChangesDetailsBody || !weekendChangesHistory) return;
   const data = state.weekendChanges?.[state.activeWeekend] || null;
   if (!data || !data.summary) {
     weekendChangesBox.hidden = true;
@@ -489,7 +497,43 @@ function renderWeekendChangesBox() {
     weekendChangesDetails.hidden = true;
   }
 
+  renderWeekendChangesHistory();
   weekendChangesBox.hidden = false;
+}
+
+function renderWeekendChangesHistory() {
+  if (!weekendChangesHistory) return;
+  const idx = state.changesIndex;
+  const weekend = state.activeWeekend;
+  if (!idx?.entries?.length) {
+    weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
+    return;
+  }
+
+  const entries = idx.entries
+    .filter(e => e.weekend === weekend)
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
+    .slice(0, 5);
+
+  if (!entries.length) {
+    weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
+    return;
+  }
+
+  weekendChangesHistory.innerHTML = entries.map(e => {
+    const when = formatDateTime(e.createdAt);
+    const s = e.summary || {};
+    return `
+      <div class="changesHistoryItem">
+        <span>${escapeHtml(when)}</span>
+        <span>
+          ${t("changes_added") || "Added"}: <strong>${s.added ?? 0}</strong>
+          · ${t("changes_removed") || "Removed"}: <strong>${s.removed ?? 0}</strong>
+          · ${t("changes_replaced") || "Replaced"}: <strong>${s.replaced ?? 0}</strong>
+        </span>
+      </div>
+    `;
+  }).join("");
 }
 
 function renderStatusPills() {
@@ -1183,7 +1227,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 

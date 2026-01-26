@@ -223,6 +223,11 @@ select:focus,input:focus,button:focus,a:focus{
 .changesDetails{margin-top:8px}
 .changesDetails summary{cursor:pointer;color:var(--text);font-weight:700}
 .changesDetailsBody{white-space:pre-wrap;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:10px;font-size:12px;color:var(--muted)}
+.changesHistory{margin-top:10px}
+.changesHistoryTitle{font-size:12px;color:var(--muted);margin-bottom:6px}
+.changesHistoryList{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)}
+.changesHistoryItem{display:flex;justify-content:space-between;gap:8px}
+.changesHistoryItem strong{color:var(--text)}
 
 .errorBox{
   margin:10px 0 14px;
