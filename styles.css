@@ -259,7 +259,7 @@ select:focus,input:focus,button:focus,a:focus{
 .changesNoteBody ul{margin:6px 0 0 16px;padding:0}
 .changesNoteBody li{margin:4px 0}
 .exportRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.exportRow .btn{flex:1 1 auto;font-size:12px;line-height:1.2}
+.exportRow .btn{flex:1 1 auto;line-height:1.2}
 
 .errorBox{
   margin:10px 0 14px;
@@ -536,6 +536,14 @@ select:focus,input:focus,button:focus,a:focus{
 }
 .btn.primary{background:rgba(107,92,255,.22);border-color:rgba(107,92,255,.35)}
 .side .card .btn{width:100%}
+.side .card .btn,
+.side .card .btn.primary{
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.2px;
+  background:rgba(255,255,255,.06);
+  border-color:var(--border);
+}
 
 .favList{display:flex;flex-direction:column;gap:10px}
 .favItem{
