@@ -37,7 +37,10 @@ async function init() {
   if (DONATION_URL && !DONATION_URL.includes("DEINNAME")) {
     donateBtn.href = DONATION_URL;
   } else {
-    donateBtn.style.display = "none";
+    donateBtn.href = "#";
+    donateBtn.classList.add("isDisabled");
+    donateBtn.setAttribute("aria-disabled", "true");
+    donateBtn.title = "Spendenlink folgt";
   }
   feedbackBtn.href = FEEDBACK_URL;
 
