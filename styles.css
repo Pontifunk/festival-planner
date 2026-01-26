@@ -173,7 +173,7 @@ select:focus,input:focus,button:focus,a:focus{
 .selectOption.isActive,
 .selectOption[aria-selected="true"]{background:rgba(107,92,255,.22); color:var(--text)}
 
-/* pills: make them compact (fix iOS â€œbubbleâ€ look) */
+/* pills: make them compact (fix iOS bubble look) */
 .pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .pill{
   border:1px solid var(--border);
@@ -536,5 +536,6 @@ select:focus,input:focus,button:focus,a:focus{
 
   .pill{max-width: 100%;}
 }
+
 
 
