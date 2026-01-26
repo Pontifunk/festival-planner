@@ -92,6 +92,8 @@ function initCustomSelect(selectEl) {
   list.className = "selectList";
   list.setAttribute("role", "listbox");
   list.tabIndex = -1;
+  list.id = `select-list-${selectUid++}`;
+  trigger.setAttribute("aria-controls", list.id);
 
   const opts = Array.from(selectEl.options);
   opts.forEach((opt, idx) => {
@@ -132,6 +134,12 @@ function initCustomSelect(selectEl) {
   trigger.addEventListener("click", (e) => {
     e.preventDefault();
     toggle();
+  });
+
+  trigger.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (!wrapper.contains(document.activeElement)) closeAll();
+    }, 0);
   });
 
   list.addEventListener("click", (e) => {
@@ -384,6 +392,7 @@ async function fetchLineup(festival, year, weekend) {
 
 // ====== i18n ======
 let dict = {};
+let selectUid = 0;
 async function applyTranslations(newLang) {
   const res = await fetch(`/i18n/${newLang}.json`, { cache: "no-store" });
   dict = res.ok ? await res.json() : {};
