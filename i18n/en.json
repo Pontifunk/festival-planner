@@ -1,4 +1,4 @@
-﻿{
+{
   "app_title": "Festival Planner",
   "disclaimer": "Unofficial tool. Information may change. The organizer's information is authoritative.",
   "intro": "Independent tool to discover and plan festival lineups. Listen to acts, rate them, and build your favorites list — no account, no tracking.",
@@ -36,6 +36,7 @@
   "lineup": "Line-up",
   "day_label": "Day",
   "stage_label": "Stage",
+  "rating_label": "Rating",
   "all_days": "All days",
   "all_stages": "All stages",
   "slots": "Slots"

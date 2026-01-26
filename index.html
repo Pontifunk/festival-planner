@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8">
@@ -7,7 +7,8 @@
   <title>Festival Planner</title>
   <meta name="description" content="Privacy-first EDM Festival Lineup Planner. Discover, rate and plan festival acts — no account, no tracking.">
 
-  <link rel="manifest" href="/manifest.webmanifest">`r`n  <link rel="icon" href="/favicon.ico">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.ico">
   <meta name="theme-color" content="#2c1a60">
 
   <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -64,8 +65,11 @@
 
       <div id="errorBox" class="errorBox" hidden></div>
 
-      <div class="toolbar">
-        <input id="searchInput" type="search" placeholder="Suche nach Artist" />
+            <div class="toolbar">
+        <div class="ctrl searchCtrl">
+          <span data-i18n="search">Suche</span>
+          <input id="searchInput" type="search" placeholder="Suche nach Artist" />
+        </div>
         <div class="ctrl">
           <span data-i18n="day_label">Tag</span>
           <select id="dayFilter" aria-label="Tag" class="selectNative" data-custom-select>
@@ -78,13 +82,16 @@
             <option value="all" data-i18n="all_stages">Alle Bühnen</option>
           </select>
         </div>
-        <select id="ratingFilter" aria-label="Filter" class="selectNative" data-custom-select>
-          <option value="all" data-i18n="filter_all">Alle</option>
-          <option value="liked" data-i18n="filter_liked">Gefällt mir</option>
-          <option value="maybe" data-i18n="filter_maybe">Vielleicht</option>
-          <option value="disliked" data-i18n="filter_disliked">Mag ich nicht</option>
-          <option value="unrated" data-i18n="filter_unrated">Unbewertet</option>
-        </select>
+        <div class="ctrl">
+          <span data-i18n="rating_label">Bewertung</span>
+          <select id="ratingFilter" aria-label="Filter" class="selectNative" data-custom-select>
+            <option value="all" data-i18n="filter_all">Alle</option>
+            <option value="liked" data-i18n="filter_liked">Gefällt mir</option>
+            <option value="maybe" data-i18n="filter_maybe">Vielleicht</option>
+            <option value="disliked" data-i18n="filter_disliked">Mag ich nicht</option>
+            <option value="unrated" data-i18n="filter_unrated">Unbewertet</option>
+          </select>
+        </div>
       </div>
 
       <div id="searchResults" class="searchResults" hidden></div>
@@ -151,3 +158,4 @@
   </script>
 </body>
 </html>
+

@@ -173,7 +173,7 @@ select:focus,input:focus,button:focus,a:focus{
 .selectOption.isActive,
 .selectOption[aria-selected="true"]{background:rgba(107,92,255,.22); color:var(--text)}
 
-/* pills: make them compact (fix iOS “bubble” look) */
+/* pills: make them compact (fix iOS â€œbubbleâ€ look) */
 .pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .pill{
   border:1px solid var(--border);
@@ -211,8 +211,10 @@ select:focus,input:focus,button:focus,a:focus{
   font-size:13px;
 }
 
-.toolbar{display:flex;gap:10px;align-items:center;margin:10px 0 14px;flex-wrap:wrap}
-.toolbar input{flex:1}\r\n.toolbar .ctrl{min-width:140px}
+.toolbar{display:flex;gap:10px;align-items:flex-end;margin:10px 0 14px;flex-wrap:wrap}
+.toolbar .ctrl{min-width:140px}
+.toolbar .searchCtrl{flex:1 1 260px}
+.toolbar .searchCtrl input{width:100%}
 
 /* ===== CHANGES / SEARCH ===== */
 .changesBox{margin:10px 0 14px}
@@ -534,3 +536,5 @@ select:focus,input:focus,button:focus,a:focus{
 
   .pill{max-width: 100%;}
 }
+
+

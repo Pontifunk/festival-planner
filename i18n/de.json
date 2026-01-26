@@ -1,4 +1,4 @@
-﻿{
+{
   "app_title": "Festival Planner",
   "intro": "Unabhängiges Tool zur Entdeckung und Planung von Festival-Line-ups. Höre Acts an, bewerte sie und erstelle deine Favoritenliste – ohne Account, ohne Tracking.",
   "festival": "Festival",
@@ -42,6 +42,7 @@
   "lineup": "Line-up",
   "day_label": "Tag",
   "stage_label": "Bühne",
+  "rating_label": "Bewertung",
   "all_days": "Alle Tage",
   "all_stages": "Alle Bühnen",
   "slots": "Slots"

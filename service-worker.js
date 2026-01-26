@@ -1,4 +1,4 @@
-const CACHE_NAME = "festival-planner-v9";
+const CACHE_NAME = "festival-planner-v11";
 
 const CORE_ASSETS = [
   "/",
@@ -66,4 +66,6 @@ self.addEventListener("fetch", (event) => {
   // Others: cache-first
   event.respondWith(caches.match(req).then((cached) => cached || fetch(req)));
 });
+
+
 

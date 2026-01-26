@@ -280,6 +280,12 @@ function renderActiveWeekend() {
   renderStatusPills();
 }
 
+function getActiveFilters(weekend) {
+  const w = state.weekends[weekend];
+  const day = dayFilter ? (dayFilter.value || w?.filters?.day || "all") : (w?.filters?.day || "all");
+  const stage = stageFilter ? (stageFilter.value || w?.filters?.stage || "all") : (w?.filters?.stage || "all");
+  return { day, stage };
+}
 function renderWeekend(weekend) {
   const w = state.weekends[weekend];
   const container = weekend === "W1" ? actsListW1 : actsListW2;
@@ -292,16 +298,18 @@ function renderWeekend(weekend) {
   }
 
   if (!w.snapshot || !Array.isArray(w.snapshot.slots)) {
-    container.innerHTML = `<div class="muted">Keine Daten verfügbar.</div>`;
+    container.innerHTML = `<div class="muted">Keine Daten verfÃ¼gbar.</div>`;
     metaEl.textContent = "";
     return;
   }
 
-  const grouped = groupSlots(w.snapshot.slots, ratingFilter.value, w.filters);
+  const activeFilters = getActiveFilters(weekend);
+  w.filters = activeFilters;
+  const grouped = groupSlots(w.snapshot.slots, ratingFilter.value, activeFilters);
   w.grouped = grouped;
   w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
 
-  metaEl.textContent = `${t("snapshot_label")}: ${w.selectedFile || "–"} · ${t("slots") || "Slots"}: ${w.snapshot.slots.length}`;
+  metaEl.textContent = `${t("snapshot_label")}: ${w.selectedFile || "â€“"} Â· ${t("slots") || "Slots"}: ${w.snapshot.slots.length}`;
 
   container.innerHTML = grouped.map(group => renderDayGroup(group, weekend)).join("");
 
@@ -340,7 +348,7 @@ function renderSlot(slot, weekend) {
   const stage = normalizeStage(slot.stage);
   const start = formatTime(slot.start);
   const end = formatTime(slot.end);
-  const timeRange = start && end ? `${start}–${end}` : (start || end || "–");
+  const timeRange = start && end ? `${start}â€“${end}` : (start || end || "â€“");
 
   const r = ratings[artistId] || "unrated";
   const badge = badgeFor(r);
@@ -352,7 +360,7 @@ function renderSlot(slot, weekend) {
     <div class="act slot" id="${escapeAttr(slotId)}" data-artist-id="${escapeAttr(artistId)}">
       <div>
         <div class="actName">${escapeHtml(name)}</div>
-        <div class="actMeta">${escapeHtml(timeRange)} · ${escapeHtml(stage)}</div>
+        <div class="actMeta">${escapeHtml(timeRange)} Â· ${escapeHtml(stage)}</div>
       </div>
 
       <div class="badges">
@@ -389,8 +397,8 @@ function renderFavorites() {
     const stage = normalizeStage(slot.stage);
     const start = formatTime(slot.start);
     const end = formatTime(slot.end);
-    const timeRange = start && end ? `${start}–${end}` : (start || end || "–");
-    const meta = `${slot.date || "–"} · ${stage} · ${timeRange}`;
+    const timeRange = start && end ? `${start}â€“${end}` : (start || end || "â€“");
+    const meta = `${slot.date || "â€“"} Â· ${stage} Â· ${timeRange}`;
 
     return `
       <div class="favItem">
@@ -424,7 +432,7 @@ function renderChangesBox() {
   const removed = summary.removed ?? 0;
   const replaced = summary.replaced ?? 0;
 
-  changesSummary.innerHTML = `${t("changes_added") || "Added"} <strong>${added}</strong> · ${t("changes_removed") || "Removed"} <strong>${removed}</strong> · ${t("changes_replaced") || "Replaced"} <strong>${replaced}</strong>`;
+  changesSummary.innerHTML = `${t("changes_added") || "Added"} <strong>${added}</strong> Â· ${t("changes_removed") || "Removed"} <strong>${removed}</strong> Â· ${t("changes_replaced") || "Replaced"} <strong>${replaced}</strong>`;
 
   const details = state.changes.details || state.changes.items || state.changes.changes || null;
   if (details) {
@@ -442,7 +450,7 @@ function renderStatusPills() {
   if (w.snapshot?.meta?.createdAt) {
     lastCheckedPill.textContent = `${t("last_checked")}: ${formatDateTime(w.snapshot.meta.createdAt)}`;
   } else {
-    lastCheckedPill.textContent = `${t("last_checked")}: –`;
+    lastCheckedPill.textContent = `${t("last_checked")}: â€“`;
   }
 
   const slotCount = w.snapshot?.slots?.length ?? 0;
@@ -458,7 +466,8 @@ function updateFiltersUI(weekend) {
   const slots = w.snapshot.slots;
   const dates = Array.from(new Set(slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
 
-  const dayVal = dates.includes(w.filters.day) ? w.filters.day : "all";
+  const currentDay = dayFilter.value || w.filters.day || "all";
+  const dayVal = dates.includes(currentDay) ? currentDay : "all";
   const dayOptions = [
     { value: "all", label: t("all_days") || "All days" },
     ...dates.map(d => ({ value: d, label: formatDate(d) }))
@@ -469,11 +478,12 @@ function updateFiltersUI(weekend) {
   const stageSet = new Set();
   slots.forEach(s => {
     const date = s.date || extractDate(s.start) || "Unknown";
-    if (w.filters.day !== "all" && date !== w.filters.day) return;
+    if (dayVal !== "all" && date !== dayVal) return;
     stageSet.add(normalizeStage(s.stage));
   });
   const stages = Array.from(stageSet).sort((a, b) => a.localeCompare(b));
-  const stageVal = stages.includes(w.filters.stage) ? w.filters.stage : "all";
+  const currentStage = stageFilter.value || w.filters.stage || "all";
+  const stageVal = stages.includes(currentStage) ? currentStage : "all";
   const stageOptions = [
     { value: "all", label: t("all_stages") || "All stages" },
     ...stages.map(s => ({ value: s, label: s }))
@@ -551,7 +561,7 @@ function updateSearchResults() {
 
   searchResults.innerHTML = top.map(r => {
     const first = r.slots[0];
-    const meta = `${first.date || "–"} · ${normalizeStage(first.stage)}`;
+    const meta = `${first.date || "â€“"} Â· ${normalizeStage(first.stage)}`;
     return `
       <div class="searchItem" data-artist-id="${escapeAttr(r.artistId)}">
         <div>${escapeHtml(r.name)}</div>
@@ -791,7 +801,7 @@ function setSnapshotOptions(weekend) {
 
   select.innerHTML = opts.length
     ? opts.map(o => {
-        const label = `${formatDateTime(o.createdAt)} · ${o.slotCount} Slots`;
+        const label = `${formatDateTime(o.createdAt)} Â· ${o.slotCount} Slots`;
         return `<option value="${escapeAttr(o.file)}">${escapeHtml(label)}</option>`;
       }).join("")
     : `<option value="">Keine Snapshots</option>`;
@@ -800,12 +810,12 @@ function setSnapshotOptions(weekend) {
 }
 
 function formatDateTime(iso) {
-  if (!iso) return "–";
+  if (!iso) return "â€“";
   try { return new Date(iso).toLocaleString(); } catch { return iso; }
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return "–";
+  if (!dateStr) return "â€“";
   try { return new Date(dateStr).toLocaleDateString(); } catch { return dateStr; }
 }
 
@@ -1116,4 +1126,7 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
+
+
+
 
