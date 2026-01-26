@@ -41,8 +41,13 @@
         </select>
       </div>
 
-      <div class="pills" aria-label="Status">
+      <div class="ctrl">
+        <span data-i18n="last_checked">Zuletzt gepr&uuml;ft</span>
         <div class="pill" id="lastCheckedPill">&ndash;</div>
+      </div>
+
+      <div class="ctrl">
+        <span data-i18n="lineup_status">Line-up Stand</span>
         <div class="pill" id="lastUpdatedPill">&ndash;</div>
       </div>
     </div>
@@ -144,6 +149,11 @@
       </div>
 
       <div class="card">
+        <div class="cardTitle" data-i18n="feedback">Feedback</div>
+        <a class="btn" id="feedbackBtn" href="#" target="_blank" rel="noopener noreferrer">GitHub Issues</a>
+      </div>
+
+      <div class="card">
         <div class="cardTitle" data-i18n="favorites">Favoriten</div>
         <div id="favoritesList" class="favList"></div>
       </div>
@@ -152,11 +162,6 @@
         <div class="cardTitle" data-i18n="support">Support</div>
         <p class="muted" data-i18n="support_text">Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterst&uuml;tzen.</p>
         <a class="btn primary" id="donateBtn" href="#" target="_blank" rel="noopener noreferrer" data-i18n="donate">Spenden</a>
-      </div>
-
-      <div class="card">
-        <div class="cardTitle" data-i18n="feedback">Feedback</div>
-        <a class="btn" id="feedbackBtn" href="#" target="_blank" rel="noopener noreferrer">GitHub Issues</a>
       </div>
 
       <div class="footerLinks">

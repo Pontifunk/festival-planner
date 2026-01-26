@@ -596,10 +596,10 @@ function renderStatusPills() {
   const lastChecked = w.snapshot?.meta?.createdAt
     ? formatDateTime(w.snapshot.meta.createdAt)
     : "\u2013";
-  lastCheckedPill.textContent = `${t("last_checked")}: ${lastChecked}`;
+  lastCheckedPill.textContent = lastChecked;
 
   const slotCount = w.snapshot?.slots?.length ?? 0;
-  lastUpdatedPill.textContent = `${t("lineup_status")}: ${slotCount} ${t("slots") || "Slots"}`;
+  lastUpdatedPill.textContent = `${slotCount} ${t("slots") || "Slots"}`;
 }
 
 function updateFiltersUI(weekend) {

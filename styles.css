@@ -174,7 +174,6 @@ select:focus,input:focus,button:focus,a:focus{
 .selectOption[aria-selected="true"]{background:rgba(107,92,255,.22); color:var(--text)}
 
 /* pills: make them compact (fix iOS bubble look) */
-.topbar .pills{display:contents}
 .pill{
   border:1px solid var(--border);
   background:rgba(255,255,255,.05);
@@ -534,6 +533,7 @@ select:focus,input:focus,button:focus,a:focus{
   pointer-events:none;
 }
 .btn.primary{background:rgba(107,92,255,.22);border-color:rgba(107,92,255,.35)}
+.side .card .btn{width:100%}
 
 .favList{display:flex;flex-direction:column;gap:10px}
 .favItem{
