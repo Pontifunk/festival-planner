@@ -3,7 +3,7 @@ const DEFAULT_FESTIVAL = "tomorrowland";
 const DEFAULT_YEAR = "2026";
 const DEFAULT_WEEKEND = "W1";
 
-const DONATION_URL = "buymeacoffee.com/pontifunk"; 
+const DONATION_URL = "https://www.buymeacoffee.com/Pontifunk"; 
 const FEEDBACK_URL = "https://github.com/Pontifunk/festival-planner/issues/new/choose";
 
 const CANONICAL_TRAILING_SLASH = true;
