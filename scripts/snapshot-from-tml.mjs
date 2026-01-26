@@ -161,13 +161,29 @@ function extractSlotsFromPayload(payload, context) {
   return [...uniq.values()];
 }
 
+function pickBestPayload(entries, context) {
+  let best = null;
+  for (const entry of entries) {
+    try {
+      const slots = extractSlotsFromPayload(entry.data, context);
+      const matchCount = slots.filter(s => s.date === context.date && s.weekend === context.weekend).length;
+      const total = slots.length;
+      if (!best || matchCount > best.matchCount || (matchCount === best.matchCount && total > best.total)) {
+        best = { entry, slots, matchCount, total };
+      }
+    } catch {
+      // ignore payloads that don't parse into slots
+    }
+  }
+  return best;
+}
+
 async function fetchDay(browser, url) {
   const date = extractDayParam(url);
   const weekend = weekendFromDate(date);
 
   const page = await browser.newPage();
-  const jsonPayloads = [];
-  const jsonUrls = [];
+  const jsonEntries = [];
 
   page.on("response", async (res) => {
     try {
@@ -182,8 +198,7 @@ async function fetchDay(browser, url) {
       if (!looksRelevant) return;
 
       const data = await res.json();
-      jsonPayloads.push(data);
-      jsonUrls.push(res.url());
+      jsonEntries.push({ url: res.url(), data });
     } catch {
       // ignore non-json or blocked
     }
@@ -196,10 +211,11 @@ async function fetchDay(browser, url) {
 
   await page.close();
 
-  const payload = findLineupPayload(jsonPayloads);
+  const best = pickBestPayload(jsonEntries, { date, weekend });
+  const payload = best?.entry?.data || findLineupPayload(jsonEntries.map(e => e.data));
   if (!payload) {
     throw new Error(
-      `No lineup-like JSON payload found for ${url}. Collected JSON payload count=${jsonPayloads.length}`
+      `No lineup-like JSON payload found for ${url}. Collected JSON payload count=${jsonEntries.length}`
     );
   }
 
@@ -213,10 +229,12 @@ async function fetchDay(browser, url) {
 
   const uniqueDates = [...new Set(slots.map(s => s.date))].sort();
   const mismatchCount = slots.filter(s => s.date !== date).length;
-  const urlSamples = jsonUrls.slice(0, 3).join(", ");
+  const urlSamples = jsonEntries.slice(0, 3).map(e => e.url).join(", ");
+  const chosenUrl = best?.entry?.url || "fallback";
+  const bestInfo = best ? `bestMatch=${best.matchCount}/${best.total} chosenUrl=${chosenUrl}` : "bestMatch=none";
   console.log(
-    `Debug ${date} ${weekend}: payloads=${jsonPayloads.length} slots=${slots.length} ` +
-    `uniqueDates=${uniqueDates.join("|") || "-"} mismatches=${mismatchCount} ` +
+    `Debug ${date} ${weekend}: payloads=${jsonEntries.length} slots=${slots.length} ` +
+    `uniqueDates=${uniqueDates.join("|") || "-"} mismatches=${mismatchCount} ${bestInfo} ` +
     `jsonUrls=${urlSamples || "-"}`
   );
 
