@@ -24,9 +24,11 @@ jobs:
       - name: Install (if package-lock exists)
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
+        working-directory: scripts
 
       - name: Generate snapshot
         run: npm run snapshot
+        working-directory: scripts
 
       - name: Commit & push if changed
         run: |

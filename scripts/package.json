@@ -3,6 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "snapshot": "node scripts/generate-snapshot.mjs"
+    "snapshot": "node generate-snapshot.mjs"
   }
 }
