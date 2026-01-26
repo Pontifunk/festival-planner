@@ -50,6 +50,7 @@ let route = parseRoute(location.pathname);
 let selectUid = 0;
 const customSelectMap = new WeakMap();
 let ratings = {};
+let ratingMenuBound = false;
 
 const state = {
   festival: DEFAULT_FESTIVAL,
@@ -372,7 +373,6 @@ function renderSlot(slot, weekend) {
 
   const r = ratings[artistId] || "unrated";
   const badge = badgeFor(r);
-  const active = (val) => (r === val ? "isActive" : "");
 
   const slotId = slot.slotId ? `slot-${weekend}-${slot.slotId}` : `slot-${weekend}-${hashMini(name + stage + timeRange)}`;
 
@@ -386,11 +386,16 @@ function renderSlot(slot, weekend) {
       <div class="badges">
         <div class="badge ${badge.cls}">${badge.text}</div>
 
-        <div class="ratingBar">
-          <button class="rbtn ${active("liked")}" data-rate="liked" data-id="${escapeAttr(artistId)}">${t("liked")}</button>
-          <button class="rbtn ${active("maybe")}" data-rate="maybe" data-id="${escapeAttr(artistId)}">${t("maybe")}</button>
-          <button class="rbtn ${active("disliked")}" data-rate="disliked" data-id="${escapeAttr(artistId)}">${t("disliked")}</button>
-          <button class="rbtn ${active("unrated")}" data-rate="unrated" data-id="${escapeAttr(artistId)}">${t("reset")}</button>
+        <div class="ratingSelect" data-id="${escapeAttr(artistId)}">
+          <button class="ratingTrigger" type="button" aria-haspopup="true" aria-expanded="false">
+            ${badge.text}
+          </button>
+          <div class="ratingMenu" role="menu">
+            <button class="ratingOption" data-rate="liked" type="button">${t("liked")}</button>
+            <button class="ratingOption" data-rate="maybe" type="button">${t("maybe")}</button>
+            <button class="ratingOption" data-rate="disliked" type="button">${t("disliked")}</button>
+            <button class="ratingOption" data-rate="unrated" type="button">${t("reset")}</button>
+          </div>
         </div>
 
         <div class="quicklinks">
@@ -644,17 +649,64 @@ function setSelectOptions(selectEl, options, selectedValue) {
 }
 // ====== INTERACTIONS ======
 function bindSlotInteractions(container, weekend) {
-  Array.from(container.querySelectorAll(".rbtn")).forEach(btn => {
-    btn.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      const id = btn.getAttribute("data-id");
-      const rate = btn.getAttribute("data-rate");
-      await setRating(id, rate);
-      if (state.activeWeekend === weekend) renderActiveWeekend();
+  bindRatingMenus(container, weekend);
+  bindQuicklinks(container);
+}
+
+function bindRatingMenus(container, weekend) {
+  if (!container) return;
+
+  const closeAll = () => {
+    container.querySelectorAll(".ratingSelect.isOpen").forEach(sel => {
+      sel.classList.remove("isOpen");
+      const trigger = sel.querySelector(".ratingTrigger");
+      if (trigger) trigger.setAttribute("aria-expanded", "false");
     });
+  };
+
+  container.addEventListener("click", async (e) => {
+    const trigger = e.target.closest(".ratingTrigger");
+    if (trigger && container.contains(trigger)) {
+      e.preventDefault();
+      e.stopPropagation();
+      const sel = trigger.closest(".ratingSelect");
+      if (!sel) return;
+      const isOpen = sel.classList.contains("isOpen");
+      closeAll();
+      if (!isOpen) {
+        sel.classList.add("isOpen");
+        trigger.setAttribute("aria-expanded", "true");
+      }
+      return;
+    }
+
+    const opt = e.target.closest(".ratingOption");
+    if (opt && container.contains(opt)) {
+      e.preventDefault();
+      e.stopPropagation();
+      const sel = opt.closest(".ratingSelect");
+      const id = sel?.getAttribute("data-id");
+      const rate = opt.getAttribute("data-rate");
+      if (id && rate) {
+        await setRating(id, rate);
+        if (state.activeWeekend === weekend) renderActiveWeekend();
+      }
+      closeAll();
+    }
   });
 
-  bindQuicklinks(container);
+  if (!ratingMenuBound) {
+    ratingMenuBound = true;
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".ratingSelect")) {
+        document.querySelectorAll(".ratingSelect.isOpen").forEach(sel => {
+          sel.classList.remove("isOpen");
+          const trigger = sel.querySelector(".ratingTrigger");
+          if (trigger) trigger.setAttribute("aria-expanded", "false");
+        });
+      }
+    });
+  }
 }
 
 function bindQuicklinks(container) {
