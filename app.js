@@ -25,10 +25,10 @@ const changesSummary = document.getElementById("changesSummary");
 const changesDetails = document.getElementById("changesDetails");
 const changesDetailsBody = document.getElementById("changesDetailsBody");
 
-const weekendDiffBox = document.getElementById("weekendDiffBox");
-const weekendDiffSummary = document.getElementById("weekendDiffSummary");
-const weekendDiffDetails = document.getElementById("weekendDiffDetails");
-const weekendDiffDetailsBody = document.getElementById("weekendDiffDetailsBody");
+const weekendChangesBox = document.getElementById("weekendChangesBox");
+const weekendChangesSummary = document.getElementById("weekendChangesSummary");
+const weekendChangesDetails = document.getElementById("weekendChangesDetails");
+const weekendChangesDetailsBody = document.getElementById("weekendChangesDetailsBody");
 
 const errorBox = document.getElementById("errorBox");
 
@@ -64,7 +64,7 @@ const state = {
   },
   artists: { list: [], byId: new Map() },
   changes: null,
-  weekendDiff: null,
+  weekendChanges: { W1: null, W2: null },
   ratings: {}
 };
 
@@ -110,7 +110,7 @@ async function init() {
       loadSnapshotIndex(),
       loadArtistsLatest(),
       loadChangesLatest(),
-      loadWeekendDiff()
+      loadWeekendChanges()
     ]);
   } catch (e) {
     showError("Fehler beim Laden der Grunddaten.");
@@ -121,7 +121,7 @@ async function init() {
   await Promise.all(WEEKENDS.map((w) => loadSnapshotForWeekend(w)));
 
   renderChangesBox();
-  renderWeekendDiffBox();
+  renderWeekendChangesBox();
   setActiveWeekend(state.activeWeekend, false);
 }
 
@@ -286,9 +286,13 @@ async function loadChangesLatest() {
   state.changes = data;
 }
 
-async function loadWeekendDiff() {
-  const url = `/data/${state.festival}/${state.year}/changes/weekend_diff.json`;
-  state.weekendDiff = await tryFetchJson(url, { cache: "no-store" });
+async function loadWeekendChanges() {
+  const base = `/data/${state.festival}/${state.year}/changes`;
+  const [w1, w2] = await Promise.all([
+    tryFetchJson(`${base}/latest_W1.json`, { cache: "no-store" }),
+    tryFetchJson(`${base}/latest_W2.json`, { cache: "no-store" })
+  ]);
+  state.weekendChanges = { W1: w1, W2: w2 };
 }
 
 // ====== RENDER ======
@@ -298,7 +302,7 @@ function renderActiveWeekend() {
   renderFavorites();
   updateSearchResults();
   renderStatusPills();
-  renderWeekendDiffBox();
+  renderWeekendChangesBox();
 }
 
 function renderWeekend(weekend) {
@@ -463,34 +467,29 @@ function renderChangesBox() {
   changesBox.hidden = false;
 }
 
-function renderWeekendDiffBox() {
-  if (!weekendDiffBox || !weekendDiffSummary || !weekendDiffDetails || !weekendDiffDetailsBody) return;
-  if (!state.weekendDiff || !state.weekendDiff.summary) {
-    weekendDiffBox.hidden = true;
+function renderWeekendChangesBox() {
+  if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesDetails || !weekendChangesDetailsBody) return;
+  const data = state.weekendChanges?.[state.activeWeekend] || null;
+  if (!data || !data.summary) {
+    weekendChangesBox.hidden = true;
     return;
   }
 
-  const summary = state.weekendDiff.summary;
-  weekendDiffSummary.innerHTML =
-    `${t("weekend_diff_w1_only")}: <strong>${summary.w1Only ?? 0}</strong> \u00b7 ` +
-    `${t("weekend_diff_w2_only")}: <strong>${summary.w2Only ?? 0}</strong> \u00b7 ` +
-    `${t("weekend_diff_common")}: <strong>${summary.common ?? 0}</strong>`;
+  const summary = data.summary;
+  weekendChangesSummary.innerHTML =
+    `${t("changes_added") || "Added"}: <strong>${summary.added ?? 0}</strong> \u00b7 ` +
+    `${t("changes_removed") || "Removed"}: <strong>${summary.removed ?? 0}</strong> \u00b7 ` +
+    `${t("changes_replaced") || "Replaced"}: <strong>${summary.replaced ?? 0}</strong>`;
 
-  const w1Only = state.weekendDiff.w1Only || [];
-  const w2Only = state.weekendDiff.w2Only || [];
-
-  if (w1Only.length || w2Only.length) {
-    const listW1 = w1Only.map(a => a.artist || a.artistId).join("\n");
-    const listW2 = w2Only.map(a => a.artist || a.artistId).join("\n");
-    weekendDiffDetailsBody.textContent =
-      `${t("weekend_diff_w1_only")}: ${w1Only.length}\n${listW1}\n\n` +
-      `${t("weekend_diff_w2_only")}: ${w2Only.length}\n${listW2}`;
-    weekendDiffDetails.hidden = false;
+  const details = data.details || data.items || data.changes || data;
+  if (details) {
+    weekendChangesDetailsBody.textContent = JSON.stringify(details, null, 2);
+    weekendChangesDetails.hidden = false;
   } else {
-    weekendDiffDetails.hidden = true;
+    weekendChangesDetails.hidden = true;
   }
 
-  weekendDiffBox.hidden = false;
+  weekendChangesBox.hidden = false;
 }
 
 function renderStatusPills() {
@@ -1184,12 +1183,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
-
-
-
-
-
 
 
 

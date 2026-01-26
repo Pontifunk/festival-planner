@@ -59,55 +59,6 @@ function diffSnapshots(prevSnap, currSnap) {
   };
 }
 
-function buildArtistMap(slots) {
-  const map = new Map();
-  for (const s of slots || []) {
-    if (!s?.artistId) continue;
-    if (!map.has(s.artistId)) map.set(s.artistId, { artistId: s.artistId, artist: s.artist || "" });
-  }
-  return map;
-}
-
-function diffWeekends(w1Snap, w2Snap) {
-  const w1Slots = w1Snap?.slots ?? [];
-  const w2Slots = w2Snap?.slots ?? [];
-
-  const w1Map = buildArtistMap(w1Slots);
-  const w2Map = buildArtistMap(w2Slots);
-
-  const w1Ids = new Set(w1Map.keys());
-  const w2Ids = new Set(w2Map.keys());
-
-  const w1Only = [];
-  const w2Only = [];
-  let common = 0;
-
-  for (const id of w1Ids) {
-    if (w2Ids.has(id)) {
-      common++;
-    } else {
-      w1Only.push(w1Map.get(id));
-    }
-  }
-  for (const id of w2Ids) if (!w1Ids.has(id)) w2Only.push(w2Map.get(id));
-
-  const byName = (a, b) => String(a.artist || "").localeCompare(String(b.artist || ""));
-  w1Only.sort(byName);
-  w2Only.sort(byName);
-
-  return {
-    summary: {
-      w1Only: w1Only.length,
-      w2Only: w2Only.length,
-      common,
-      totalW1: w1Ids.size,
-      totalW2: w2Ids.size
-    },
-    w1Only,
-    w2Only
-  };
-}
-
 function getWeekendFromFilename(file) {
   const m = file.match(/_W([12])\.json$/i);
   return m ? `W${m[1]}` : null;
@@ -209,24 +160,7 @@ function main() {
   };
   writeJson(path.join(CHG_DIR, "latest.json"), combined);
 
-  // weekend diff (W1 vs W2 latest)
-  const latestW1 = byWeekend.W1.at(-1);
-  const latestW2 = byWeekend.W2.at(-1);
-  if (latestW1 && latestW2) {
-    const w1Snap = readJson(path.join(SNAP_DIR, latestW1.file));
-    const w2Snap = readJson(path.join(SNAP_DIR, latestW2.file));
-    const diff = diffWeekends(w1Snap, w2Snap);
-    const weekendDiff = {
-      meta: {
-        fromW1: latestW1.file,
-        fromW2: latestW2.file,
-        createdAt,
-        version: 1
-      },
-      ...diff
-    };
-    writeJson(path.join(CHG_DIR, "weekend_diff.json"), weekendDiff);
-  }
+  // No cross-weekend diff; only per-weekend snapshot changes are persisted.
 }
 
 main();
