@@ -1,0 +1,41 @@
+name: Generate lineup snapshot
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Jeden Montag 06:15 UTC (entspricht typ. 07:15 in Wien, je nach Sommerzeit)
+    - cron: "15 6 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install (if package-lock exists)
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+      - name: Generate snapshot
+        run: npm run snapshot
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/tomorrowland/2026/snapshots
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: add lineup snapshot"
+          git push
