@@ -307,6 +307,7 @@ function render() {
       if (type === "sp") openLink(makeSpotifySearchUrl(name));
       if (type === "am") openLink(makeAppleMusicSearchUrl(name));
       if (type === "yt") openLink(makeYouTubeSearchUrl(name));
+      if (type === "sc") openLink(makeSoundCloudSearchUrl(name));
     });
   });
 
@@ -321,10 +322,11 @@ function renderFavorites() {
         <div class="favItem">
           <div class="actName">${escapeHtml(a.name)}</div>
           <div class="actMeta">${escapeHtml(a.day)} · ${escapeHtml(a.stage)} · ${escapeHtml(a.timeStart || "–")}–${escapeHtml(a.timeEnd || "–")}</div>
-          <div class="quicklinks" style="margin-top:8px">
-            <button class="qbtn sp" data-ql="sp" data-name="${escapeAttr(a.name)}">Spotify</button>
-            <button class="qbtn am" data-ql="am" data-name="${escapeAttr(a.name)}">Apple</button>
-            <button class="qbtn yt" data-ql="yt" data-name="${escapeAttr(a.name)}">YouTube</button>
+          <div class=\"quicklinks\" style=\"margin-top:8px\">
+            <button class=\"qbtn sp\" data-ql=\"sp\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">Spotify</span></button>
+            <button class=\"qbtn am\" data-ql=\"am\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">Apple</span></button>
+            <button class=\"qbtn yt\" data-ql=\"yt\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">YouTube</span></button>
+            <button class=\"qbtn sc\" data-ql=\"sc\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">SoundCloud</span></button>
           </div>
         </div>
       `).join("")
@@ -338,6 +340,7 @@ function renderFavorites() {
       if (type === "sp") openLink(makeSpotifySearchUrl(name));
       if (type === "am") openLink(makeAppleMusicSearchUrl(name));
       if (type === "yt") openLink(makeYouTubeSearchUrl(name));
+      if (type === "sc") openLink(makeSoundCloudSearchUrl(name));
     });
   });
 }
@@ -364,10 +367,11 @@ function renderActRow(a) {
           <button class="rbtn ${active("unrated")}" data-rate="unrated" data-id="${escapeAttr(a.id)}">${t("reset")}</button>
         </div>
 
-        <div class="quicklinks">
-          <button class="qbtn sp" data-ql="sp" data-name="${escapeAttr(a.name)}">Spotify</button>
-          <button class="qbtn am" data-ql="am" data-name="${escapeAttr(a.name)}">Apple</button>
-          <button class="qbtn yt" data-ql="yt" data-name="${escapeAttr(a.name)}">YouTube</button>
+        <div class=\"quicklinks\">
+          <button class=\"qbtn sp\" data-ql=\"sp\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">Spotify</span></button>
+          <button class=\"qbtn am\" data-ql=\"am\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">Apple</span></button>
+          <button class=\"qbtn yt\" data-ql=\"yt\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">YouTube</span></button>
+          <button class=\"qbtn sc\" data-ql=\"sc\" data-name=\"${escapeAttr(a.name)}\"><span class=\"qicon\" aria-hidden=\"true\"></span><span class=\"qtext\">SoundCloud</span></button>
         </div>
       </div>
     </div>
@@ -490,6 +494,7 @@ function t(key) {
 function makeSpotifySearchUrl(name){ return `https://open.spotify.com/search/${encodeURIComponent(name)}`; }
 function makeAppleMusicSearchUrl(name){ return `https://music.apple.com/search?term=${encodeURIComponent(name)}`; }
 function makeYouTubeSearchUrl(name){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(name + " dj set")}`; }
+function makeSoundCloudSearchUrl(name){ return `https://soundcloud.com/search?q=${encodeURIComponent(name)}`; }
 function openLink(url){ window.open(url, "_blank", "noopener"); }
 
 // ====== UTIL ======
