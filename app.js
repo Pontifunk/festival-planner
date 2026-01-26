@@ -30,6 +30,7 @@ const weekendChangesSummary = document.getElementById("weekendChangesSummary");
 const weekendChangesDetails = document.getElementById("weekendChangesDetails");
 const weekendChangesDetailsBody = document.getElementById("weekendChangesDetailsBody");
 const weekendChangesHistory = document.getElementById("weekendChangesHistory");
+const weekendChangesTitle = weekendChangesBox?.querySelector(".cardTitle");
 const exportRatingsBtn = document.getElementById("exportRatingsBtn");
 const importRatingsInput = document.getElementById("importRatingsInput");
 const importStatus = document.getElementById("importStatus");
@@ -493,6 +494,13 @@ function renderWeekendChangesBox() {
     return;
   }
 
+  if (weekendChangesTitle) {
+    const weekendLabel = state.activeWeekend === "W2"
+      ? (t("weekend_2") || "Weekend 2")
+      : (t("weekend_1") || "Weekend 1");
+    weekendChangesTitle.textContent = `${t("weekend_changes_title") || "Änderungen Weekend"} ${weekendLabel}`;
+  }
+
   const summary = data.summary;
   const weekendLabel = state.activeWeekend === "W2"
     ? (t("weekend_2") || "Weekend 2")
@@ -552,13 +560,23 @@ function renderWeekendChangesHistory() {
 }
 
 function exportRatings() {
+  const createdAt = new Date().toISOString();
+  const artists = {};
+  Object.keys(ratings).forEach((artistId) => {
+    const name = state.artists.byId.get(artistId)?.name || "";
+    artists[artistId] = {
+      name,
+      rating: ratings[artistId],
+      updatedAt: createdAt
+    };
+  });
   const payload = {
     app: "festival-planner",
-    exportVersion: 1,
-    createdAt: new Date().toISOString(),
-    festival: state.festival,
-    year: state.year,
-    ratings
+    exportVersion: 2,
+    createdAt,
+    schema: { artistKey: "artistId", slotKey: "slotId" },
+    artists,
+    slots: {}
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -577,7 +595,18 @@ async function importRatings(e) {
   try {
     const text = await file.text();
     const data = JSON.parse(text);
-    const incoming = data?.ratings;
+    let incoming = null;
+
+    if (data?.exportVersion === 2 && data?.artists && typeof data.artists === "object") {
+      incoming = {};
+      Object.keys(data.artists).forEach((artistId) => {
+        const entry = data.artists[artistId];
+        if (entry && entry.rating) incoming[artistId] = entry.rating;
+      });
+    } else if (data?.ratings && typeof data.ratings === "object") {
+      incoming = data.ratings;
+    }
+
     if (!incoming || typeof incoming !== "object") {
       throw new Error("Invalid ratings file");
     }
@@ -1298,7 +1327,6 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
-
 
 
 
