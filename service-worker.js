@@ -1,4 +1,4 @@
-const CACHE_NAME = "festival-planner-v2";
+const CACHE_NAME = "festival-planner-v3";
 
 const CORE_ASSETS = [
   "/",
