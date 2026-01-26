@@ -3,6 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "snapshot": "node generate-snapshot.mjs"
+    "snapshot": "node snapshot-from-tml.mjs",
+    "artists": "node scrape-artists-from-tml.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
   }
 }
