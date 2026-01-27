@@ -467,9 +467,10 @@ function renderFavorites() {
   const weekend = state.activeWeekend;
   const w = state.weekends[weekend];
   const likedIds = Object.keys(ratings).filter(id => ratings[id] === "liked");
-  updateFavoritesSummary(likedIds.length);
+  const visibleLikedIds = likedIds.filter(id => w.artistSlots.has(id));
+  updateFavoritesSummary(visibleLikedIds.length);
 
-  const items = likedIds.map((id) => {
+  const items = visibleLikedIds.map((id) => {
     const slots = w.artistSlots.get(id) || [];
     if (!slots.length) return null;
     const slot = slots[0];
@@ -573,26 +574,30 @@ function toggleMenu() {
 function handleMenuItem(item) {
   const action = item.getAttribute("data-action");
   const target = item.getAttribute("data-target");
+  let postClose = null;
   if (action === "weekend") {
     const weekend = item.getAttribute("data-weekend");
     if (weekend) setActiveWeekend(weekend, true);
     const id = weekend === "W2" ? "#w2Section" : "#w1Section";
-    scrollToTarget(id);
+    postClose = () => scrollToTarget(id);
   } else if (action === "favoritesToggle") {
     setFavoritesOnly(!favoritesOnly);
   } else if (action === "searchFocus") {
     if (searchInput) {
-      searchInput.focus();
-      scrollToTarget("#searchInput");
+      postClose = () => {
+        searchInput.focus();
+        scrollToTarget("#searchInput");
+      };
     }
   } else if (action === "exportRatings") {
     if (exportRatingsBtn) exportRatingsBtn.click();
   } else if (action === "importRatings") {
     if (importRatingsInput) importRatingsInput.click();
   } else if (target) {
-    scrollToTarget(target);
+    postClose = () => scrollToTarget(target);
   }
   closeMenu();
+  if (postClose) requestAnimationFrame(() => postClose());
 }
 
 function scrollToTarget(selector) {
