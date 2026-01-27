@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://festival-planner.tschann.me/sitemap.xml

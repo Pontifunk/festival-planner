@@ -1,0 +1,9 @@
+Festival Planner is a privacy-first Tomorrowland 2026 lineup planner for Weekend 1 and Weekend 2.
+No accounts. No tracking. All ratings and favorites are stored locally in the browser (IndexedDB).
+Lineup data may be incomplete or change over time.
+
+Key URLs:
+- https://festival-planner.tschann.me/
+- https://festival-planner.tschann.me/privacy/
+- https://festival-planner.tschann.me/impressum/
+- https://github.com/Pontifunk/festival-planner
