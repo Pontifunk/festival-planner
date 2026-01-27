@@ -54,6 +54,8 @@ const menuCloseBtn = document.getElementById("menuCloseBtn");
 const menuDayLinks = document.getElementById("menuDayLinks");
 const donateBtn = document.getElementById("donateBtn");
 const feedbackBtn = document.getElementById("feedbackBtn");
+const plannerExportBox = document.getElementById("plannerExportBox");
+const mobileExportAnchor = document.getElementById("mobileExportAnchor");
 
 // ====== STATE ======
 let lang = localStorage.getItem("fp_lang") || "de";
@@ -123,6 +125,7 @@ async function init() {
   ensureCanonicalUrl();
 
   bindUi();
+  setupMobileExportPlacement();
 
   try {
     await Promise.all([
@@ -235,6 +238,36 @@ function bindUi() {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && menuOpen) closeMenu();
     });
+  }
+}
+
+function setupMobileExportPlacement() {
+  if (!plannerExportBox || !mobileExportAnchor) return;
+  const originalParent = plannerExportBox.parentNode;
+  const originalNext = plannerExportBox.nextSibling;
+  const mq = window.matchMedia("(max-width: 980px)");
+
+  const applyPlacement = () => {
+    if (mq.matches) {
+      if (plannerExportBox.parentNode !== mobileExportAnchor.parentNode) {
+        mobileExportAnchor.after(plannerExportBox);
+      }
+      return;
+    }
+    if (plannerExportBox.parentNode !== originalParent) {
+      if (originalNext && originalNext.parentNode === originalParent) {
+        originalParent.insertBefore(plannerExportBox, originalNext);
+      } else {
+        originalParent.appendChild(plannerExportBox);
+      }
+    }
+  };
+
+  applyPlacement();
+  if (typeof mq.addEventListener === "function") {
+    mq.addEventListener("change", applyPlacement);
+  } else if (typeof mq.addListener === "function") {
+    mq.addListener(applyPlacement);
   }
 }
 // ====== LOADING ======
