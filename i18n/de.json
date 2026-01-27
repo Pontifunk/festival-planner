@@ -1,4 +1,4 @@
-{
+﻿{
   "app_title": "Festival Planner",
   "hero_title": "Dein pers\u00f6nlicher Tomorrowland-Lineup-Planer.",
   "hero_subtitle": "Bewerte DJs, markiere Favoriten und behalte den \u00dcberblick \u00fcber dein Festival-Wochenende \u2013 ohne Account, ohne Tracking.",
@@ -42,11 +42,12 @@
   "changes_added": "Hinzugef\u00fcgt",
   "changes_removed": "Entfernt",
   "changes_replaced": "Ersetzt",
-  "weekend_changes_title": "Änderungen",
+  "weekend_changes_title": "\u00c4nderungen",
   "weekend_changes_history": "Verlauf",
   "weekend_changes_empty": "Keine Historie.",
   "planner_note_title": "Import & Export",
   "planner_note_intro": "Hier kannst du deine Ratings exportieren und wieder importieren.",
+  "planner_note_warning": "Hinweis: Deine Bewertungen sind nur lokal gespeichert. Bitte exportiere sie regelm\u00e4\u00dfig, damit nichts verloren geht.",
   "privacy_note": "Alle Bewertungen und Favoriten werden ausschlie\u00dflich lokal in deinem Browser gespeichert. Kein Login, keine Cloud, kein Tracking.",
   "saved": "Gespeichert \u2713",
   "export_ratings": "Ratings exportieren",

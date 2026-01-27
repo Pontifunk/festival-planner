@@ -1,4 +1,4 @@
-{
+﻿{
   "app_title": "Festival Planner",
   "disclaimer": "Unofficial tool. Information may change. The organizer's information is authoritative.",
   "hero_title": "Your personal Tomorrowland lineup planner.",
@@ -41,6 +41,7 @@
   "weekend_changes_empty": "No history.",
   "planner_note_title": "Import & export",
   "planner_note_intro": "Export and import your ratings here.",
+  "planner_note_warning": "Note: Your ratings are stored locally only. Please export them regularly so nothing is lost.",
   "privacy_note": "All ratings and favorites are stored locally in your browser only. No login, no cloud, no tracking.",
   "saved": "Saved \u2713",
   "export_ratings": "Export ratings",
