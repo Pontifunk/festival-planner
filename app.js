@@ -249,8 +249,14 @@ function setupMobileExportPlacement() {
 
   const applyPlacement = () => {
     if (mq.matches) {
-      if (plannerExportBox.parentNode !== mobileExportAnchor.parentNode) {
-        mobileExportAnchor.after(plannerExportBox);
+      const anchorParent = mobileExportAnchor.parentNode;
+      if (plannerExportBox.parentNode !== anchorParent) {
+        const next = mobileExportAnchor.nextSibling;
+        if (next) {
+          anchorParent.insertBefore(plannerExportBox, next);
+        } else {
+          anchorParent.appendChild(plannerExportBox);
+        }
       }
       return;
     }
