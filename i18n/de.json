@@ -61,8 +61,20 @@
   "day_label": "Tag",
   "stage_label": "B\u00fchne",
   "rating_label": "Bewertung",
+  "tag_label": "Tag",
   "all_days": "Alle Tage",
   "all_stages": "Alle B\u00fchnen",
   "slots": "Slots",
-  "shown": "Angezeigt"
+  "shown": "Angezeigt",
+  "active_filters": "Aktive Filter",
+  "clear_search": "Suche l\u00f6schen",
+  "clear_day": "Tagesfilter l\u00f6schen",
+  "clear_stage": "B\u00fchnenfilter l\u00f6schen",
+  "clear_tag": "Tag-Filter l\u00f6schen",
+  "clear_rating": "Bewertungsfilter l\u00f6schen",
+  "rating_chip_liked": "\u2764\ufe0f",
+  "rating_chip_maybe": "\ud83e\udd14",
+  "rating_chip_disliked": "\ud83d\udc4e",
+  "rating_chip_unrated": "Unbewertet",
+  "not_available_yet": "Noch nicht verf\u00fcgbar"
 }

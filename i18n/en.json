@@ -55,8 +55,20 @@
   "day_label": "Day",
   "stage_label": "Stage",
   "rating_label": "Rating",
+  "tag_label": "Tag",
   "all_days": "All days",
   "all_stages": "All stages",
   "slots": "Slots",
-  "shown": "Shown"
+  "shown": "Shown",
+  "active_filters": "Active filters",
+  "clear_search": "Clear search",
+  "clear_day": "Clear day filter",
+  "clear_stage": "Clear stage filter",
+  "clear_tag": "Clear tag filter",
+  "clear_rating": "Clear rating filter",
+  "rating_chip_liked": "\u2764\ufe0f",
+  "rating_chip_maybe": "\ud83e\udd14",
+  "rating_chip_disliked": "\ud83d\udc4e",
+  "rating_chip_unrated": "Unrated",
+  "not_available_yet": "Not available yet"
 }

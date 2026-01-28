@@ -77,12 +77,12 @@
 
       <div class="ctrl">
         <span data-i18n="last_checked">Zuletzt gepr&uuml;ft</span>
-        <div class="pill" id="lastCheckedPill">&ndash;</div>
+        <div class="pill" id="lastCheckedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
       </div>
 
       <div class="ctrl">
         <span data-i18n="lineup_status">Line-up Stand</span>
-        <div class="pill" id="lastUpdatedPill">&ndash;</div>
+        <div class="pill" id="lastUpdatedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
       </div>
     </div>
 
@@ -133,6 +133,8 @@
           </select>
         </div>
       </div>
+
+      <div id="activeFilters" class="activeFilters" aria-live="polite" hidden></div>
 
       <div id="searchResults" class="searchResults" hidden></div>
 

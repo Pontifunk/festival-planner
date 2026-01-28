@@ -12,6 +12,42 @@ const VALID_RATINGS = new Set(["liked", "maybe", "disliked", "unrated"]);
 const BASE_PREFIX = getBasePrefix();
 const withBase = (path) => `${BASE_PREFIX}${path}`;
 
+const STAGE_ORDER = [
+  "MAINSTAGE",
+  "FREEDOM BY BUD",
+  "THE ROSE GARDEN",
+  "ELIXIR",
+  "CAGE",
+  "THE RAVE CAVE",
+  "PLANAXIS",
+  "MELODIA BY CORONA",
+  "RISE",
+  "ATMOSPHERE",
+  "CORE",
+  "CRYSTAL GARDEN",
+  "THE LIBRARY",
+  "MOOSE BAR",
+  "HOUSE OF FORTUNE BY JBL"
+];
+
+const STAGE_GENRES = {
+  "MAINSTAGE": "Big Room / EDM",
+  "FREEDOM BY BUD": "Techno / Melodic Techno",
+  "THE ROSE GARDEN": "House / Disco",
+  "ELIXIR": "Trance / Progressive",
+  "CAGE": "Hard Techno",
+  "THE RAVE CAVE": "Hardcore / Rave",
+  "PLANAXIS": "Techno",
+  "MELODIA BY CORONA": "Melodic House & Techno",
+  "RISE": "Bass / Future",
+  "ATMOSPHERE": "Techno",
+  "CORE": "Underground / Techno",
+  "CRYSTAL GARDEN": "House / Tech House",
+  "THE LIBRARY": "Eclectic / Classics",
+  "MOOSE BAR": "Party / Hits",
+  "HOUSE OF FORTUNE BY JBL": "House"
+};
+
 // ====== DOM ======
 const langSelect = document.getElementById("langSelect");
 const lastCheckedPill = document.getElementById("lastCheckedPill");
@@ -22,6 +58,8 @@ const searchResults = document.getElementById("searchResults");
 const ratingFilter = document.getElementById("ratingFilter");
 const dayFilter = document.getElementById("dayFilter");
 const stageFilter = document.getElementById("stageFilter");
+const tagFilter = document.getElementById("tagFilter");
+const activeFiltersRow = document.getElementById("activeFilters");
 
 const weekendChangesBox = document.getElementById("changesBox");
 const weekendChangesSummary = document.getElementById("weekendChangesSummary");
@@ -106,6 +144,7 @@ async function init() {
   initCustomSelect(stageFilter);
   initCustomSelect(snapshotSelectW1);
   initCustomSelect(snapshotSelectW2);
+  ensureSelectVisible(ratingFilter);
 
   await applyTranslations(lang);
 
@@ -168,7 +207,10 @@ function bindUi() {
     btn.addEventListener("click", () => setActiveWeekend(btn.getAttribute("data-weekend")));
   });
 
-  searchInput.addEventListener("input", () => updateSearchResults());
+  searchInput.addEventListener("input", () => {
+    updateSearchResults();
+    renderActiveFilters();
+  });
   searchInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       const first = searchResults.querySelector(".searchItem");
@@ -237,6 +279,15 @@ function bindUi() {
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && menuOpen) closeMenu();
+    });
+  }
+
+  if (activeFiltersRow) {
+    activeFiltersRow.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-filter]");
+      if (!btn) return;
+      const type = btn.getAttribute("data-filter");
+      clearFilter(type);
     });
   }
 }
@@ -388,10 +439,15 @@ async function loadWeekendChanges() {
 
 // ====== RENDER ======
 function renderActiveWeekend() {
+  if (favoritesOnly && ratingFilter?.value && ratingFilter.value !== "liked") {
+    favoritesOnly = false;
+    updateFavoritesToggleUI();
+  }
   updateFiltersUI(state.activeWeekend);
   renderWeekend(state.activeWeekend);
   renderFavorites();
   updateSearchResults();
+  renderActiveFilters();
   renderStatusPills();
   renderWeekendChangesBox();
 }
@@ -415,7 +471,9 @@ function renderWeekend(weekend) {
 
   const activeFilters = w.filters || { day: "all", stage: "all" };
   const ratingValue = favoritesOnly ? "liked" : ratingFilter.value;
+  const prevOpen = container ? getOpenState(container) : null;
   const grouped = groupSlots(w.snapshot.slots, ratingValue, activeFilters);
+  const openState = resolveOpenState(grouped, prevOpen, activeFilters);
   w.grouped = grouped;
   w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
   const dayList = Array.from(new Set(w.snapshot.slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
@@ -423,38 +481,63 @@ function renderWeekend(weekend) {
 
   const shownCount = countGroupedSlots(grouped);
   metaEl.textContent =
-    `${t("snapshot_label")}: ${w.selectedFile || "\u2013"} \u00b7 ` +
+    `${t("snapshot_label")}: ${w.selectedFile || notAvailable()} \u00b7 ` +
     `${t("slots") || "Slots"}: ${w.snapshot.slots.length} \u00b7 ` +
     `${t("shown") || "Angezeigt"}: ${shownCount}`;
 
-  container.innerHTML = grouped.map(group => renderDayGroup(group, weekend)).join("");
+  container.innerHTML = grouped.map(group => renderDayGroup(group, weekend, openState)).join("");
 
   bindSlotInteractions(container, weekend);
   indexArtistElements(container, weekend);
 }
 
-function renderDayGroup(group, weekend) {
+function renderDayGroup(group, weekend, openState) {
   const dateLabel = formatDate(group.date);
   const dayUrl = `https://belgium.tomorrowland.com/nl/line-up/?day=${group.date}`;
+  const dayCount = group.stages.reduce((sum, stage) => sum + stage.slots.length, 0);
+  const dayOpen = openState?.openDays?.has(group.date);
 
   const stagesHtml = group.stages.map(stageGroup => {
+    const stageCount = stageGroup.slots.length;
+    const stageKey = stageGroup.stage;
+    const stageOpen = openState?.openStages?.get(group.date)?.has(stageKey);
+    const genre = getStageGenre(stageGroup.stage);
     const slotsHtml = stageGroup.slots.map(slot => renderSlot(slot, weekend)).join("");
     return `
-      <div class="stageGroup">
-        <div class="stageTitle">${escapeHtml(stageGroup.stage)}</div>
-        <div class="slotList">${slotsHtml}</div>
-      </div>
+      <details class="stageGroup" data-day="${escapeAttr(group.date)}" data-stage="${escapeAttr(stageKey)}" ${stageOpen ? "open" : ""}>
+        <summary class="stageSummary">
+          <div class="stageSummaryMain">
+            <span class="stageTitle">${escapeHtml(stageGroup.stage)}</span>
+            ${genre ? `<span class="stageGenre">${escapeHtml(genre)}</span>` : ""}
+          </div>
+          <div class="daySummaryMeta">
+            <span class="stageCount">(${stageCount})</span>
+            <span class="stageChevron" aria-hidden="true"></span>
+          </div>
+        </summary>
+        <div class="stageBody">
+          <div class="slotList">${slotsHtml}</div>
+        </div>
+      </details>
     `;
   }).join("");
 
   return `
-    <div class="dayGroup" id="day-${escapeAttr(group.date)}">
-      <div class="dayHeader">
-        <div class="dayTitle">${escapeHtml(dateLabel)}</div>
-        <a class="dayLink" href="${dayUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("lineup"))}</a>
+    <details class="dayGroup" id="day-${escapeAttr(group.date)}" data-day="${escapeAttr(group.date)}" ${dayOpen ? "open" : ""}>
+      <summary class="daySummary">
+        <div class="daySummaryMain">
+          <span class="dayTitle">${escapeHtml(dateLabel)}</span>
+          <span class="dayCount">(${dayCount})</span>
+        </div>
+        <div class="daySummaryMeta">
+          <a class="dayLink" href="${dayUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("lineup"))}</a>
+          <span class="dayChevron" aria-hidden="true"></span>
+        </div>
+      </summary>
+      <div class="dayBody">
+        ${stagesHtml}
       </div>
-      ${stagesHtml}
-    </div>
+    </details>
   `;
 }
 
@@ -464,7 +547,7 @@ function renderSlot(slot, weekend) {
   const stage = normalizeStage(slot.stage);
   const start = formatTime(slot.start);
   const end = formatTime(slot.end);
-  const timeRange = start && end ? `${start}\u2013${end}` : (start || end || "\u2013");
+  const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
 
   const r = ratings[artistId] || "unrated";
   const badge = badgeFor(r);
@@ -517,8 +600,8 @@ function renderFavorites() {
     const stage = normalizeStage(slot.stage);
     const start = formatTime(slot.start);
     const end = formatTime(slot.end);
-    const timeRange = start && end ? `${start}\u2013${end}` : (start || end || "\u2013");
-    const meta = `${slot.date || "\u2013"} \u00b7 ${stage} \u00b7 ${timeRange}`;
+    const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
+    const meta = `${slot.date || notAvailable()} \u00b7 ${stage} \u00b7 ${timeRange}`;
 
     return `
       <div class="favItem">
@@ -825,7 +908,7 @@ function renderStatusPills() {
   const w = state.weekends[state.activeWeekend];
   const lastChecked = w.snapshot?.meta?.createdAt
     ? formatDateTime(w.snapshot.meta.createdAt)
-    : "\u2013";
+    : notAvailable();
   lastCheckedPill.textContent = lastChecked;
 
   const slotCount = w.snapshot?.slots?.length ?? 0;
@@ -874,6 +957,141 @@ function setSelectOptions(selectEl, options, selectedValue) {
     `).join("");
   selectEl.value = selectedValue;
   rebuildCustomSelect(selectEl);
+}
+
+function renderActiveFilters() {
+  if (!activeFiltersRow) return;
+  const w = state.weekends[state.activeWeekend];
+  const filters = w.filters || { day: "all", stage: "all" };
+  const chips = [];
+
+  if (searchInput?.value?.trim()) {
+    chips.push({
+      type: "search",
+      label: `${t("search") || "Search"}: ${searchInput.value.trim()}`,
+      aria: t("clear_search") || "Clear search"
+    });
+  }
+
+  if (filters.day && filters.day !== "all") {
+    chips.push({
+      type: "day",
+      label: `${t("day_label") || "Day"}: ${formatDate(filters.day)}`,
+      aria: t("clear_day") || "Clear day filter"
+    });
+  }
+
+  if (filters.stage && filters.stage !== "all") {
+    chips.push({
+      type: "stage",
+      label: `${t("stage_label") || "Stage"}: ${filters.stage}`,
+      aria: t("clear_stage") || "Clear stage filter"
+    });
+  }
+
+  if (tagFilter && tagFilter.value && tagFilter.value !== "all") {
+    chips.push({
+      type: "tag",
+      label: `${t("tag_label") || "Tag"}: ${getSelectLabel(tagFilter, tagFilter.value)}`,
+      aria: t("clear_tag") || "Clear tag filter"
+    });
+  }
+
+  const ratingValue = favoritesOnly ? "liked" : (ratingFilter?.value || "all");
+  if (ratingValue !== "all") {
+    chips.push({
+      type: "rating",
+      label: `${t("rating_label") || "Rating"}: ${ratingChipLabel(ratingValue)}`,
+      aria: t("clear_rating") || "Clear rating filter"
+    });
+  }
+
+  if (!chips.length) {
+    activeFiltersRow.hidden = true;
+    activeFiltersRow.innerHTML = "";
+    return;
+  }
+
+  activeFiltersRow.hidden = false;
+  activeFiltersRow.innerHTML = `
+    <span class="activeFiltersLabel">${escapeHtml(t("active_filters") || "Active filters")}</span>
+    ${chips.map(c => `
+      <span class="filterChip">
+        ${escapeHtml(c.label)}
+        <button type="button" data-filter="${escapeAttr(c.type)}" aria-label="${escapeAttr(c.aria)}">✕</button>
+      </span>
+    `).join("")}
+  `;
+}
+
+function clearFilter(type) {
+  const w = state.weekends[state.activeWeekend];
+  if (!w.filters) w.filters = { day: "all", stage: "all" };
+
+  if (type === "search") {
+    if (searchInput) searchInput.value = "";
+    updateSearchResults();
+    renderActiveFilters();
+    return;
+  }
+
+  if (type === "day") {
+    w.filters.day = "all";
+    w.filters.stage = "all";
+    if (dayFilter) {
+      dayFilter.value = "all";
+      syncCustomSelect(dayFilter);
+    }
+    if (stageFilter) {
+      stageFilter.value = "all";
+      syncCustomSelect(stageFilter);
+    }
+    renderActiveWeekend();
+    return;
+  }
+
+  if (type === "stage") {
+    w.filters.stage = "all";
+    if (stageFilter) {
+      stageFilter.value = "all";
+      syncCustomSelect(stageFilter);
+    }
+    renderActiveWeekend();
+    return;
+  }
+
+  if (type === "tag") {
+    if (tagFilter) {
+      tagFilter.value = "all";
+      syncCustomSelect(tagFilter);
+    }
+    renderActiveWeekend();
+    return;
+  }
+
+  if (type === "rating") {
+    favoritesOnly = false;
+    if (ratingFilter) {
+      ratingFilter.value = "all";
+      syncCustomSelect(ratingFilter);
+    }
+    updateFavoritesToggleUI();
+    renderActiveWeekend();
+  }
+}
+
+function getSelectLabel(selectEl, value) {
+  if (!selectEl) return value;
+  const opt = Array.from(selectEl.options).find(o => o.value === value);
+  return opt ? opt.textContent : value;
+}
+
+function ratingChipLabel(value) {
+  if (value === "liked") return t("rating_chip_liked") || "❤️";
+  if (value === "maybe") return t("rating_chip_maybe") || "🤔";
+  if (value === "disliked") return t("rating_chip_disliked") || "👎";
+  if (value === "unrated") return t("rating_chip_unrated") || (t("unrated") || "Unrated");
+  return value;
 }
 // ====== INTERACTIONS ======
 function bindSlotInteractions(container, weekend) {
@@ -1002,7 +1220,7 @@ function updateSearchResults() {
 
   searchResults.innerHTML = top.map(r => {
     const first = r.slots[0];
-    const meta = `${first.date || "\u2013"} \u00b7 ${normalizeStage(first.stage)}`;
+    const meta = `${first.date || notAvailable()} \u00b7 ${normalizeStage(first.stage)}`;
     return `
       <div class="searchItem" data-artist-id="${escapeAttr(r.artistId)}">
         <div>${escapeHtml(r.name)}</div>
@@ -1061,6 +1279,7 @@ function setActiveWeekend(weekend, updateRoute = true) {
 // ====== GROUPING ======
 function groupSlots(slots, ratingFilterValue, filters) {
   const byDate = new Map();
+  const stageFilterActive = filters?.stage && filters.stage !== "all";
 
   slots.forEach(slot => {
     const artistId = slot.artistId || "";
@@ -1082,7 +1301,11 @@ function groupSlots(slots, ratingFilterValue, filters) {
   const datesSorted = Array.from(byDate.keys()).sort();
   return datesSorted.map(date => {
     const stageMap = byDate.get(date);
-    const stages = Array.from(stageMap.keys()).sort((a, b) => a.localeCompare(b)).map(stage => {
+    const stageKeys = Array.from(stageMap.keys());
+    const orderedStages = stageFilterActive
+      ? stageKeys
+      : sortStagesByOrder(stageKeys);
+    const stages = orderedStages.map(stage => {
       const slotsSorted = stageMap.get(stage).slice().sort((a, b) => {
         const ta = toMinutes(a.start);
         const tb = toMinutes(b.start);
@@ -1114,6 +1337,89 @@ function countGroupedSlots(grouped) {
     });
   });
   return count;
+}
+
+function sortStagesByOrder(stages) {
+  const orderIndex = new Map(STAGE_ORDER.map((name, idx) => [name.toUpperCase(), idx]));
+  return stages.slice().sort((a, b) => {
+    const aKey = String(a || "").toUpperCase();
+    const bKey = String(b || "").toUpperCase();
+    const aIdx = orderIndex.has(aKey) ? orderIndex.get(aKey) : Number.MAX_SAFE_INTEGER;
+    const bIdx = orderIndex.has(bKey) ? orderIndex.get(bKey) : Number.MAX_SAFE_INTEGER;
+    if (aIdx !== bIdx) return aIdx - bIdx;
+    return String(a).localeCompare(String(b));
+  });
+}
+
+function getStageGenre(stage) {
+  const key = String(stage || "").toUpperCase();
+  return STAGE_GENRES[key] || "";
+}
+
+function getOpenState(container) {
+  const openDays = new Set();
+  const openStages = new Map();
+  if (!container) return { openDays, openStages };
+
+  container.querySelectorAll("details.dayGroup[open]").forEach(day => {
+    const dayId = day.getAttribute("data-day");
+    if (dayId) openDays.add(dayId);
+  });
+
+  container.querySelectorAll("details.stageGroup[open]").forEach(stage => {
+    const dayId = stage.getAttribute("data-day");
+    const stageId = stage.getAttribute("data-stage");
+    if (!dayId || !stageId) return;
+    if (!openStages.has(dayId)) openStages.set(dayId, new Set());
+    openStages.get(dayId).add(stageId);
+  });
+
+  return { openDays, openStages };
+}
+
+function resolveOpenState(grouped, prevOpen, filters) {
+  const openDays = new Set();
+  const openStages = new Map();
+  const availableDays = grouped.map(g => g.date);
+
+  if (prevOpen?.openDays?.size) {
+    availableDays.forEach(day => {
+      if (prevOpen.openDays.has(day)) openDays.add(day);
+    });
+  }
+
+  if (!openDays.size && availableDays.length) {
+    openDays.add(availableDays[0]);
+  }
+
+  grouped.forEach(day => {
+    const prevStages = prevOpen?.openStages?.get(day.date);
+    if (prevStages?.size) {
+      const existing = new Set(day.stages.map(s => s.stage));
+      const keep = Array.from(prevStages).filter(s => existing.has(s));
+      if (keep.length) openStages.set(day.date, new Set(keep));
+    }
+  });
+
+  openDays.forEach(dayId => {
+    const day = grouped.find(d => d.date === dayId);
+    if (!day || !day.stages.length) return;
+    const current = openStages.get(dayId);
+    if (!current || !current.size) {
+      const defaultStage = day.stages[0].stage;
+      openStages.set(dayId, new Set([defaultStage]));
+    }
+  });
+
+  if (!openDays.size && grouped.length) {
+    const firstDay = grouped[0];
+    openDays.add(firstDay.date);
+    if (firstDay.stages.length) {
+      openStages.set(firstDay.date, new Set([firstDay.stages[0].stage]));
+    }
+  }
+
+  return { openDays, openStages };
 }
 
 // ====== ROUTING ======
@@ -1195,6 +1501,10 @@ function t(key) {
   return dict[key] || key;
 }
 
+function notAvailable() {
+  return t("not_available_yet") || "Not available yet";
+}
+
 // ====== UTIL ======
 function cleanSegment(value, pattern, fallback) {
   const v = String(value || "").trim();
@@ -1271,12 +1581,12 @@ function setSnapshotOptions(weekend) {
 }
 
 function formatDateTime(iso) {
-  if (!iso) return "\u2013";
+  if (!iso) return notAvailable();
   try { return new Date(iso).toLocaleString(); } catch { return iso; }
 }
 
 function formatDate(dateStr) {
-  if (!dateStr) return "\u2013";
+  if (!dateStr) return notAvailable();
   try {
     const isoDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
     const d = isoDateOnly ? new Date(`${dateStr}T00:00:00`) : new Date(dateStr);
@@ -1517,6 +1827,20 @@ function rebuildCustomSelect(selectEl) {
   if (wrapper) wrapper.remove();
   selectEl.dataset.customReady = "";
   initCustomSelect(selectEl);
+}
+
+function ensureSelectVisible(selectEl) {
+  if (!selectEl) return;
+  const bound = customSelectMap.get(selectEl);
+  const wrapper = bound?.wrapper || selectEl.parentNode?.querySelector(".selectWrap");
+  if (wrapper && wrapper.querySelector(".selectTrigger")) return;
+  selectEl.classList.remove("selectNative");
+  selectEl.removeAttribute("data-custom-select");
+  selectEl.style.position = "relative";
+  selectEl.style.width = "100%";
+  selectEl.style.height = "auto";
+  selectEl.style.opacity = "1";
+  selectEl.style.pointerEvents = "auto";
 }
 
 // ====== RATINGS ======

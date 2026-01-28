@@ -17,7 +17,7 @@
   --radius-sm:12px;
   --shadow: 0 10px 30px rgba(0,0,0,.30);
 
-  --tap: 40px; /* minimum tap target-ish */
+  --tap: 44px; /* minimum tap target-ish */
 }
 
 *{box-sizing:border-box}
@@ -84,10 +84,14 @@ select,input{
   padding:10px 12px;
   outline:none;
 }
-select:focus,input:focus,button:focus,a:focus{
+select:focus,input:focus,button:focus,a:focus,.daySummary:focus,.stageSummary:focus{
   outline:none;
   box-shadow:0 0 0 3px rgba(107,92,255,.25);
   border-color:rgba(107,92,255,.55);
+}
+
+button{
+  min-height: var(--tap);
 }
 
 /* custom select (premium, cross-OS) */
@@ -107,6 +111,7 @@ select:focus,input:focus,button:focus,a:focus{
 .selectWrap{
   position:relative;
   min-width: 92px;
+  width:100%;
 }
 
 .selectTrigger{
@@ -269,6 +274,50 @@ select:focus,input:focus,button:focus,a:focus{
 .toolbar .searchCtrl{flex:1 1 260px}
 .toolbar .searchCtrl input{width:100%}
 
+.activeFilters{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(255,255,255,.03);
+  margin-bottom:12px;
+}
+.activeFiltersLabel{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:700;
+}
+.filterChip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.06);
+  font-size:12px;
+  color:var(--text);
+}
+.filterChip button{
+  width:var(--tap);
+  height:var(--tap);
+  min-width:var(--tap);
+  min-height:var(--tap);
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.08);
+  color:var(--text);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  line-height:1;
+}
+
 /* ===== CHANGES / SEARCH ===== */
 .changesBox{margin:10px 0 14px}
 .changesSummary{font-size:13px;color:var(--muted)}
@@ -338,6 +387,7 @@ select:focus,input:focus,button:focus,a:focus{
   background:rgba(255,255,255,.04);
   color:var(--muted);
   cursor:pointer;
+  min-height: var(--tap);
 }
 .tabBtn.isActive{
   background:rgba(107,92,255,.20);
@@ -361,32 +411,118 @@ select:focus,input:focus,button:focus,a:focus{
 /* ===== GROUPING ===== */
 .dayGroup{
   border:1px solid var(--border);
-  border-radius:14px;
-  padding:10px;
+  border-radius:16px;
   background:rgba(255,255,255,.03);
+  overflow:hidden;
 }
 .dayGroup + .dayGroup{margin-top:10px}
-.dayHeader{
+.dayGroup summary{list-style:none}
+.dayGroup summary::-webkit-details-marker{display:none}
+.daySummary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  cursor:pointer;
+  min-height:44px;
+  background:rgba(107,92,255,.08);
+  border-bottom:1px solid var(--border);
+}
+.daySummaryMain{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+}
+.dayTitle{font-weight:900;font-size:15px}
+.dayCount{font-size:12px;color:var(--muted)}
+.daySummaryMeta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.dayLink{font-size:12px;color:var(--accent)}
+.dayChevron{
+  width:10px;height:10px;
+  border-right:2px solid var(--muted);
+  border-bottom:2px solid var(--muted);
+  transform:rotate(45deg);
+  transition:transform .2s ease;
+}
+.dayGroup[open] .dayChevron{transform:rotate(-135deg)}
+.dayBody{
+  padding:10px 12px 12px;
+  display:grid;
+  gap:10px;
+  max-height:0;
+  overflow:hidden;
+  opacity:.0;
+  transition:max-height .2s ease, opacity .2s ease;
+}
+.dayGroup[open] .dayBody{
+  max-height:2000px;
+  opacity:1;
+}
+
+.stageGroup{
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(255,255,255,.02);
+  overflow:hidden;
+}
+.stageGroup summary{list-style:none}
+.stageGroup summary::-webkit-details-marker{display:none}
+.stageSummary{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  padding:6px 6px 10px;
-  border-bottom:1px solid var(--border);
-  margin-bottom:8px;
+  padding:10px 12px;
+  cursor:pointer;
+  min-height:44px;
 }
-.dayTitle{font-weight:900}
-.dayLink{font-size:12px;color:var(--accent)}
-
-.stageGroup{margin-top:8px}
+.stageSummaryMain{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
 .stageTitle{
   font-size:12px;
   text-transform:uppercase;
   letter-spacing:.6px;
   color:var(--muted);
-  margin:6px 0;
+  font-weight:700;
 }
-.slotList{display:flex;flex-direction:column;gap:8px}
+.stageGenre{
+  font-size:11px;
+  color:var(--muted);
+  border:1px solid var(--border);
+  border-radius:999px;
+  padding:2px 8px;
+  background:rgba(255,255,255,.04);
+}
+.stageCount{font-size:12px;color:var(--muted)}
+.stageChevron{
+  width:8px;height:8px;
+  border-right:2px solid var(--muted);
+  border-bottom:2px solid var(--muted);
+  transform:rotate(45deg);
+  transition:transform .2s ease;
+}
+.stageGroup[open] .stageChevron{transform:rotate(-135deg)}
+.stageBody{
+  padding:8px 10px 10px;
+  max-height:0;
+  overflow:hidden;
+  opacity:0;
+  transition:max-height .2s ease, opacity .2s ease;
+}
+.stageGroup[open] .stageBody{
+  max-height:1600px;
+  opacity:1;
+}
+.slotList{display:flex;flex-direction:column;gap:6px}
 .slot.isTarget{
   outline:2px solid rgba(107,92,255,.7);
   box-shadow:0 0 0 4px rgba(107,92,255,.25);
@@ -444,7 +580,7 @@ select:focus,input:focus,button:focus,a:focus{
 }
 
 .ratingTrigger{
-  min-height: 32px;
+  min-height: var(--tap);
   padding:6px 12px;
   border-radius:999px;
   border:1px solid var(--border);
@@ -500,7 +636,7 @@ select:focus,input:focus,button:focus,a:focus{
 }
 
 .qbtn{
-  min-height: 32px;
+  min-height: var(--tap);
   min-width:72px;
   text-align:center;
   font-size:11px;
