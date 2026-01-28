@@ -1,4 +1,4 @@
-const CACHE_NAME = "festival-planner-v16";
+const CACHE_NAME = "festival-planner-v17";
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 const withBase = (path) => `${BASE_PATH}${path}`;
 
