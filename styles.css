@@ -574,14 +574,16 @@ button{
 /* rating bar (explicit options instead of cycle click) */
 .ratingSelect{
   grid-area:rating;
-  position:relative;
   display:inline-flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
   justify-content:flex-end;
 }
 
-.ratingTrigger{
+.ratingChip{
   min-height: var(--tap);
-  padding:6px 12px;
+  padding:6px 10px;
   border-radius:999px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.04);
@@ -589,43 +591,38 @@ button{
   font-weight:900;
   font-size:11px;
   cursor:pointer;
-}
-.ratingTrigger.ok{border-color:rgba(86,210,155,.35);color:var(--ok);background:rgba(86,210,155,.10)}
-.ratingTrigger.warn{border-color:rgba(242,201,76,.35);color:var(--warn);background:rgba(242,201,76,.10)}
-.ratingTrigger.bad{border-color:rgba(224,86,91,.35);color:var(--danger);background:rgba(224,86,91,.10)}
-
-.ratingMenu{
-  position:absolute;
-  right:0;
-  top:calc(100% + 6px);
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:6px;
-  display:none;
-  flex-direction:column;
+  display:inline-flex;
+  align-items:center;
   gap:6px;
-  min-width:180px;
-  z-index:40;
-  box-shadow: var(--shadow);
 }
-
-.ratingSelect.isOpen .ratingMenu{display:flex}
-
-.ratingOption{
-  min-height: 32px;
-  padding:6px 10px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
-  color:var(--text);
-  font-weight:900;
-  font-size:11px;
-  cursor:pointer;
-  text-align:left;
+.ratingChip .ratingEmoji{font-size:15px;line-height:1}
+.ratingChip .ratingLabel{font-size:11px;color:var(--muted)}
+.ratingChip:hover{background:rgba(255,255,255,.08)}
+.ratingChip.isActive{
+  border-color:rgba(107,92,255,.6);
+  background:rgba(107,92,255,.18);
+  box-shadow:0 0 0 2px rgba(107,92,255,.2), 0 0 14px rgba(107,92,255,.35);
 }
-
-.ratingOption:hover{background:rgba(255,255,255,.08)}
+.ratingChip[data-rate="liked"].isActive{
+  border-color:rgba(86,210,155,.6);
+  background:rgba(86,210,155,.16);
+  box-shadow:0 0 0 2px rgba(86,210,155,.2), 0 0 14px rgba(86,210,155,.35);
+}
+.ratingChip[data-rate="maybe"].isActive{
+  border-color:rgba(242,201,76,.7);
+  background:rgba(242,201,76,.16);
+  box-shadow:0 0 0 2px rgba(242,201,76,.2), 0 0 14px rgba(242,201,76,.35);
+}
+.ratingChip[data-rate="disliked"].isActive{
+  border-color:rgba(224,86,91,.7);
+  background:rgba(224,86,91,.16);
+  box-shadow:0 0 0 2px rgba(224,86,91,.2), 0 0 14px rgba(224,86,91,.35);
+}
+.ratingChip[data-rate="unrated"].isActive{
+  border-color:rgba(255,255,255,.4);
+  background:rgba(255,255,255,.12);
+  box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 10px rgba(255,255,255,.2);
+}
 
 .quicklinks{
   grid-area:quick;
@@ -913,8 +910,8 @@ body.menuOpen{
   .weekendTabs{flex-wrap:wrap}
   .tabBtn{flex:1 1 auto;text-align:center}
   .ratingSelect{width:100%}
-  .ratingTrigger{width:100%; text-align:center}
-  .ratingMenu{min-width:100%}
+  .ratingChip{padding:6px}
+  .ratingLabel{display:none}
   .quicklinks{justify-content:flex-start}
 }
 

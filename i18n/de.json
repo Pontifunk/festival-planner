@@ -75,6 +75,10 @@
   "rating_chip_liked": "\u2764\ufe0f",
   "rating_chip_maybe": "\ud83e\udd14",
   "rating_chip_disliked": "\ud83d\udc4e",
-  "rating_chip_unrated": "Unbewertet",
+  "rating_chip_unrated": "\u25cb",
+  "rating_action_liked": "Gef\u00e4llt mir",
+  "rating_action_maybe": "Vielleicht",
+  "rating_action_disliked": "Mag ich nicht",
+  "rating_action_unrated": "Unbewertet / Zur\u00fccksetzen",
   "not_available_yet": "Noch nicht verf\u00fcgbar"
 }

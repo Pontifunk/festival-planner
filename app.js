@@ -101,7 +101,6 @@ let route = parseRoute(location.pathname);
 let selectUid = 0;
 const customSelectMap = new WeakMap();
 let ratings = {};
-let ratingMenuBound = false;
 let favoritesOnly = false;
 let lastFilterValue = "all";
 let toastTimer = null;
@@ -550,7 +549,12 @@ function renderSlot(slot, weekend) {
   const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
 
   const r = ratings[artistId] || "unrated";
-  const badge = badgeFor(r);
+  const ratingLabels = {
+    liked: t("rating_action_liked") || t("liked") || "Liked",
+    maybe: t("rating_action_maybe") || t("maybe") || "Maybe",
+    disliked: t("rating_action_disliked") || t("disliked") || "Disliked",
+    unrated: t("rating_action_unrated") || t("reset") || "Unrated"
+  };
 
   const slotId = slot.slotId ? `slot-${weekend}-${slot.slotId}` : `slot-${weekend}-${hashMini(name + stage + timeRange)}`;
 
@@ -562,16 +566,23 @@ function renderSlot(slot, weekend) {
       </div>
 
       <div class="badges">
-        <div class="ratingSelect" data-id="${escapeAttr(artistId)}">
-          <button class="ratingTrigger ${badge.cls}" type="button" aria-haspopup="true" aria-expanded="false">
-            ${badge.text}
+        <div class="ratingSelect" data-id="${escapeAttr(artistId)}" role="radiogroup" aria-label="${escapeAttr(t("rating_label") || "Rating")}">
+          <button class="ratingChip ${r === "liked" ? "isActive" : ""}" data-rate="liked" type="button" role="radio" aria-checked="${r === "liked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.liked)}" aria-label="${escapeAttr(ratingLabels.liked)}">
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_liked") || "❤️")}</span>
+            <span class="ratingLabel">${escapeHtml(t("liked"))}</span>
           </button>
-          <div class="ratingMenu" role="menu">
-            <button class="ratingOption" data-rate="liked" type="button">${t("liked")}</button>
-            <button class="ratingOption" data-rate="maybe" type="button">${t("maybe")}</button>
-            <button class="ratingOption" data-rate="disliked" type="button">${t("disliked")}</button>
-            <button class="ratingOption" data-rate="unrated" type="button">${t("reset")}</button>
-          </div>
+          <button class="ratingChip ${r === "maybe" ? "isActive" : ""}" data-rate="maybe" type="button" role="radio" aria-checked="${r === "maybe" ? "true" : "false"}" title="${escapeAttr(ratingLabels.maybe)}" aria-label="${escapeAttr(ratingLabels.maybe)}">
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_maybe") || "🤔")}</span>
+            <span class="ratingLabel">${escapeHtml(t("maybe"))}</span>
+          </button>
+          <button class="ratingChip ${r === "disliked" ? "isActive" : ""}" data-rate="disliked" type="button" role="radio" aria-checked="${r === "disliked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.disliked)}" aria-label="${escapeAttr(ratingLabels.disliked)}">
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_disliked") || "👎")}</span>
+            <span class="ratingLabel">${escapeHtml(t("disliked"))}</span>
+          </button>
+          <button class="ratingChip ${r === "unrated" ? "isActive" : ""}" data-rate="unrated" type="button" role="radio" aria-checked="${r === "unrated" ? "true" : "false"}" title="${escapeAttr(ratingLabels.unrated)}" aria-label="${escapeAttr(ratingLabels.unrated)}">
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_unrated") || "○")}</span>
+            <span class="ratingLabel">${escapeHtml(t("unrated"))}</span>
+          </button>
         </div>
 
         <div class="quicklinks">
@@ -1105,49 +1116,25 @@ function bindRatingMenus(container, weekend) {
   container.dataset.ratingMenusBound = "true";
   const ratingCycle = ["unrated", "liked", "maybe", "disliked"];
 
-  const closeAll = () => {
-    container.querySelectorAll(".ratingSelect.isOpen").forEach(sel => {
-      sel.classList.remove("isOpen");
-      const trigger = sel.querySelector(".ratingTrigger");
-      if (trigger) trigger.setAttribute("aria-expanded", "false");
-    });
-  };
-
   container.addEventListener("click", async (e) => {
-    const trigger = e.target.closest(".ratingTrigger");
-    if (trigger && container.contains(trigger)) {
+    const chip = e.target.closest(".ratingChip");
+    if (chip && container.contains(chip)) {
       e.preventDefault();
       e.stopPropagation();
-      const sel = trigger.closest(".ratingSelect");
-      if (!sel) return;
-      const isOpen = sel.classList.contains("isOpen");
-      closeAll();
-      if (!isOpen) {
-        sel.classList.add("isOpen");
-        trigger.setAttribute("aria-expanded", "true");
-      }
-      return;
-    }
-
-    const opt = e.target.closest(".ratingOption");
-    if (opt && container.contains(opt)) {
-      e.preventDefault();
-      e.stopPropagation();
-      const sel = opt.closest(".ratingSelect");
+      const sel = chip.closest(".ratingSelect");
       const id = sel?.getAttribute("data-id");
-      const rate = opt.getAttribute("data-rate");
+      const rate = chip.getAttribute("data-rate");
       if (id && rate) {
         await setRating(id, rate);
         if (state.activeWeekend === weekend) renderActiveWeekend();
         showToast(t("saved") || "Gespeichert \u2713");
       }
-      closeAll();
       return;
     }
 
     const slotEl = e.target.closest(".slot");
     if (slotEl && container.contains(slotEl)) {
-      if (e.target.closest(".ratingSelect, .ratingMenu, .qbtn, a, button, input, label")) return;
+      if (e.target.closest(".ratingSelect, .qbtn, a, button, input, label")) return;
       const id = slotEl.getAttribute("data-artist-id") || "";
       if (!id) return;
       const current = ratings[id] || "unrated";
@@ -1156,22 +1143,8 @@ function bindRatingMenus(container, weekend) {
       await setRating(id, next);
       if (state.activeWeekend === weekend) renderActiveWeekend();
       showToast(t("saved") || "Gespeichert \u2713");
-      closeAll();
     }
   });
-
-  if (!ratingMenuBound) {
-    ratingMenuBound = true;
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".ratingSelect")) {
-        document.querySelectorAll(".ratingSelect.isOpen").forEach(sel => {
-          sel.classList.remove("isOpen");
-          const trigger = sel.querySelector(".ratingTrigger");
-          if (trigger) trigger.setAttribute("aria-expanded", "false");
-        });
-      }
-    });
-  }
 }
 
 function bindQuicklinks(container) {
