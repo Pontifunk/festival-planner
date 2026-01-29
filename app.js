@@ -8,7 +8,23 @@ const FEEDBACK_URL = "https://github.com/Pontifunk/festival-planner/issues/new/c
 
 const CANONICAL_TRAILING_SLASH = true;
 const WEEKENDS = ["W1", "W2"];
-const VALID_RATINGS = new Set(["liked", "maybe", "disliked", "unrated"]);
+const RATING_STATES = ["liked", "maybe", "disliked", "unrated"];
+const RATING_CYCLE = ["unrated", "liked", "maybe", "disliked"];
+const VALID_RATINGS = new Set(RATING_STATES);
+
+const RATING_ACTION_LABELS = {
+  liked: { actionKey: "rating_action_liked", fallbackKey: "liked", fallback: "Liked" },
+  maybe: { actionKey: "rating_action_maybe", fallbackKey: "maybe", fallback: "Maybe" },
+  disliked: { actionKey: "rating_action_disliked", fallbackKey: "disliked", fallback: "Disliked" },
+  unrated: { actionKey: "rating_action_unrated", fallbackKey: "reset", fallback: "Unrated" }
+};
+
+const RATING_CHIP_FALLBACKS = {
+  liked: "❤️",
+  maybe: "🤔",
+  disliked: "👎",
+  unrated: "○"
+};
 const BASE_PREFIX = getBasePrefix();
 const withBase = (path) => `${BASE_PREFIX}${path}`;
 
@@ -549,12 +565,7 @@ function renderSlot(slot, weekend) {
   const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
 
   const r = ratings[artistId] || "unrated";
-  const ratingLabels = {
-    liked: t("rating_action_liked") || t("liked") || "Liked",
-    maybe: t("rating_action_maybe") || t("maybe") || "Maybe",
-    disliked: t("rating_action_disliked") || t("disliked") || "Disliked",
-    unrated: t("rating_action_unrated") || t("reset") || "Unrated"
-  };
+  const ratingLabels = getRatingActionLabels();
 
   const slotId = slot.slotId ? `slot-${weekend}-${slot.slotId}` : `slot-${weekend}-${hashMini(name + stage + timeRange)}`;
 
@@ -568,19 +579,19 @@ function renderSlot(slot, weekend) {
       <div class="badges">
         <div class="ratingSelect" data-id="${escapeAttr(artistId)}" role="radiogroup" aria-label="${escapeAttr(t("rating_label") || "Rating")}">
           <button class="ratingChip ${r === "liked" ? "isActive" : ""}" data-rate="liked" type="button" role="radio" aria-checked="${r === "liked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.liked)}" aria-label="${escapeAttr(ratingLabels.liked)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_liked") || "❤️")}</span>
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("liked"))}</span>
             <span class="ratingLabel">${escapeHtml(t("liked"))}</span>
           </button>
           <button class="ratingChip ${r === "maybe" ? "isActive" : ""}" data-rate="maybe" type="button" role="radio" aria-checked="${r === "maybe" ? "true" : "false"}" title="${escapeAttr(ratingLabels.maybe)}" aria-label="${escapeAttr(ratingLabels.maybe)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_maybe") || "🤔")}</span>
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("maybe"))}</span>
             <span class="ratingLabel">${escapeHtml(t("maybe"))}</span>
           </button>
           <button class="ratingChip ${r === "disliked" ? "isActive" : ""}" data-rate="disliked" type="button" role="radio" aria-checked="${r === "disliked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.disliked)}" aria-label="${escapeAttr(ratingLabels.disliked)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_disliked") || "👎")}</span>
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("disliked"))}</span>
             <span class="ratingLabel">${escapeHtml(t("disliked"))}</span>
           </button>
           <button class="ratingChip ${r === "unrated" ? "isActive" : ""}" data-rate="unrated" type="button" role="radio" aria-checked="${r === "unrated" ? "true" : "false"}" title="${escapeAttr(ratingLabels.unrated)}" aria-label="${escapeAttr(ratingLabels.unrated)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(t("rating_chip_unrated") || "○")}</span>
+            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("unrated"))}</span>
             <span class="ratingLabel">${escapeHtml(t("unrated"))}</span>
           </button>
         </div>
@@ -938,8 +949,8 @@ function updateFiltersUI(weekend) {
   const currentDay = w.filters.day || dayFilter.value || "all";
   const dayVal = dates.includes(currentDay) ? currentDay : "all";
   const dayOptions = [
-    { value: "all", label: t("all_days") || "All days" },
-    ...dates.map(d => ({ value: d, label: formatDate(d) }))
+    buildFilterOption("all", t("all_days") || "All days"),
+    ...dates.map(d => buildFilterOption(d, formatDate(d)))
   ];
   setSelectOptions(dayFilter, dayOptions, dayVal);
   w.filters.day = dayVal;
@@ -954,11 +965,15 @@ function updateFiltersUI(weekend) {
   const currentStage = w.filters.stage || stageFilter.value || "all";
   const stageVal = stages.includes(currentStage) ? currentStage : "all";
   const stageOptions = [
-    { value: "all", label: t("all_stages") || "All stages" },
-    ...stages.map(s => ({ value: s, label: s }))
+    buildFilterOption("all", t("all_stages") || "All stages"),
+    ...stages.map(s => buildFilterOption(s, s))
   ];
   setSelectOptions(stageFilter, stageOptions, stageVal);
   w.filters.stage = stageVal;
+}
+
+function buildFilterOption(value, label) {
+  return { value, label };
 }
 
 function setSelectOptions(selectEl, options, selectedValue) {
@@ -1104,6 +1119,20 @@ function ratingChipLabel(value) {
   if (value === "unrated") return t("rating_chip_unrated") || (t("unrated") || "Unrated");
   return value;
 }
+
+function getRatingActionLabels() {
+  const labels = {};
+  RATING_STATES.forEach((key) => {
+    const meta = RATING_ACTION_LABELS[key];
+    labels[key] = t(meta.actionKey) || t(meta.fallbackKey) || meta.fallback;
+  });
+  return labels;
+}
+
+function getRatingChipIcon(key) {
+  const lookupKey = `rating_chip_${key}`;
+  return t(lookupKey) || RATING_CHIP_FALLBACKS[key] || "";
+}
 // ====== INTERACTIONS ======
 function bindSlotInteractions(container, weekend) {
   bindRatingMenus(container, weekend);
@@ -1114,7 +1143,7 @@ function bindRatingMenus(container, weekend) {
   if (!container) return;
   if (container.dataset.ratingMenusBound === "true") return;
   container.dataset.ratingMenusBound = "true";
-  const ratingCycle = ["unrated", "liked", "maybe", "disliked"];
+  const ratingCycle = RATING_CYCLE;
 
   container.addEventListener("click", async (e) => {
     const chip = e.target.closest(".ratingChip");
