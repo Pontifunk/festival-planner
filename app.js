@@ -358,6 +358,62 @@ function bindUi() {
       clearFilter(type);
     });
   }
+
+  const playPressState = new WeakMap();
+
+  const clearPlayPress = (btn) => {
+    const state = playPressState.get(btn);
+    if (!state) return;
+    if (state.timer) clearTimeout(state.timer);
+    playPressState.delete(btn);
+  };
+
+  document.addEventListener("pointerdown", (e) => {
+    const btn = e.target.closest(".playBtn");
+    if (!btn) return;
+    if (e.button !== undefined && e.button !== 0) return;
+    clearPlayPress(btn);
+    const state = { timer: null, longPress: false };
+    state.timer = setTimeout(() => {
+      state.longPress = true;
+      openPlayOverlay(btn.getAttribute("data-artist") || "", btn);
+    }, 550);
+    playPressState.set(btn, state);
+  });
+
+  document.addEventListener("pointerup", (e) => {
+    const btn = e.target.closest(".playBtn");
+    if (!btn) return;
+    clearPlayPress(btn);
+  });
+
+  document.addEventListener("pointercancel", (e) => {
+    const btn = e.target.closest(".playBtn");
+    if (!btn) return;
+    clearPlayPress(btn);
+  });
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".playBtn");
+    if (!btn) return;
+    const state = playPressState.get(btn);
+    if (state?.longPress) {
+      clearPlayPress(btn);
+      e.preventDefault();
+      return;
+    }
+    e.preventDefault();
+    const artist = btn.getAttribute("data-artist") || "";
+    openDefaultPlay(artist);
+  });
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".playMoreBtn");
+    if (!btn) return;
+    e.preventDefault();
+    const artist = btn.getAttribute("data-artist") || "";
+    openPlayOverlay(artist, btn);
+  });
 }
 
 // Moves the export card for mobile layout changes.
@@ -659,12 +715,17 @@ function renderSlot(slot, weekend) {
           </button>
         </div>
 
-        <div class="quicklinks">
-          <button class="qbtn sp" data-ql="sp" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">Spotify</span></button>
-          <button class="qbtn am" data-ql="am" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">Apple</span></button>
-          <button class="qbtn yt" data-ql="yt" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">YouTube</span></button>
-          <button class="qbtn sc" data-ql="sc" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">SoundCloud</span></button>
+        <div class="playRow">
+          <button class="playBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Open play links for ${name}`)}">
+            <span class="playIcon" aria-hidden="true">▶</span>
+            <span class="playText">Play</span>
+          </button>
+          <button class="playMoreBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Choose platform for ${name}`)}">
+            <span class="playMoreIcon" aria-hidden="true">⋯</span>
+          </button>
         </div>
+
+        
       </div>
     </div>
   `;
@@ -693,12 +754,16 @@ function renderFavorites() {
       <div class="favItem">
         <div class="actName">${escapeHtml(name)}</div>
         <div class="actMeta">${escapeHtml(meta)}</div>
-        <div class="quicklinks" style="margin-top:8px">
-          <button class="qbtn sp" data-ql="sp" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">Spotify</span></button>
-          <button class="qbtn am" data-ql="am" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">Apple</span></button>
-          <button class="qbtn yt" data-ql="yt" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">YouTube</span></button>
-          <button class="qbtn sc" data-ql="sc" data-name="${escapeAttr(name)}"><span class="qicon" aria-hidden="true"></span><span class="qtext">SoundCloud</span></button>
+        <div class="playRow" style="margin-top:8px">
+          <button class="playBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Open play links for ${name}`)}">
+            <span class="playIcon" aria-hidden="true">▶</span>
+            <span class="playText">Play</span>
+          </button>
+          <button class="playMoreBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Choose platform for ${name}`)}">
+            <span class="playMoreIcon" aria-hidden="true">⋯</span>
+          </button>
         </div>
+        
       </div>
     `;
   }).filter(Boolean);
@@ -707,7 +772,6 @@ function renderFavorites() {
     ? items.join("")
     : `<div class="muted">${escapeHtml(t("no_favorites") || "Noch keine Favoriten.")}</div>`;
 
-  bindQuicklinks(favoritesList);
 }
 
 // Updates the favorites count pill and label.
@@ -904,6 +968,7 @@ function renderWeekendChangesHistory() {
 // Exports ratings to a local JSON download.
 function exportRatings() {
   const createdAt = new Date().toISOString();
+  const playProvider = getPlayProvider();
   const artists = {};
   Object.keys(ratings).forEach((artistId) => {
     const name = state.artists.byId.get(artistId)?.name || "";
@@ -919,6 +984,9 @@ function exportRatings() {
     app: "festival-planner",
     exportVersion: 2,
     createdAt,
+    settings: {
+      playProvider
+    },
     schema: { artistKey: "artistId", slotKey: "slotId" },
     artists,
     slots: {}
@@ -957,6 +1025,10 @@ async function importRatings(e) {
         const rate = entry?.rating ? String(entry.rating).toLowerCase() : "";
         if (VALID_RATINGS.has(rate)) incoming[artistId] = rate;
       });
+      const provider = data?.settings?.playProvider;
+      if (provider && ["sp", "am", "yt", "sc"].includes(provider)) {
+        setPlayProvider(provider);
+      }
     } else if (data?.ratings && typeof data.ratings === "object") {
       incoming = data.ratings;
     }
@@ -1230,7 +1302,6 @@ function translateOr(key, fallback) {
 // ====== INTERACTIONS ======
 function bindSlotInteractions(container, weekend) {
   bindRatingMenus(container, weekend);
-  bindQuicklinks(container);
 }
 
 // Binds rating menu interactions for each slot.
@@ -1258,7 +1329,7 @@ function bindRatingMenus(container, weekend) {
 
     const slotEl = e.target.closest(".slot");
     if (slotEl && container.contains(slotEl)) {
-      if (e.target.closest(".ratingSelect, .qbtn, a, button, input, label")) return;
+      if (e.target.closest(".ratingSelect, a, button, input, label")) return;
       const id = slotEl.getAttribute("data-artist-id") || "";
       if (!id) return;
       const current = ratings[id] || "unrated";
@@ -1268,21 +1339,6 @@ function bindRatingMenus(container, weekend) {
       if (state.activeWeekend === weekend) renderActiveWeekend();
       showToast(t("saved") || "Gespeichert \u2713");
     }
-  });
-}
-
-// Binds external music platform links.
-function bindQuicklinks(container) {
-  Array.from(container.querySelectorAll(".qbtn")).forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const name = btn.getAttribute("data-name") || "";
-      const type = btn.getAttribute("data-ql");
-      if (type === "sp") openLink(makeSpotifySearchUrl(name));
-      if (type === "am") openLink(makeAppleMusicSearchUrl(name));
-      if (type === "yt") openLink(makeYouTubeSearchUrl(name));
-      if (type === "sc") openLink(makeSoundCloudSearchUrl(name));
-    });
   });
 }
 
@@ -1841,11 +1897,231 @@ function makeSpotifySearchUrl(name){ return `https://open.spotify.com/search/${e
 // Builds an Apple Music search URL for an artist.
 function makeAppleMusicSearchUrl(name){ return `https://music.apple.com/search?term=${encodeURIComponent(name)}`; }
 // Builds a YouTube search URL for an artist.
-function makeYouTubeSearchUrl(name){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(name + " dj set")}`; }
+function makeYouTubeSearchUrl(name){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(name)}`; }
 // Builds a SoundCloud search URL for an artist.
 function makeSoundCloudSearchUrl(name){ return `https://soundcloud.com/search?q=${encodeURIComponent(name)}`; }
 // Opens a link in a new tab safely.
 function openLink(url){ window.open(url, "_blank", "noopener"); }
+
+const DEFAULT_PLAY_PROVIDER = "sp";
+const PLAY_PROVIDER_KEY = "fp_play_provider";
+
+function getPlayProvider() {
+  return localStorage.getItem(PLAY_PROVIDER_KEY) || DEFAULT_PLAY_PROVIDER;
+}
+
+function setPlayProvider(value) {
+  if (!value) return;
+  localStorage.setItem(PLAY_PROVIDER_KEY, value);
+}
+
+let playOverlay = null;
+let playOverlayPanel = null;
+let playOverlayTitle = null;
+let playOverlayLinks = null;
+let playOverlayTrigger = null;
+
+// Basic normalization for multi-artist strings (b2b, &, x, feat).
+function normalizeSearchTerm(name) {
+  const primary = String(name || "").trim();
+  const normalized = primary
+    .replace(/\s*(?:b2b|&|x|feat\.?|ft\.?)\s*/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return { primary, normalized };
+}
+
+// Build provider URLs using the best available search term.
+function buildPlayUrls(name) {
+  const { primary, normalized } = normalizeSearchTerm(name);
+  const term = primary || normalized || "";
+  return {
+    sp: makeSpotifySearchUrl(term),
+    am: makeAppleMusicSearchUrl(term),
+    yt: makeYouTubeSearchUrl(term),
+    sc: makeSoundCloudSearchUrl(term)
+  };
+}
+
+function openDefaultPlay(name) {
+  const urls = buildPlayUrls(name);
+  const provider = getPlayProvider();
+  const url = urls[provider] || urls.sp;
+  if (url) openLink(url);
+}
+
+// Create the overlay once and reuse it for all artists.
+function ensurePlayOverlay() {
+  if (playOverlay) return;
+
+  playOverlay = document.createElement("div");
+  playOverlay.className = "playOverlay";
+  playOverlay.hidden = true;
+
+  playOverlayPanel = document.createElement("div");
+  playOverlayPanel.className = "playPanel";
+  playOverlayPanel.setAttribute("role", "dialog");
+  playOverlayPanel.setAttribute("aria-modal", "true");
+  playOverlayPanel.setAttribute("aria-labelledby", "playOverlayTitle");
+  playOverlayPanel.tabIndex = -1;
+
+  playOverlayTitle = document.createElement("div");
+  playOverlayTitle.className = "playPanelTitle";
+  playOverlayTitle.id = "playOverlayTitle";
+
+  const list = document.createElement("div");
+  list.className = "playPanelList";
+
+  const makeRow = (key, label) => {
+    const row = document.createElement("div");
+    row.className = "playRowItem";
+
+    const a = document.createElement("a");
+    a.className = `playLink ${key}`;
+    a.setAttribute("data-provider", key);
+    a.setAttribute("target", "_blank");
+    a.setAttribute("rel", "noopener noreferrer");
+    a.href = "#";
+    a.textContent = label;
+
+    const setBtn = document.createElement("button");
+    setBtn.type = "button";
+    setBtn.className = "playDefaultBtn";
+    setBtn.setAttribute("data-provider", key);
+    setBtn.textContent = "Als Standard";
+
+    row.append(a, setBtn);
+    return { row, link: a, button: setBtn };
+  };
+
+  const sp = makeRow("sp", "Spotify");
+  const am = makeRow("am", "Apple Music");
+  const yt = makeRow("yt", "YouTube");
+  const sc = makeRow("sc", "SoundCloud");
+
+  playOverlayLinks = [sp.link, am.link, yt.link, sc.link];
+
+  list.append(sp.row, am.row, yt.row, sc.row);
+  playOverlayPanel.append(playOverlayTitle, list);
+  playOverlay.append(playOverlayPanel);
+  document.body.append(playOverlay);
+
+  playOverlay.addEventListener("click", (e) => {
+    if (e.target === playOverlay) closePlayOverlay();
+  });
+
+  playOverlayPanel.addEventListener("click", (e) => {
+    const link = e.target.closest("a.playLink");
+    if (link) {
+      closePlayOverlay();
+      return;
+    }
+    const setBtn = e.target.closest(".playDefaultBtn");
+    if (setBtn) {
+      const provider = setBtn.getAttribute("data-provider");
+      setPlayProvider(provider);
+      updatePlayDefaultUI();
+    }
+  });
+
+  playOverlayPanel.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closePlayOverlay();
+      return;
+    }
+    if (e.key !== "Tab") return;
+    const items = playOverlayLinks || [];
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (!playOverlay || playOverlay.hidden) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closePlayOverlay();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (!playOverlay || playOverlay.hidden || !playOverlayTrigger) return;
+    positionPlayOverlay(playOverlayTrigger);
+  });
+}
+
+function positionPlayOverlay(trigger) {
+  if (!playOverlayPanel) return;
+  if (!trigger) return;
+  const isMobile = window.matchMedia("(max-width: 720px)").matches;
+  playOverlay.classList.toggle("isSheet", isMobile);
+  if (isMobile) return;
+
+  const rect = trigger.getBoundingClientRect();
+  const margin = 8;
+  const left = Math.min(Math.max(rect.left + rect.width / 2, 16), window.innerWidth - 16);
+  playOverlayPanel.style.left = `${left}px`;
+  playOverlayPanel.style.top = `${rect.bottom + margin}px`;
+  playOverlayPanel.style.transform = "translateX(-50%)";
+
+  const panelRect = playOverlayPanel.getBoundingClientRect();
+  if (panelRect.bottom > window.innerHeight - 8 && rect.top > panelRect.height + margin) {
+    playOverlayPanel.style.top = `${rect.top - margin}px`;
+    playOverlayPanel.style.transform = "translate(-50%, -100%)";
+  }
+}
+
+function openPlayOverlay(artist, trigger) {
+  ensurePlayOverlay();
+  playOverlayTrigger = trigger || null;
+
+  const name = String(artist || "").trim() || "Artist";
+  playOverlayTitle.textContent = `Open ${name} in\u2026`;
+
+  const urls = buildPlayUrls(name);
+  playOverlayLinks[0].href = urls.sp;
+  playOverlayLinks[1].href = urls.am;
+  playOverlayLinks[2].href = urls.yt;
+  playOverlayLinks[3].href = urls.sc;
+  updatePlayDefaultUI();
+
+  playOverlay.hidden = false;
+  playOverlay.classList.add("isOpen");
+  positionPlayOverlay(trigger);
+
+  setTimeout(() => {
+    playOverlayLinks[0].focus();
+  }, 0);
+}
+
+function closePlayOverlay() {
+  if (!playOverlay) return;
+  playOverlay.classList.remove("isOpen");
+  playOverlay.hidden = true;
+  if (playOverlayTrigger && typeof playOverlayTrigger.focus === "function") {
+    playOverlayTrigger.focus();
+  }
+  playOverlayTrigger = null;
+}
+
+function updatePlayDefaultUI() {
+  if (!playOverlayPanel) return;
+  const current = getPlayProvider();
+  playOverlayPanel.querySelectorAll(".playDefaultBtn").forEach((btn) => {
+    const key = btn.getAttribute("data-provider");
+    const isActive = key === current;
+    btn.classList.toggle("isActive", isActive);
+    btn.textContent = isActive ? "Standard" : "Als Standard";
+  });
+}
 
 // ====== CUSTOM SELECT ======
 function initCustomSelect(selectEl) {
