@@ -160,3 +160,5 @@ Lineup data and artist names remain property of their respective owners.
 ---
 
 Made with ❤️ for festival planning — not data collection.
+
+Note: Vibe-coded with VS Code and GPT 5.2 Codex.

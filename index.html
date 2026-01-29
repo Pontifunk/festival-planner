@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="de">
 <head>
+  <!-- Basic metadata and SEO -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
@@ -8,6 +9,7 @@
   <meta name="description" content="Privacy-first Tomorrowland 2026 lineup planner to rate DJs, save favorites locally, and plan W1/W2&mdash;no account, no tracking.">
   <link rel="canonical" href="https://festival-planner.tschann.me/">
 
+  <!-- Open Graph / Twitter cards -->
   <meta property="og:title" content="Tomorrowland 2026 Lineup Planner | Festival Planner">
   <meta property="og:description" content="Privacy-first Tomorrowland 2026 lineup planner to rate DJs, save favorites locally, and plan W1/W2&mdash;no account, no tracking.">
   <meta property="og:url" content="https://festival-planner.tschann.me/">
@@ -17,6 +19,7 @@
   <meta name="twitter:title" content="Tomorrowland 2026 Lineup Planner | Festival Planner">
   <meta name="twitter:description" content="Privacy-first Tomorrowland 2026 lineup planner to rate DJs, save favorites locally, and plan W1/W2&mdash;no account, no tracking.">
 
+  <!-- Structured data -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -29,6 +32,7 @@
     }
   </script>
 
+  <!-- Base href for subfolder hosting (e.g. /festival/2026/w1/) -->
   <script>
     (function () {
       var parts = location.pathname.split("/").filter(Boolean);
@@ -41,10 +45,12 @@
     })();
   </script>
 
+  <!-- PWA setup -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="favicon.ico">
   <meta name="theme-color" content="#2c1a60">
 
+  <!-- iOS / mobile PWA -->
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Festival Planner">
@@ -53,10 +59,12 @@
 
   <meta name="robots" content="index, follow">
 
+  <!-- App styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+  <!-- Top navigation/header -->
   <header class="topbar" id="top">
     <div class="brand">
       <div class="logo">FP</div>
@@ -91,13 +99,16 @@
     </button>
   </header>
 
+  <!-- Service worker update banner -->
   <div id="updateBanner" class="updateBanner" hidden>
     <div id="updateBannerText" class="updateBannerText">Update verf\u00fcgbar</div>
     <button id="updateReloadBtn" class="btn primary" type="button">Neu laden</button>
   </div>
 
   <main class="layout">
+    <!-- Main planner panel -->
     <section class="panel">
+      <!-- Hero / onboarding -->
       <div class="introCard">
         <div class="introIcon">&#9733;</div>
         <div class="introContent">
@@ -108,8 +119,10 @@
       </div>
       <div id="mobileExportAnchor"></div>
 
+      <!-- Error banner -->
       <div id="errorBox" class="errorBox" hidden></div>
 
+      <!-- Search + filters -->
       <div class="toolbar">
         <div class="ctrl searchCtrl">
           <span data-i18n="search">Suche</span>
@@ -141,13 +154,16 @@
 
       <div id="activeFilters" class="activeFilters" aria-live="polite" hidden></div>
 
+      <!-- Live search results -->
       <div id="searchResults" class="searchResults" hidden></div>
 
+      <!-- Weekend tabs -->
       <div class="weekendTabs" role="tablist" aria-label="Weekends">
         <button class="tabBtn isActive" data-weekend="W1" role="tab" aria-selected="true" data-i18n="weekend_1">Weekend 1</button>
         <button class="tabBtn" data-weekend="W2" role="tab" aria-selected="false" data-i18n="weekend_2">Weekend 2</button>
       </div>
 
+      <!-- Weekend 1 panel -->
       <section class="weekendPanel isActive" id="panelW1" data-weekend="W1" role="tabpanel" aria-labelledby="w1Section">
         <div class="weekendHeader">
           <div class="weekendTitle" id="w1Section" data-i18n="weekend_1">Weekend 1</div>
@@ -160,6 +176,7 @@
         <div id="actsListW1" class="list"></div>
       </section>
 
+      <!-- Weekend 2 panel -->
       <section class="weekendPanel" id="panelW2" data-weekend="W2" role="tabpanel" aria-labelledby="w2Section">
         <div class="weekendHeader">
           <div class="weekendTitle" id="w2Section" data-i18n="weekend_2">Weekend 2</div>
@@ -173,7 +190,9 @@
       </section>
     </section>
 
+    <!-- Sidebar cards -->
     <aside class="panel side">
+      <!-- Changes / diff summary -->
       <div id="changesBox" class="card" hidden>
         <div class="cardTitle" data-i18n="weekend_changes_title">&Auml;nderungen Weekend</div>
         <div id="weekendChangesSummary" class="changesSummary"></div>
@@ -183,6 +202,7 @@
         </div>
       </div>
       
+      <!-- Import / export -->
       <div class="card" id="plannerExportBox">
         <div class="cardTitle" data-i18n="planner_note_title">Import & Export</div>
         <div class="changesNoteBody">
@@ -197,11 +217,13 @@
         </div>
       </div>
 
+      <!-- Feedback -->
       <div class="card">
         <div class="cardTitle" data-i18n="feedback">Feedback</div>
         <a class="btn" id="feedbackBtn" href="#" target="_blank" rel="noopener noreferrer">GitHub Issues</a>
       </div>
 
+      <!-- Favorites -->
       <div class="card">
         <div class="favHeader">
           <div class="cardTitle" data-i18n="favorites">Favoriten</div>
@@ -211,12 +233,14 @@
         <div id="favoritesList" class="favList"></div>
       </div>
 
+      <!-- Support / donate -->
       <div class="card">
         <div class="cardTitle" data-i18n="support">Support</div>
         <p class="muted" data-i18n="support_text">Wenn dir Festival Planner hilft, kannst du das Projekt freiwillig unterst&uuml;tzen.</p>
         <a class="btn primary" id="donateBtn" href="#" target="_blank" rel="noopener noreferrer" data-i18n="donate">Spenden</a>
       </div>
 
+      <!-- Footer links -->
       <div class="footerLinks">
         <a href="legal/privacy.html" data-i18n="privacy">Datenschutz</a>
         <a href="legal/imprint.html" data-i18n="imprint">Impressum</a>
@@ -225,6 +249,7 @@
     </aside>
   </main>
 
+  <!-- Mobile menu overlay/sheet -->
   <div class="menuOverlay" id="menuOverlay" hidden></div>
   <aside class="menuSheet" id="menuSheet" aria-hidden="true">
     <div class="menuHandle"></div>
@@ -257,8 +282,10 @@
     </div>
   </aside>
 
+  <!-- Toast notifications -->
   <div id="actionToast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
+  <!-- App logic + service worker registration -->
   <script src="app.js"></script>
   <script>
     if ("serviceWorker" in navigator) {

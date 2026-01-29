@@ -3,25 +3,30 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Resolve repo root from this script location.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, "..");
 
+// Input/output folders.
 const BASE = path.join(REPO_ROOT, "data", "tomorrowland", "2026");
 const SNAP_DIR = path.join(BASE, "snapshots");
 const CHG_DIR  = path.join(BASE, "changes");
 
+// Small FS helpers.
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function readJson(file) { return JSON.parse(fs.readFileSync(file, "utf8")); }
 function readJsonSafe(file, fallback) { try { return readJson(file); } catch { return fallback; } }
 function writeJson(file, obj) { fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n", "utf8"); }
 
+// Build an index map for quick diffing.
 function indexBy(arr, keyFn) {
   const m = new Map();
   for (const x of arr) m.set(keyFn(x), x);
   return m;
 }
 
+// Compare two snapshots and return added/removed/replaced slot IDs.
 function diffSnapshots(prevSnap, currSnap) {
   const prevSlots = prevSnap?.slots ?? [];
   const currSlots = currSnap?.slots ?? [];
@@ -64,6 +69,7 @@ function getWeekendFromFilename(file) {
   return m ? `W${m[1]}` : null;
 }
 
+// Timestamp helpers for file naming.
 function nowTs() {
   const createdAt = new Date().toISOString();
   const ts = createdAt
@@ -73,6 +79,7 @@ function nowTs() {
   return { createdAt, ts };
 }
 
+// Generate per-weekend change files and update change indexes.
 function main() {
   ensureDir(CHG_DIR);
 

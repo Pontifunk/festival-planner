@@ -4,10 +4,12 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
+// Resolve repo paths.
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = path.join(ROOT_DIR, "data", "tomorrowland", "2026");
 const SNAP_DIR = path.join(BASE, "snapshots");
 
+// Day URLs to scrape (W1 + W2).
 const DAY_URLS = [
   // Weekend 1
   "https://belgium.tomorrowland.com/nl/line-up/?day=2026-07-17",
@@ -19,10 +21,12 @@ const DAY_URLS = [
   "https://belgium.tomorrowland.com/nl/line-up/?day=2026-07-26"
 ];
 
+// Small FS helpers.
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function writeJson(file, obj) { fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n", "utf8"); }
 function readJsonSafe(file, fallback) { try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch { return fallback; } }
 
+// Normalize artist names for stable IDs.
 function normalizeArtist(name) {
   return name
     .trim()
@@ -31,6 +35,7 @@ function normalizeArtist(name) {
     .replace(/\s+/g, " ");
 }
 
+// Normalize a stage field that may be string or object.
 function normalizeStageValue(stage) {
   if (!stage) return "";
   if (typeof stage === "string") return stage.trim();
@@ -41,10 +46,12 @@ function normalizeStageValue(stage) {
   return String(stage).trim();
 }
 
+// Short hash helper.
 function hash16(str) {
   return crypto.createHash("sha256").update(str).digest("hex").slice(0, 16);
 }
 
+// Build stable IDs for artist, position, and slot.
 function makeIds(slot) {
   const artistNormalized = normalizeArtist(slot.artist);
   const artistId = hash16(`tml|${artistNormalized}`);
@@ -53,6 +60,7 @@ function makeIds(slot) {
   return { artistNormalized, artistId, positionId, slotId };
 }
 
+// Map date strings to weekend identifiers.
 function weekendFromDate(dateStr) {
   // 2026-07-17/18/19 = W1, 2026-07-24/25/26 = W2
   if (dateStr >= "2026-07-17" && dateStr <= "2026-07-19") return "W1";
@@ -60,12 +68,14 @@ function weekendFromDate(dateStr) {
   return "UNKNOWN";
 }
 
+// Extract YYYY-MM-DD from the day= query param.
 function extractDayParam(url) {
   const m = url.match(/day=(\d{4}-\d{2}-\d{2})/);
   if (!m) throw new Error(`No day=YYYY-MM-DD found in URL: ${url}`);
   return m[1];
 }
 
+// Pull a YYYY-MM-DD substring from timestamps.
 function extractDateFromString(value) {
   const m = String(value || "").match(/(\d{4}-\d{2}-\d{2})/);
   return m ? m[1] : "";
@@ -75,6 +85,7 @@ function extractDateFromString(value) {
  * Heuristik: finde “wahrscheinlichstes” JSON Payload Objekt,
  * das Slot-ähnliche Daten enthält (stage/time/artist).
  */
+// Heuristic: pick the payload that looks most like lineup data.
 function findLineupPayload(jsonObjects) {
   // 1) Bevorzugt größere Objekte
   const candidates = jsonObjects
@@ -102,6 +113,7 @@ function findLineupPayload(jsonObjects) {
  * - Tiefensuche nach Arrays von Objekten
  * - Erkennung von Feldern, die wie start/end/time + artist/name + stage wirken
  */
+// Extract slot objects by walking a JSON payload.
 function extractSlotsFromPayload(payload, context) {
   const found = [];
 
@@ -161,6 +173,7 @@ function extractSlotsFromPayload(payload, context) {
   return [...uniq.values()];
 }
 
+// Choose the payload that best matches the target day/weekend.
 function pickBestPayload(entries, context) {
   let best = null;
   for (const entry of entries) {
@@ -178,6 +191,7 @@ function pickBestPayload(entries, context) {
   return best;
 }
 
+// Fetch a single day page and extract slots.
 async function fetchDay(browser, url) {
   const date = extractDayParam(url);
   const weekend = weekendFromDate(date);
@@ -241,6 +255,7 @@ async function fetchDay(browser, url) {
   return slots;
 }
 
+// Update snapshots index.json (latest pointer and history).
 function updateSnapshotIndex(snapshotFile, createdAt, slotCount) {
   const indexPath = path.join(SNAP_DIR, "index.json");
   const idx = readJsonSafe(indexPath, { latest: null, snapshots: [] });
@@ -254,6 +269,7 @@ function updateSnapshotIndex(snapshotFile, createdAt, slotCount) {
   return idx;
 }
 
+// Main scrape flow for all days and snapshot generation.
 async function main() {
   ensureDir(SNAP_DIR);
 

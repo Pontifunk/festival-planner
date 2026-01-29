@@ -4,16 +4,20 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 
+// Resolve repo paths.
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = path.join(ROOT_DIR, "data", "tomorrowland", "2026");
 const OUT_DIR = path.join(BASE, "artists");
 
+// Source page for artist listings.
 const ARTISTS_URL = "https://belgium.tomorrowland.com/nl/line-up/?page=artists";
 
+// Small FS helpers.
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function writeJson(file, obj) { fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n", "utf8"); }
 function readJsonSafe(file, fallback) { try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch { return fallback; } }
 
+// Normalize artist names for stable IDs.
 function normalizeName(name) {
   return name
     .trim()
@@ -26,6 +30,7 @@ function hash16(str) {
   return crypto.createHash("sha256").update(str).digest("hex").slice(0, 16);
 }
 
+// Build a deterministic artist ID from the name.
 function makeArtistId(name) {
   return hash16(`tml|${normalizeName(name)}`);
 }
@@ -34,6 +39,7 @@ function makeArtistId(name) {
  * Heuristik: finde ein JSON-Payload, das wie eine Artists-Liste aussieht.
  * Wir suchen nach Arrays/Objekten, die viele Namen enthalten.
  */
+// Heuristic: find the JSON payload that most likely contains artists.
 function findArtistsPayload(jsonPayloads) {
   // bevorzugt größere payloads
   const candidates = jsonPayloads
@@ -58,6 +64,7 @@ function findArtistsPayload(jsonPayloads) {
  * Extrahiert Artists aus payload via Tiefensuche.
  * Akzeptiert Objekte, die Felder wie name/title enthalten.
  */
+// Extract artists from a payload via deep traversal.
 function extractArtistsFromPayload(payload) {
   const found = [];
 
@@ -130,6 +137,7 @@ function extractArtistsFromPayload(payload) {
  * Fallback: DOM scrape (wenn JSON sniffer nichts bringt)
  * Achtung: Selector kann je nach Site-Update angepasst werden müssen.
  */
+// Fallback: DOM scrape when JSON sniffing fails.
 async function extractArtistsFromDOM(page) {
   // Warte auf irgendwas, das nach Artist-Liste aussieht
   // (Selektoren sind bewusst generisch)
@@ -162,6 +170,7 @@ async function extractArtistsFromDOM(page) {
   return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
+// Update artists index.json (latest pointer and history).
 function updateArtistsIndex(file, createdAt, count) {
   const indexPath = path.join(OUT_DIR, "index.json");
   const idx = readJsonSafe(indexPath, { latest: null, artists: [] });
@@ -175,6 +184,7 @@ function updateArtistsIndex(file, createdAt, count) {
   return idx;
 }
 
+// Main scrape flow: sniff JSON responses, fallback to DOM, write files.
 async function main() {
   ensureDir(OUT_DIR);
 

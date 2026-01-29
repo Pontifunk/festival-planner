@@ -3,8 +3,10 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 
+// Output directory for generated snapshots.
 const OUT_DIR = path.resolve(process.cwd(), "..", "data", "tomorrowland", "2026", "snapshots");
 
+// Normalize artist names for stable hashing and matching.
 function normalizeArtist(name) {
   return name
     .trim()
@@ -17,6 +19,7 @@ function hash(str) {
   return crypto.createHash("sha256").update(str).digest("hex").slice(0, 16);
 }
 
+// Build stable IDs for artist, position, and slot.
 function makeIds(slot) {
   const artistNormalized = normalizeArtist(slot.artist);
   const artistId = hash(`tml|${artistNormalized}`);
@@ -29,6 +32,7 @@ function ensureDir(p) {
   fs.mkdirSync(p, { recursive: true });
 }
 
+// Read JSON or return a fallback if missing/invalid.
 function readJsonSafe(file, fallback) {
   try {
     return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -41,6 +45,7 @@ function writeJson(file, obj) {
   fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n", "utf8");
 }
 
+// Generate a minimal snapshot file plus index/latest entries.
 function main() {
   ensureDir(OUT_DIR);
 

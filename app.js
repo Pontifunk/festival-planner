@@ -141,6 +141,7 @@ const state = {
 // ====== INIT ======
 init();
 
+// Bootstraps UI state, loads data, and renders the initial view.
 async function init() {
   if (DONATION_URL && !DONATION_URL.includes("DEINNAME")) {
     donateBtn.href = DONATION_URL;
@@ -200,6 +201,7 @@ async function init() {
   setActiveWeekend(state.activeWeekend, false);
 }
 
+// Wires the update banner and handles SW update flow.
 function setupServiceWorkerUpdates(registration) {
   const banner = document.getElementById("updateBanner");
   const textEl = document.getElementById("updateBannerText");
@@ -250,6 +252,7 @@ function setupServiceWorkerUpdates(registration) {
   }
 }
 
+// Attaches all UI event listeners.
 function bindUi() {
   langSelect.addEventListener("change", async () => {
     lang = langSelect.value;
@@ -357,6 +360,7 @@ function bindUi() {
   }
 }
 
+// Moves the export card for mobile layout changes.
 function setupMobileExportPlacement() {
   if (!plannerExportBox || !mobileExportAnchor) return;
   const originalParent = plannerExportBox.parentNode;
@@ -408,6 +412,7 @@ async function loadSnapshotIndex() {
   });
 }
 
+// Resolves the newest snapshot for the given weekend.
 async function loadLatestSnapshotForWeekend(weekend) {
   const latestUrl = withBase(`/data/${state.festival}/${state.year}/snapshots/latest.json`);
   const latest = await tryFetchJson(latestUrl, { cache: "no-store" });
@@ -426,11 +431,13 @@ async function loadLatestSnapshotForWeekend(weekend) {
   return { file: fallback, snapshot: await loadSnapshotFile(fallback) };
 }
 
+// Fetches a snapshot JSON file by name.
 async function loadSnapshotFile(file) {
   const url = withBase(`/data/${state.festival}/${state.year}/snapshots/${file}`);
   return await fetchJson(url, { cache: "default" });
 }
 
+// Loads a snapshot into state and updates the select UI.
 async function loadSnapshotForWeekend(weekend, file = null) {
   const w = state.weekends[weekend];
   w.error = null;
@@ -470,6 +477,7 @@ async function loadSnapshotForWeekend(weekend, file = null) {
   }
 }
 
+// Loads the latest artist metadata index.
 async function loadArtistsLatest() {
   const base = withBase(`/data/${state.festival}/${state.year}/artists`);
   const latest = await tryFetchJson(`${base}/latest.json`, { cache: "no-store" });
@@ -488,11 +496,13 @@ async function loadArtistsLatest() {
   }
 }
 
+// Loads the changes index for diff history.
 async function loadChangesIndex() {
   const url = withBase(`/data/${state.festival}/${state.year}/changes/index.json`);
   state.changesIndex = await tryFetchJson(url, { cache: "no-store" });
 }
 
+// Loads the latest change summaries for both weekends.
 async function loadWeekendChanges() {
   const base = withBase(`/data/${state.festival}/${state.year}/changes`);
   const [w1, w2] = await Promise.all([
@@ -517,6 +527,7 @@ function renderActiveWeekend() {
   renderWeekendChangesBox();
 }
 
+// Builds the day/stage list for a weekend and injects HTML.
 function renderWeekend(weekend) {
   const w = state.weekends[weekend];
   const container = weekend === "W1" ? actsListW1 : actsListW2;
@@ -556,6 +567,7 @@ function renderWeekend(weekend) {
   indexArtistElements(container, weekend);
 }
 
+// Renders a day group with stage accordions.
 function renderDayGroup(group, weekend, openState) {
   const dateLabel = formatDate(group.date);
   const dayUrl = `https://belgium.tomorrowland.com/nl/line-up/?day=${group.date}`;
@@ -606,6 +618,7 @@ function renderDayGroup(group, weekend, openState) {
   `;
 }
 
+// Renders a single artist slot card.
 function renderSlot(slot, weekend) {
   const artistId = slot.artistId || "";
   const name = slot.artist || "Unknown Artist";
@@ -657,6 +670,7 @@ function renderSlot(slot, weekend) {
   `;
 }
 
+// Renders the favorites list and summary.
 function renderFavorites() {
   const weekend = state.activeWeekend;
   const w = state.weekends[weekend];
@@ -696,6 +710,7 @@ function renderFavorites() {
   bindQuicklinks(favoritesList);
 }
 
+// Updates the favorites count pill and label.
 function updateFavoritesSummary(count) {
   if (!favoritesToggle) return;
   const label = t("favorites_count") || "Deine Favoriten: {count} DJs";
@@ -705,12 +720,14 @@ function updateFavoritesSummary(count) {
   updateFavoritesToggleUI();
 }
 
+// Syncs favorites-only toggle UI state.
 function updateFavoritesToggleUI() {
   if (!favoritesToggle) return;
   favoritesToggle.classList.toggle("isActive", favoritesOnly);
   favoritesToggle.setAttribute("aria-pressed", favoritesOnly ? "true" : "false");
 }
 
+// Enables or disables favorites-only filtering.
 function setFavoritesOnly(next) {
   favoritesOnly = !!next;
   if (favoritesOnly) {
@@ -725,6 +742,7 @@ function setFavoritesOnly(next) {
   renderActiveWeekend();
 }
 
+// Shows a short-lived toast message.
 function showToast(message) {
   if (!actionToast) return;
   actionToast.textContent = message;
@@ -736,6 +754,7 @@ function showToast(message) {
   }, 1300);
 }
 
+// Opens the mobile menu and locks scroll.
 function openMenu() {
   if (!menuSheet || !menuOverlay || !menuBtn) return;
   menuOpen = true;
@@ -748,6 +767,7 @@ function openMenu() {
   document.body.style.top = `-${menuScrollY}px`;
 }
 
+// Closes the mobile menu and restores scroll.
 function closeMenu() {
   if (!menuSheet || !menuOverlay || !menuBtn) return;
   menuOpen = false;
@@ -760,11 +780,13 @@ function closeMenu() {
   if (menuScrollY) window.scrollTo(0, menuScrollY);
 }
 
+// Toggles the mobile menu open/closed.
 function toggleMenu() {
   if (menuOpen) closeMenu();
   else openMenu();
 }
 
+// Routes menu actions (scroll, weekend, filters).
 function handleMenuItem(item) {
   const action = item.getAttribute("data-action");
   const target = item.getAttribute("data-target");
@@ -794,6 +816,7 @@ function handleMenuItem(item) {
   if (postClose) requestAnimationFrame(() => postClose());
 }
 
+// Scrolls smoothly to the given selector.
 function scrollToTarget(selector) {
   if (!selector) return;
   const el = document.querySelector(selector);
@@ -801,6 +824,7 @@ function scrollToTarget(selector) {
   el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// Populates menu day links for quick navigation.
 function updateMenuDayLinks(dates) {
   if (!menuDayLinks) return;
   if (!dates || !dates.length) {
@@ -814,6 +838,7 @@ function updateMenuDayLinks(dates) {
   }).join("");
 }
 
+// Renders the changes summary card.
 function renderWeekendChangesBox() {
   if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesHistory) return;
   const data = state.weekendChanges?.[state.activeWeekend] || null;
@@ -839,6 +864,7 @@ function renderWeekendChangesBox() {
   weekendChangesBox.hidden = false;
 }
 
+// Renders the change history list.
 function renderWeekendChangesHistory() {
   if (!weekendChangesHistory) return;
   const idx = state.changesIndex;
@@ -875,6 +901,7 @@ function renderWeekendChangesHistory() {
   }).join("");
 }
 
+// Exports ratings to a local JSON download.
 function exportRatings() {
   const createdAt = new Date().toISOString();
   const artists = {};
@@ -907,6 +934,7 @@ function exportRatings() {
   URL.revokeObjectURL(url);
 }
 
+// Imports ratings from a JSON file.
 async function importRatings(e) {
   const file = e.target.files?.[0];
   if (!file) return;
@@ -976,6 +1004,7 @@ async function importRatings(e) {
   }
 }
 
+// Updates last-checked and last-updated pills.
 function renderStatusPills() {
   const w = state.weekends[state.activeWeekend];
   const lastChecked = w.snapshot?.meta?.createdAt
@@ -987,6 +1016,7 @@ function renderStatusPills() {
   lastUpdatedPill.textContent = `${slotCount} ${t("slots") || "Slots"}`;
 }
 
+// Rebuilds day/stage filter options from snapshot data.
 function updateFiltersUI(weekend) {
   const w = state.weekends[weekend];
   if (!w?.snapshot?.slots) return;
@@ -1022,10 +1052,12 @@ function updateFiltersUI(weekend) {
   w.filters.stage = stageVal;
 }
 
+// Creates a filter option descriptor.
 function buildFilterOption(value, label) {
   return { value, label };
 }
 
+// Renders select options and syncs the custom select UI.
 function setSelectOptions(selectEl, options, selectedValue) {
   if (!selectEl) return;
   selectEl.innerHTML = options.map(o => `
@@ -1035,6 +1067,7 @@ function setSelectOptions(selectEl, options, selectedValue) {
   rebuildCustomSelect(selectEl);
 }
 
+// Renders active filter chips row.
 function renderActiveFilters() {
   if (!activeFiltersRow) return;
   const w = state.weekends[state.activeWeekend];
@@ -1100,6 +1133,7 @@ function renderActiveFilters() {
   `;
 }
 
+// Clears a specific filter and refreshes results.
 function clearFilter(type) {
   const w = state.weekends[state.activeWeekend];
   if (!w.filters) w.filters = { day: "all", stage: "all" };
@@ -1156,12 +1190,14 @@ function clearFilter(type) {
   }
 }
 
+// Gets the display label for a select value.
 function getSelectLabel(selectEl, value) {
   if (!selectEl) return value;
   const opt = Array.from(selectEl.options).find(o => o.value === value);
   return opt ? opt.textContent : value;
 }
 
+// Returns the label for a rating filter chip.
 function ratingChipLabel(value) {
   if (value === "liked") return translateOr("rating_chip_liked", "❤️");
   if (value === "maybe") return translateOr("rating_chip_maybe", "🤔");
@@ -1170,6 +1206,7 @@ function ratingChipLabel(value) {
   return value;
 }
 
+// Builds i18n labels for rating actions.
 function getRatingActionLabels() {
   const labels = {};
   RATING_STATES.forEach((key) => {
@@ -1179,11 +1216,13 @@ function getRatingActionLabels() {
   return labels;
 }
 
+// Resolves the icon for a rating state.
 function getRatingChipIcon(key) {
   const lookupKey = `rating_chip_${key}`;
   return translateOr(lookupKey, RATING_CHIP_FALLBACKS[key] || "");
 }
 
+// Looks up a translation with fallback.
 function translateOr(key, fallback) {
   if (key && Object.prototype.hasOwnProperty.call(dict, key)) return dict[key];
   return fallback;
@@ -1194,6 +1233,7 @@ function bindSlotInteractions(container, weekend) {
   bindQuicklinks(container);
 }
 
+// Binds rating menu interactions for each slot.
 function bindRatingMenus(container, weekend) {
   if (!container) return;
   if (container.dataset.ratingMenusBound === "true") return;
@@ -1231,6 +1271,7 @@ function bindRatingMenus(container, weekend) {
   });
 }
 
+// Binds external music platform links.
 function bindQuicklinks(container) {
   Array.from(container.querySelectorAll(".qbtn")).forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -1245,6 +1286,7 @@ function bindQuicklinks(container) {
   });
 }
 
+// Indexes artist elements for search/scroll.
 function indexArtistElements(container, weekend) {
   const map = new Map();
   Array.from(container.querySelectorAll(".slot")).forEach(el => {
@@ -1254,6 +1296,7 @@ function indexArtistElements(container, weekend) {
   state.weekends[weekend].artistFirstEl = map;
 }
 
+// Updates live search results list.
 function updateSearchResults() {
   const q = (searchInput.value || "").trim().toLowerCase();
   if (!q) {
@@ -1296,6 +1339,7 @@ function updateSearchResults() {
   searchResults.hidden = false;
 }
 
+// Scrolls to an artist in the active list.
 function scrollToArtist(artistId) {
   const w = state.weekends[state.activeWeekend];
   const el = w.artistFirstEl.get(artistId);
@@ -1316,6 +1360,7 @@ function scrollToArtist(artistId) {
   setTimeout(() => el.classList.remove("isTarget"), 2500);
 }
 
+// Opens the correct day/stage details for a slot.
 function openDetailsForSlot(container, slot) {
   if (!container || !slot) return;
   const day = slot.date || extractDate(slot.start) || "Unknown";
@@ -1328,6 +1373,7 @@ function openDetailsForSlot(container, slot) {
   if (stageEl && !stageEl.open) stageEl.open = true;
 }
 
+// Switches the active weekend tab and updates route.
 function setActiveWeekend(weekend, updateRoute = true) {
   const normalized = normalizeWeekend(weekend) || "W1";
   state.activeWeekend = normalized;
@@ -1392,6 +1438,7 @@ function groupSlots(slots, ratingFilterValue, filters) {
   });
 }
 
+// Maps artist IDs to their slots.
 function buildArtistSlotMap(slots) {
   const map = new Map();
   slots.forEach(slot => {
@@ -1403,6 +1450,7 @@ function buildArtistSlotMap(slots) {
   return map;
 }
 
+// Counts total slots in grouped data.
 function countGroupedSlots(grouped) {
   let count = 0;
   grouped.forEach(day => {
@@ -1413,6 +1461,7 @@ function countGroupedSlots(grouped) {
   return count;
 }
 
+// Sorts stages by the predefined order list.
 function sortStagesByOrder(stages) {
   const orderIndex = new Map(STAGE_ORDER.map((name, idx) => [normalizeStageName(name), idx]));
   return stages
@@ -1426,11 +1475,13 @@ function sortStagesByOrder(stages) {
     .map(item => item.name);
 }
 
+// Returns a genre label for a stage.
 function getStageGenre(stage) {
   const key = normalizeStageName(stage);
   return STAGE_GENRES[key] || "";
 }
 
+// Reads which day/stage accordions are open.
 function getOpenState(container) {
   const openDays = new Set();
   const openStages = new Map();
@@ -1452,6 +1503,7 @@ function getOpenState(container) {
   return { openDays, openStages };
 }
 
+// Keeps accordion open state consistent after filtering.
 function resolveOpenState(grouped, prevOpen, filters) {
   const openDays = new Set();
   const openStages = new Map();
@@ -1504,6 +1556,7 @@ function getBasePrefix() {
   return baseParts.length ? `/${baseParts.join("/")}` : "";
 }
 
+// Parses festival/year/weekend from the current path.
 function parseRoute(pathname) {
   const overridePath = getQueryParam("path");
   const effectivePath = overridePath ? overridePath : pathname;
@@ -1517,16 +1570,19 @@ function parseRoute(pathname) {
   };
 }
 
+// Builds the canonical URL path for the route.
 function canonicalPath(r) {
   const base = `${BASE_PREFIX}/${r.festival}/${r.year}/${r.weekend}`;
   return CANONICAL_TRAILING_SLASH ? `${base}/` : base;
 }
 
+// Replaces the URL to the canonical route.
 function setCanonicalRoute(r) {
   if (!r?.festival || !r?.year || !r?.weekend) return;
   history.replaceState({}, "", canonicalPath(r));
 }
 
+// Normalizes path override query param routing.
 function normalizeUrlIfNeeded() {
   const { value: p, rest } = stripQueryParam(location.search, "path");
   if (!p) return;
@@ -1534,6 +1590,7 @@ function normalizeUrlIfNeeded() {
   history.replaceState({}, "", canonical);
 }
 
+// Ensures trailing slash and canonical path.
 function ensureCanonicalUrl() {
   if (!CANONICAL_TRAILING_SLASH) return;
 
@@ -1558,6 +1615,7 @@ function ensureCanonicalUrl() {
 
 // ====== i18n ======
 let dict = {};
+// Loads i18n JSON and updates localized text.
 async function applyTranslations(newLang) {
   const res = await fetch(withBase(`/i18n/${newLang}.json`), { cache: "no-store" });
   dict = res.ok ? await res.json() : {};
@@ -1572,10 +1630,12 @@ async function applyTranslations(newLang) {
   document.querySelectorAll("[data-custom-select]").forEach((sel) => syncCustomSelect(sel));
 }
 
+// Returns a translated string or the key fallback.
 function t(key) {
   return dict[key] || key;
 }
 
+// Returns the localized "not available" placeholder.
 function notAvailable() {
   return t("not_available_yet") || "Not available yet";
 }
@@ -1587,6 +1647,7 @@ function cleanSegment(value, pattern, fallback) {
   return v;
 }
 
+// Reads a query parameter value.
 function getQueryParam(name) {
   if (typeof URLSearchParams !== "undefined") {
     return new URLSearchParams(location.search).get(name);
@@ -1603,6 +1664,7 @@ function getQueryParam(name) {
   return null;
 }
 
+// Removes a query param and returns remaining query.
 function stripQueryParam(search, name) {
   if (typeof URLSearchParams !== "undefined") {
     const params = new URLSearchParams(search);
@@ -1629,6 +1691,7 @@ function stripQueryParam(search, name) {
   return { value, rest: kept.length ? `?${kept.join("&")}` : "" };
 }
 
+// Normalizes weekend identifiers to W1/W2.
 function normalizeWeekend(value) {
   const v = String(value || "").toUpperCase();
   if (v === "W1" || v === "W2") return v;
@@ -1637,10 +1700,12 @@ function normalizeWeekend(value) {
   return "";
 }
 
+// Returns the snapshot select for a weekend.
 function snapshotSelectForWeekend(weekend) {
   return weekend === "W1" ? snapshotSelectW1 : snapshotSelectW2;
 }
 
+// Populates snapshot options for a weekend.
 function setSnapshotOptions(weekend) {
   const select = snapshotSelectForWeekend(weekend);
   const opts = state.weekends[weekend].options || [];
@@ -1655,11 +1720,13 @@ function setSnapshotOptions(weekend) {
   rebuildCustomSelect(select);
 }
 
+// Formats an ISO datetime string.
 function formatDateTime(iso) {
   if (!iso) return notAvailable();
   try { return new Date(iso).toLocaleString(); } catch { return iso; }
 }
 
+// Formats an ISO date string.
 function formatDate(dateStr) {
   if (!dateStr) return notAvailable();
   try {
@@ -1671,17 +1738,20 @@ function formatDate(dateStr) {
   }
 }
 
+// Extracts an ISO date from a string.
 function extractDate(value) {
   const m = String(value || "").match(/(\d{4}-\d{2}-\d{2})/);
   return m ? m[1] : "";
 }
 
+// Extracts HH:MM from a time string.
 function formatTime(value) {
   const m = String(value || "").match(/(\d{2}):(\d{2})/);
   if (!m) return "";
   return `${m[1]}:${m[2]}`;
 }
 
+// Converts a time string to minutes since midnight.
 function toMinutes(value) {
   const t = formatTime(value);
   if (!t) return 9999;
@@ -1689,6 +1759,7 @@ function toMinutes(value) {
   return h * 60 + m;
 }
 
+// Normalizes stage data to a display string.
 function normalizeStage(stage) {
   if (typeof stage === "string") {
     const s = stage.trim();
@@ -1701,6 +1772,7 @@ function normalizeStage(stage) {
   return "Unknown Stage";
 }
 
+// Normalizes stage names for lookup keys.
 function normalizeStageName(name) {
   return String(name || "")
     .trim()
@@ -1708,28 +1780,33 @@ function normalizeStageName(name) {
     .toUpperCase();
 }
 
+// Resolves artist name from metadata or slot.
 function getArtistName(artistId, slot) {
   return state.artists.byId.get(artistId)?.name || slot.artist || "Unknown Artist";
 }
 
+// Shows the top error box.
 function showError(msg) {
   if (!errorBox) return;
   errorBox.textContent = msg;
   errorBox.hidden = false;
 }
 
+// Clears the top error box.
 function clearError() {
   if (!errorBox) return;
   errorBox.hidden = true;
   errorBox.textContent = "";
 }
 
+// Creates a short stable hash for IDs.
 function hashMini(str) {
   let h = 0;
   for (let i = 0; i < str.length; i++) h = ((h << 5) - h) + str.charCodeAt(i) | 0;
   return Math.abs(h).toString(36);
 }
 
+// Escapes HTML special characters.
 function escapeHtml(s) {
   return String(s || "")
     .replace(/&/g, "&amp;")
@@ -1738,14 +1815,17 @@ function escapeHtml(s) {
     .replace(/\"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+// Escapes HTML attribute values.
 function escapeAttr(s){ return escapeHtml(s).replace(/`/g, "&#096;"); }
 
+// Fetches JSON and throws on non-OK responses.
 async function fetchJson(url, { cache = "default" } = {}) {
   const res = await fetch(url, { cache });
   if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
   return await res.json();
 }
 
+// Fetches JSON and returns null on errors.
 async function tryFetchJson(url, { cache = "default" } = {}) {
   try {
     const res = await fetch(url, { cache });
@@ -1758,9 +1838,13 @@ async function tryFetchJson(url, { cache = "default" } = {}) {
 
 // ====== MUSIC LINKS ======
 function makeSpotifySearchUrl(name){ return `https://open.spotify.com/search/${encodeURIComponent(name)}`; }
+// Builds an Apple Music search URL for an artist.
 function makeAppleMusicSearchUrl(name){ return `https://music.apple.com/search?term=${encodeURIComponent(name)}`; }
+// Builds a YouTube search URL for an artist.
 function makeYouTubeSearchUrl(name){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(name + " dj set")}`; }
+// Builds a SoundCloud search URL for an artist.
 function makeSoundCloudSearchUrl(name){ return `https://soundcloud.com/search?q=${encodeURIComponent(name)}`; }
+// Opens a link in a new tab safely.
 function openLink(url){ window.open(url, "_blank", "noopener"); }
 
 // ====== CUSTOM SELECT ======
@@ -1878,6 +1962,7 @@ function initCustomSelect(selectEl) {
   syncCustomSelect(selectEl);
 }
 
+// Syncs custom select UI with native select state.
 function syncCustomSelect(selectEl) {
   const bound = customSelectMap.get(selectEl);
   const wrapper = bound?.wrapper || (selectEl.nextSibling?.classList?.contains("selectWrap")
@@ -1904,6 +1989,7 @@ function syncCustomSelect(selectEl) {
   if (activeId) trigger.setAttribute("aria-activedescendant", activeId);
 }
 
+// Rebuilds the custom select after options change.
 function rebuildCustomSelect(selectEl) {
   const wrapper = selectEl?.parentNode?.querySelector(".selectWrap");
   if (wrapper) wrapper.remove();
@@ -1911,6 +1997,7 @@ function rebuildCustomSelect(selectEl) {
   initCustomSelect(selectEl);
 }
 
+// Falls back to the native select if needed.
 function ensureSelectVisible(selectEl) {
   if (!selectEl) return;
   const bound = customSelectMap.get(selectEl);
@@ -1933,6 +2020,7 @@ function badgeFor(r) {
   return { cls: "", text: t("unrated") };
 }
 
+// Updates rating state and persists to IndexedDB.
 async function setRating(artistId, rate) {
   if (!artistId) return;
   if (rate === "unrated") {
@@ -1949,9 +2037,12 @@ const DB_NAME = "festival_planner";
 const DB_STORE = "ratings";
 const DB_VERSION = 1;
 
+// Creates the key prefix for a festival/year.
 function makeDbKeyPrefix(r){ return `${r.festival}::${r.year}::`; }
+// Creates the full key for an artist rating.
 function makeDbKey(r, artistId){ return `${makeDbKeyPrefix(r)}${artistId}`; }
 
+// Opens the IndexedDB database.
 function db(){
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -1963,6 +2054,7 @@ function db(){
     req.onerror = () => reject(req.error);
   });
 }
+// Stores a rating in IndexedDB.
 async function dbPut(key, value){
   const d = await db();
   return new Promise((resolve, reject) => {
@@ -1972,6 +2064,7 @@ async function dbPut(key, value){
     tx.onerror = () => reject(tx.error);
   });
 }
+// Deletes a rating from IndexedDB.
 async function dbDelete(key){
   const d = await db();
   return new Promise((resolve, reject) => {
@@ -1981,6 +2074,7 @@ async function dbDelete(key){
     tx.onerror = () => reject(tx.error);
   });
 }
+// Reads all ratings with the given key prefix.
 async function dbGetAll(prefix){
   const d = await db();
   return new Promise((resolve, reject) => {

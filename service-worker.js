@@ -1,8 +1,11 @@
+// Cache versioning to bust old assets when app changes.
 const CACHE_VERSION = "v18";
 const CACHE_NAME = `festival-planner-${CACHE_VERSION}`;
+// Resolve the base path when hosted in a subfolder (e.g. GitHub Pages).
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 const withBase = (path) => `${BASE_PATH}${path}`;
 
+// Core shell assets that should be available offline.
 const CORE_ASSETS = [
   "/",
   "/index.html",
@@ -18,11 +21,13 @@ const CORE_ASSETS = [
   "/i18n/en.json",
 ].map(withBase);
 
+// Install: cache the core shell and activate immediately.
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)));
   self.skipWaiting();
 });
 
+// Activate: clean up old caches and take control of open clients.
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -32,22 +37,26 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+// Allow the page to trigger skipWaiting for updates.
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
 });
 
+// Detect HTML navigations (app shell).
 function isHtmlRequest(req) {
   if (req.mode === "navigate") return true;
   const accept = req.headers.get("accept") || "";
   return accept.includes("text/html");
 }
 
+// Detect JSON data requests (lineup snapshots, i18n).
 function isJsonRequest(url) {
   return url.pathname.endsWith(".json");
 }
 
+// Detect static assets for stale-while-revalidate.
 function isStaticAssetRequest(req, url) {
   const dest = req.destination;
   if (dest === "style" || dest === "script" || dest === "image" || dest === "font") return true;
@@ -61,11 +70,13 @@ function isStaticAssetRequest(req, url) {
   );
 }
 
+// Cache a successful response for later offline use.
 async function cacheResponse(cache, request, response) {
   if (!response || !response.ok) return;
   await cache.put(request, response);
 }
 
+// Network-first strategy for HTML/JSON; fall back to cache and shell.
 async function networkFirst(request, fallbackToIndex = false) {
   const cache = await caches.open(CACHE_NAME);
   try {
@@ -83,6 +94,7 @@ async function networkFirst(request, fallbackToIndex = false) {
   }
 }
 
+// Stale-while-revalidate for static assets.
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
@@ -96,6 +108,7 @@ async function staleWhileRevalidate(request) {
   return cached || network || new Response("", { status: 504, statusText: "Offline" });
 }
 
+// Route requests through the chosen caching strategy.
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);

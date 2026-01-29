@@ -1,4 +1,5 @@
 :root{
+  /* Theme tokens */
   color-scheme: dark;
 
   --bg:#0b0c12;
@@ -20,6 +21,7 @@
   --tap: 44px; /* minimum tap target-ish */
 }
 
+/* Global resets */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -223,6 +225,7 @@ button{
   margin-bottom:12px;
 }
 
+/* Mobile menu trigger */
 .menuBtn{
   width:44px;
   height:44px;
@@ -722,6 +725,7 @@ button{
 .footerLinks{display:flex;gap:12px;justify-content:flex-start;color:var(--muted);font-size:13px;flex-wrap:wrap}
 .privacyNote{margin-top:8px;font-size:12px;line-height:1.5}
 
+/* Mobile menu overlay & sheet */
 .menuOverlay{
   position:fixed;
   inset:0;
@@ -805,6 +809,7 @@ button{
 .menuItem.isSub{font-weight:700}
 .menuEmpty{color:var(--muted);font-size:12px}
 
+/* Toasts and update banner */
 .toast{
   position:fixed;
   left:50%;
