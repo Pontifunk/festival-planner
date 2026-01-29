@@ -103,6 +103,25 @@ No build step required.
 
 ---
 
+## Manual Smoke Checks
+
+Use these quick checks after changes (especially Service Worker updates):
+
+1) Online load
+   - App loads without console errors.
+   - Snapshot dropdown populates.
+
+2) Offline fallback
+   - Open the app once, then go offline and refresh.
+   - Shell loads and last visited content is available.
+
+3) Update flow
+   - Deploy a change.
+   - Open the app again and confirm the "Update available" banner appears.
+   - Click "Reload" to apply the update.
+
+---
+
 ## 🧪 Status & Roadmap
 
 **Current:**
