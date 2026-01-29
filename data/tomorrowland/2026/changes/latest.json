@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-01-28T06:55:34.961Z",
+    "createdAt": "2026-01-29T07:07:32.995Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,35 +8,57 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260127_065427Z_W1.json",
-        "to": "20260128_065502Z_W1.json",
-        "createdAt": "2026-01-28T06:55:34.961Z",
+        "from": "20260128_065502Z_W1.json",
+        "to": "20260129_070658Z_W1.json",
+        "createdAt": "2026-01-29T07:07:32.995Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 1,
+        "removed": 1,
+        "replaced": 1
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "63e23e417f9e04b8"
+      ],
+      "removed": [
+        "ada6f3074d973112"
+      ],
+      "replaced": [
+        {
+          "positionId": "eb60e244bdea8d1a",
+          "from": {
+            "slotId": "901422bcdf4ff47f",
+            "artistId": "ea4be23ea6247c03",
+            "artist": "Vini Vici"
+          },
+          "to": {
+            "slotId": "63e23e417f9e04b8",
+            "artistId": "7b5f2c16d285a08d",
+            "artist": "Hypaton"
+          }
+        }
+      ]
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260127_065427Z_W2.json",
-        "to": "20260128_065502Z_W2.json",
-        "createdAt": "2026-01-28T06:55:34.961Z",
+        "from": "20260128_065502Z_W2.json",
+        "to": "20260129_070658Z_W2.json",
+        "createdAt": "2026-01-29T07:07:32.995Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
+        "added": 1,
+        "removed": 1,
         "replaced": 0
       },
-      "added": [],
-      "removed": [],
+      "added": [
+        "801652161674a192"
+      ],
+      "removed": [
+        "d200e9312dae35b2"
+      ],
       "replaced": []
     }
   }
