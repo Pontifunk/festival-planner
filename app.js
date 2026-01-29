@@ -950,7 +950,7 @@ function updateFiltersUI(weekend) {
     if (dayVal !== "all" && date !== dayVal) return;
     stageSet.add(normalizeStage(s.stage));
   });
-  const stages = Array.from(stageSet).sort((a, b) => a.localeCompare(b));
+  const stages = sortStagesByOrder(Array.from(stageSet));
   const currentStage = w.filters.stage || stageFilter.value || "all";
   const stageVal = stages.includes(currentStage) ? currentStage : "all";
   const stageOptions = [
@@ -1313,19 +1313,20 @@ function countGroupedSlots(grouped) {
 }
 
 function sortStagesByOrder(stages) {
-  const orderIndex = new Map(STAGE_ORDER.map((name, idx) => [name.toUpperCase(), idx]));
-  return stages.slice().sort((a, b) => {
-    const aKey = String(a || "").toUpperCase();
-    const bKey = String(b || "").toUpperCase();
-    const aIdx = orderIndex.has(aKey) ? orderIndex.get(aKey) : Number.MAX_SAFE_INTEGER;
-    const bIdx = orderIndex.has(bKey) ? orderIndex.get(bKey) : Number.MAX_SAFE_INTEGER;
-    if (aIdx !== bIdx) return aIdx - bIdx;
-    return String(a).localeCompare(String(b));
-  });
+  const orderIndex = new Map(STAGE_ORDER.map((name, idx) => [normalizeStageName(name), idx]));
+  return stages
+    .map((name, idx) => ({ name, idx, key: normalizeStageName(name) }))
+    .sort((a, b) => {
+      const aOrder = orderIndex.has(a.key) ? orderIndex.get(a.key) : Number.MAX_SAFE_INTEGER;
+      const bOrder = orderIndex.has(b.key) ? orderIndex.get(b.key) : Number.MAX_SAFE_INTEGER;
+      if (aOrder !== bOrder) return aOrder - bOrder;
+      return a.idx - b.idx;
+    })
+    .map(item => item.name);
 }
 
 function getStageGenre(stage) {
-  const key = String(stage || "").toUpperCase();
+  const key = normalizeStageName(stage);
   return STAGE_GENRES[key] || "";
 }
 
@@ -1597,6 +1598,13 @@ function normalizeStage(stage) {
     return String(stage.name || stage.title || stage.label || stage.stageName || stage.stage_name || "Unknown Stage").trim();
   }
   return "Unknown Stage";
+}
+
+function normalizeStageName(name) {
+  return String(name || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toUpperCase();
 }
 
 function getArtistName(artistId, slot) {

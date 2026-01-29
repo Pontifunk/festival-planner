@@ -413,7 +413,6 @@ button{
   border:1px solid var(--border);
   border-radius:16px;
   background:rgba(255,255,255,.03);
-  overflow:hidden;
 }
 .dayGroup + .dayGroup{margin-top:10px}
 .dayGroup summary{list-style:none}
@@ -451,24 +450,15 @@ button{
 }
 .dayGroup[open] .dayChevron{transform:rotate(-135deg)}
 .dayBody{
-  padding:10px 12px 12px;
+  padding:12px 12px 14px;
   display:grid;
   gap:10px;
-  max-height:0;
-  overflow:hidden;
-  opacity:.0;
-  transition:max-height .2s ease, opacity .2s ease;
-}
-.dayGroup[open] .dayBody{
-  max-height:2000px;
-  opacity:1;
 }
 
 .stageGroup{
   border:1px solid var(--border);
   border-radius:12px;
   background:rgba(255,255,255,.02);
-  overflow:hidden;
 }
 .stageGroup summary{list-style:none}
 .stageGroup summary::-webkit-details-marker{display:none}
@@ -512,17 +502,9 @@ button{
 }
 .stageGroup[open] .stageChevron{transform:rotate(-135deg)}
 .stageBody{
-  padding:8px 10px 10px;
-  max-height:0;
-  overflow:hidden;
-  opacity:0;
-  transition:max-height .2s ease, opacity .2s ease;
+  padding:12px 10px 12px;
 }
-.stageGroup[open] .stageBody{
-  max-height:1600px;
-  opacity:1;
-}
-.slotList{display:flex;flex-direction:column;gap:6px}
+.slotList{display:flex;flex-direction:column}
 .slot.isTarget{
   outline:2px solid rgba(107,92,255,.7);
   box-shadow:0 0 0 4px rgba(107,92,255,.25);
@@ -536,6 +518,7 @@ button{
   justify-content:space-between;
   gap:12px;
   padding:12px;
+  margin-bottom:16px;
   border-radius:14px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.04);
@@ -630,6 +613,7 @@ button{
   gap:6px;
   flex-wrap:wrap;
   justify-content:flex-end;
+  margin-top:8px;
 }
 
 .qbtn{
