@@ -1163,10 +1163,10 @@ function getSelectLabel(selectEl, value) {
 }
 
 function ratingChipLabel(value) {
-  if (value === "liked") return t("rating_chip_liked") || "❤️";
-  if (value === "maybe") return t("rating_chip_maybe") || "🤔";
-  if (value === "disliked") return t("rating_chip_disliked") || "👎";
-  if (value === "unrated") return t("rating_chip_unrated") || (t("unrated") || "Unrated");
+  if (value === "liked") return translateOr("rating_chip_liked", "❤️");
+  if (value === "maybe") return translateOr("rating_chip_maybe", "🤔");
+  if (value === "disliked") return translateOr("rating_chip_disliked", "👎");
+  if (value === "unrated") return translateOr("rating_chip_unrated", translateOr("unrated", "Unrated"));
   return value;
 }
 
@@ -1174,14 +1174,19 @@ function getRatingActionLabels() {
   const labels = {};
   RATING_STATES.forEach((key) => {
     const meta = RATING_ACTION_LABELS[key];
-    labels[key] = t(meta.actionKey) || t(meta.fallbackKey) || meta.fallback;
+    labels[key] = translateOr(meta.actionKey, translateOr(meta.fallbackKey, meta.fallback));
   });
   return labels;
 }
 
 function getRatingChipIcon(key) {
   const lookupKey = `rating_chip_${key}`;
-  return t(lookupKey) || RATING_CHIP_FALLBACKS[key] || "";
+  return translateOr(lookupKey, RATING_CHIP_FALLBACKS[key] || "");
+}
+
+function translateOr(key, fallback) {
+  if (key && Object.prototype.hasOwnProperty.call(dict, key)) return dict[key];
+  return fallback;
 }
 // ====== INTERACTIONS ======
 function bindSlotInteractions(container, weekend) {

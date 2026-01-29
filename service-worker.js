@@ -76,9 +76,10 @@ async function networkFirst(request, fallbackToIndex = false) {
     const cached = await cache.match(request);
     if (cached) return cached;
     if (fallbackToIndex) {
-      return (await cache.match(withBase("/index.html"))) || cached;
+      const shell = await cache.match(withBase("/index.html"));
+      if (shell) return shell;
     }
-    return cached;
+    return new Response("Offline", { status: 503, statusText: "Offline" });
   }
 }
 
@@ -91,7 +92,8 @@ async function staleWhileRevalidate(request) {
       return response;
     })
     .catch(() => null);
-  return cached || (await fetchPromise);
+  const network = await fetchPromise;
+  return cached || network || new Response("", { status: 504, statusText: "Offline" });
 }
 
 self.addEventListener("fetch", (event) => {
@@ -99,6 +101,7 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
 
   if (url.origin !== self.location.origin) return;
+  if (req.method !== "GET") return;
 
   if (isHtmlRequest(req)) {
     event.respondWith(networkFirst(req, true));
