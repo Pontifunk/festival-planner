@@ -828,6 +828,36 @@ button{
   transform:translateX(-50%) translateY(0);
 }
 
+.updateBanner{
+  position:fixed;
+  left:50%;
+  bottom:16px;
+  transform:translateX(-50%) translateY(6px);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(20,22,40,.95);
+  color:var(--text);
+  font-size:12px;
+  font-weight:700;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+  box-shadow:var(--shadow);
+  z-index:80;
+}
+.updateBanner.isVisible{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+  pointer-events:auto;
+}
+.updateBannerText{
+  color:var(--text);
+}
+
 body.menuOpen{
   overflow:hidden;
   position:fixed;

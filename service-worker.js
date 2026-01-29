@@ -1,4 +1,5 @@
-const CACHE_NAME = "festival-planner-v17";
+const CACHE_VERSION = "v18";
+const CACHE_NAME = `festival-planner-${CACHE_VERSION}`;
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 const withBase = (path) => `${BASE_PATH}${path}`;
 
@@ -31,42 +32,90 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
+function isHtmlRequest(req) {
+  if (req.mode === "navigate") return true;
+  const accept = req.headers.get("accept") || "";
+  return accept.includes("text/html");
+}
+
+function isJsonRequest(url) {
+  return url.pathname.endsWith(".json");
+}
+
+function isStaticAssetRequest(req, url) {
+  const dest = req.destination;
+  if (dest === "style" || dest === "script" || dest === "image" || dest === "font") return true;
+  return (
+    url.pathname.endsWith(".css") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".webmanifest") ||
+    url.pathname.endsWith(".ico") ||
+    url.pathname.endsWith(".png") ||
+    url.pathname.endsWith(".svg")
+  );
+}
+
+async function cacheResponse(cache, request, response) {
+  if (!response || !response.ok) return;
+  await cache.put(request, response);
+}
+
+async function networkFirst(request, fallbackToIndex = false) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request);
+    await cacheResponse(cache, request, response.clone());
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+    if (fallbackToIndex) {
+      return (await cache.match(withBase("/index.html"))) || cached;
+    }
+    return cached;
+  }
+}
+
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  const fetchPromise = fetch(request)
+    .then(async (response) => {
+      await cacheResponse(cache, request, response.clone());
+      return response;
+    })
+    .catch(() => null);
+  return cached || (await fetchPromise);
+}
+
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
   if (url.origin !== self.location.origin) return;
 
-  // JSON: network-first, fallback cache
-  if (url.pathname.endsWith(".json")) {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(req))
-    );
+  if (isHtmlRequest(req)) {
+    event.respondWith(networkFirst(req, true));
     return;
   }
 
-  // Navigations: network-first, fallback cache (avoid stale deploys)
-  if (req.mode === "navigate") {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(req).then((c) => c || caches.match("/index.html")))
-    );
+  if (isJsonRequest(url)) {
+    event.respondWith(networkFirst(req));
     return;
   }
 
-  // Others: cache-first
-  event.respondWith(caches.match(req).then((cached) => cached || fetch(req)));
+  if (isStaticAssetRequest(req, url)) {
+    event.respondWith(staleWhileRevalidate(req));
+    return;
+  }
+
+  event.respondWith(staleWhileRevalidate(req));
 });
 
 

@@ -200,6 +200,56 @@ async function init() {
   setActiveWeekend(state.activeWeekend, false);
 }
 
+function setupServiceWorkerUpdates(registration) {
+  const banner = document.getElementById("updateBanner");
+  const textEl = document.getElementById("updateBannerText");
+  const button = document.getElementById("updateReloadBtn");
+  if (!registration || !banner || !textEl || !button) return;
+
+  const setLabels = () => {
+    const isDe = lang === "de";
+    textEl.textContent = isDe ? "Update verf\u00fcgbar" : "Update available";
+    button.textContent = isDe ? "Neu laden" : "Reload";
+  };
+
+  const show = () => {
+    setLabels();
+    banner.hidden = false;
+    banner.classList.add("isVisible");
+  };
+
+  const onWaiting = (waiting) => {
+    if (!waiting) return;
+    show();
+    button.onclick = () => waiting.postMessage({ type: "SKIP_WAITING" });
+  };
+
+  if (registration.waiting) onWaiting(registration.waiting);
+
+  registration.addEventListener("updatefound", () => {
+    const sw = registration.installing;
+    if (!sw) return;
+    sw.addEventListener("statechange", () => {
+      if (sw.state === "installed" && navigator.serviceWorker.controller) {
+        onWaiting(registration.waiting || sw);
+      }
+    });
+  });
+
+  let reloading = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (reloading) return;
+    reloading = true;
+    window.location.reload();
+  });
+
+  if (langSelect) {
+    langSelect.addEventListener("change", () => {
+      if (!banner.hidden) setLabels();
+    });
+  }
+}
+
 function bindUi() {
   langSelect.addEventListener("change", async () => {
     lang = langSelect.value;

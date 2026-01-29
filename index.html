@@ -91,6 +91,11 @@
     </button>
   </header>
 
+  <div id="updateBanner" class="updateBanner" hidden>
+    <div id="updateBannerText" class="updateBannerText">Update verf\u00fcgbar</div>
+    <button id="updateReloadBtn" class="btn primary" type="button">Neu laden</button>
+  </div>
+
   <main class="layout">
     <section class="panel">
       <div class="introCard">
@@ -257,7 +262,13 @@
   <script src="app.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js").catch(console.error);
+      navigator.serviceWorker.register("service-worker.js")
+        .then((reg) => {
+          if (typeof window.setupServiceWorkerUpdates === "function") {
+            window.setupServiceWorkerUpdates(reg);
+          }
+        })
+        .catch(console.error);
     }
   </script>
 </body>
