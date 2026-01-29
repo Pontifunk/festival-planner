@@ -1305,10 +1305,27 @@ function scrollToArtist(artistId) {
   }
 
   clearError();
+  const slots = w.artistSlots.get(artistId) || [];
+  if (slots.length) {
+    const container = state.activeWeekend === "W1" ? actsListW1 : actsListW2;
+    openDetailsForSlot(container, slots[0]);
+  }
   el.classList.remove("isTarget");
   el.scrollIntoView({ behavior: "smooth", block: "center" });
   setTimeout(() => el.classList.add("isTarget"), 50);
   setTimeout(() => el.classList.remove("isTarget"), 2500);
+}
+
+function openDetailsForSlot(container, slot) {
+  if (!container || !slot) return;
+  const day = slot.date || extractDate(slot.start) || "Unknown";
+  const stage = normalizeStage(slot.stage);
+  const dayEl = Array.from(container.querySelectorAll("details.dayGroup"))
+    .find(el => el.getAttribute("data-day") === day);
+  if (dayEl && !dayEl.open) dayEl.open = true;
+  const stageEl = Array.from(container.querySelectorAll("details.stageGroup"))
+    .find(el => el.getAttribute("data-day") === day && el.getAttribute("data-stage") === stage);
+  if (stageEl && !stageEl.open) stageEl.open = true;
 }
 
 function setActiveWeekend(weekend, updateRoute = true) {
