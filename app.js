@@ -1089,10 +1089,10 @@ async function resolveChangesSnapshot(weekend, file) {
   return await tryFetchJson(url, { cache: "no-store" });
 }
 
-function formatSlotMeta(slot) {
+function formatSlotMeta(slot, { useStageAliases = true } = {}) {
   const date = slot?.date || extractDate(slot?.start) || "";
   const dateLabel = date ? formatDate(date) : notAvailable();
-  const stage = normalizeStage(slot?.stage);
+  const stage = normalizeStage(slot?.stage, { useStageAliases });
   const start = formatTime(slot?.start);
   const end = formatTime(slot?.end);
   const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
@@ -1112,7 +1112,7 @@ function renderChangesSection(label, count, items) {
 function renderChangeItem(slot, weekend, linkToSlot) {
   if (!slot) return "";
   const name = getArtistName(slot.artistId, slot);
-  const meta = formatSlotMeta(slot);
+  const meta = formatSlotMeta(slot, { useStageAliases: false });
   const nameHtml = linkToSlot && slot.slotId
     ? `<a class="changesDetailLink" data-slot-id="${escapeAttr(slot.slotId)}" href="${escapeAttr(`#slot-${weekend}-${slot.slotId}`)}">${escapeHtml(name)}</a>`
     : `<span class="changesDetailNameText">${escapeHtml(name)}</span>`;
@@ -1128,8 +1128,8 @@ function renderMovedChangeItem(pair, weekend) {
   if (!pair?.from && !pair?.to) return "";
   const baseSlot = pair.to || pair.from || {};
   const name = getArtistName(pair.artistId, baseSlot);
-  const fromMeta = pair.from ? formatSlotMeta(pair.from) : notAvailable();
-  const toMeta = pair.to ? formatSlotMeta(pair.to) : notAvailable();
+  const fromMeta = pair.from ? formatSlotMeta(pair.from, { useStageAliases: false }) : notAvailable();
+  const toMeta = pair.to ? formatSlotMeta(pair.to, { useStageAliases: false }) : notAvailable();
   const nameHtml = pair?.to?.slotId
     ? `<a class="changesDetailLink" data-slot-id="${escapeAttr(pair.to.slotId)}" href="${escapeAttr(`#slot-${weekend}-${pair.to.slotId}`)}">${escapeHtml(name)}</a>`
     : `<span class="changesDetailNameText">${escapeHtml(name)}</span>`;
@@ -1146,7 +1146,7 @@ function renderReplacedChangeItem(item) {
   const fromName = item?.from?.artist || getArtistName(item?.meta?.from?.artistId, item?.from || {});
   const toName = item?.to?.artist || getArtistName(item?.meta?.to?.artistId, item?.to || {});
   const metaSlot = item.to || item.from || null;
-  const meta = metaSlot ? formatSlotMeta(metaSlot) : notAvailable();
+  const meta = metaSlot ? formatSlotMeta(metaSlot, { useStageAliases: false }) : notAvailable();
   return `
     <div class="changesDetailItem" ${item?.to?.slotId ? `data-slot-id="${escapeAttr(item.to.slotId)}"` : ""}>
       <div class="changesDetailName">${escapeHtml(fromName)} -> ${escapeHtml(toName)}</div>
@@ -2032,18 +2032,18 @@ function toMinutes(value) {
 }
 
 // Normalizes stage data to a display string.
-function normalizeStage(stage) {
+function normalizeStage(stage, { useStageAliases = true } = {}) {
   if (typeof stage === "string") {
     const s = stage.trim();
     if (!s || s === "[object Object]") return "Unknown Stage";
     const key = normalizeStageName(s);
-    if (STAGE_ALIASES[key]) return STAGE_ALIASES[key];
+    if (useStageAliases && STAGE_ALIASES[key]) return STAGE_ALIASES[key];
     return s;
   }
   if (stage && typeof stage === "object") {
     const raw = String(stage.name || stage.title || stage.label || stage.stageName || stage.stage_name || "Unknown Stage").trim();
     const key = normalizeStageName(raw);
-    if (STAGE_ALIASES[key]) return STAGE_ALIASES[key];
+    if (useStageAliases && STAGE_ALIASES[key]) return STAGE_ALIASES[key];
     return raw;
   }
   return "Unknown Stage";
