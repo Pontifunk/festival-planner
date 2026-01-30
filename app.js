@@ -41,7 +41,7 @@ const STAGE_ORDER = [
   "ATMOSPHERE",
   "CORE",
   "CRYSTAL GARDEN",
-  "THE LIBRARY",
+  "THE GREAT LIBRARY",
   "MOOSE BAR",
   "HOUSE OF FORTUNE BY JBL"
 ];
@@ -59,9 +59,15 @@ const STAGE_GENRES = {
   "ATMOSPHERE": "Techno",
   "CORE": "Underground / Techno",
   "CRYSTAL GARDEN": "House / Tech House",
-  "THE LIBRARY": "Eclectic / Classics",
+  "THE GREAT LIBRARY": "Eclectic / Classics",
   "MOOSE BAR": "Party / Hits",
   "HOUSE OF FORTUNE BY JBL": "House"
+};
+
+const STAGE_ALIASES = {
+  "THE LIBRARY": "THE GREAT LIBRARY",
+  "GREAT LIBRARY": "THE GREAT LIBRARY",
+  "THE GREAT LIBRARY": "THE GREAT LIBRARY"
 };
 
 // ====== DOM ======
@@ -81,6 +87,8 @@ const weekendChangesBox = document.getElementById("changesBox");
 const weekendChangesSummary = document.getElementById("weekendChangesSummary");
 const weekendChangesHistory = document.getElementById("weekendChangesHistory");
 const weekendChangesTitle = weekendChangesBox?.querySelector(".cardTitle");
+const weekendChangesDetailsWrap = document.getElementById("weekendChangesDetailsWrap");
+const weekendChangesDetails = document.getElementById("weekendChangesDetails");
 const exportRatingsBtn = document.getElementById("exportRatingsBtn");
 const importRatingsInput = document.getElementById("importRatingsInput");
 const importStatus = document.getElementById("importStatus");
@@ -122,6 +130,7 @@ let lastFilterValue = "all";
 let toastTimer = null;
 let menuOpen = false;
 let menuScrollY = 0;
+let changesDetailsUid = 0;
 
 const state = {
   festival: DEFAULT_FESTIVAL,
@@ -347,6 +356,17 @@ function bindUi() {
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && menuOpen) closeMenu();
+    });
+  }
+
+  if (weekendChangesDetails) {
+    weekendChangesDetails.addEventListener("click", (e) => {
+      const link = e.target.closest(".changesDetailLink");
+      const item = e.target.closest(".changesDetailItem");
+      const slotId = link?.getAttribute("data-slot-id") || item?.getAttribute("data-slot-id");
+      if (!slotId) return;
+      e.preventDefault();
+      scrollToSlotId(slotId);
     });
   }
 
@@ -925,6 +945,7 @@ function renderWeekendChangesBox() {
     `${t("changes_replaced") || "Replaced"}: <strong>${summary.replaced ?? 0}</strong>`;
 
   renderWeekendChangesHistory();
+  renderWeekendChangesDetails();
   weekendChangesBox.hidden = false;
 }
 
@@ -963,6 +984,175 @@ function renderWeekendChangesHistory() {
       </div>
     `;
   }).join("");
+}
+
+// Renders detailed change lists (added/moved/removed/replaced).
+async function renderWeekendChangesDetails() {
+  if (!weekendChangesDetails || !weekendChangesDetailsWrap) return;
+  const weekend = state.activeWeekend;
+  const data = state.weekendChanges?.[weekend];
+  const uid = ++changesDetailsUid;
+
+  if (!data?.meta?.from || !data?.meta?.to) {
+    weekendChangesDetails.textContent = t("changes_details_empty") || "Keine Details verf\u00fcgbar.";
+    weekendChangesDetailsWrap.open = false;
+    return;
+  }
+
+  const [prevSnap, currSnap] = await Promise.all([
+    resolveChangesSnapshot(weekend, data.meta.from),
+    resolveChangesSnapshot(weekend, data.meta.to)
+  ]);
+
+  if (uid !== changesDetailsUid) return;
+
+  if (!prevSnap?.slots || !currSnap?.slots) {
+    weekendChangesDetails.textContent = t("changes_details_empty") || "Keine Details verf\u00fcgbar.";
+    weekendChangesDetailsWrap.open = false;
+    return;
+  }
+
+  const prevMap = buildSlotIdMap(prevSnap.slots);
+  const currMap = buildSlotIdMap(currSnap.slots);
+
+  const addedSlots = (data.added || []).map(id => currMap.get(id)).filter(Boolean);
+  const removedSlots = (data.removed || []).map(id => prevMap.get(id)).filter(Boolean);
+
+  const moved = [];
+  const movedAddedIds = new Set();
+  const movedRemovedIds = new Set();
+  const addedByArtist = bucketByArtist(addedSlots);
+  const removedByArtist = bucketByArtist(removedSlots);
+
+  for (const [artistId, addedList] of addedByArtist.entries()) {
+    const removedList = removedByArtist.get(artistId);
+    if (!removedList?.length) continue;
+    const pairs = Math.min(addedList.length, removedList.length);
+    for (let i = 0; i < pairs; i++) {
+      moved.push({ artistId, from: removedList[i], to: addedList[i] });
+      movedAddedIds.add(addedList[i].slotId);
+      movedRemovedIds.add(removedList[i].slotId);
+    }
+  }
+
+  const finalAdded = addedSlots.filter(s => !movedAddedIds.has(s.slotId));
+  const finalRemoved = removedSlots.filter(s => !movedRemovedIds.has(s.slotId));
+
+  const replaced = (data.replaced || []).map(item => {
+    const fromSlot = prevMap.get(item?.from?.slotId) || item?.from || null;
+    const toSlot = currMap.get(item?.to?.slotId) || item?.to || null;
+    return { from: fromSlot, to: toSlot, meta: item };
+  }).filter(item => item.from || item.to);
+
+  const sections = [];
+  sections.push(renderChangesSection(t("changes_added") || "Added", finalAdded.length, finalAdded.map(slot => {
+    return renderChangeItem(slot, weekend, true);
+  })));
+  sections.push(renderChangesSection(t("changes_moved") || "Moved", moved.length, moved.map(pair => {
+    return renderMovedChangeItem(pair, weekend);
+  })));
+  sections.push(renderChangesSection(t("changes_removed") || "Removed", finalRemoved.length, finalRemoved.map(slot => {
+    return renderChangeItem(slot, weekend, false);
+  })));
+  sections.push(renderChangesSection(t("changes_replaced") || "Replaced", replaced.length, replaced.map(item => {
+    return renderReplacedChangeItem(item);
+  })));
+
+  const hasItems = sections.some(Boolean);
+  weekendChangesDetails.innerHTML = hasItems ? sections.filter(Boolean).join("") : escapeHtml(t("changes_details_empty") || "Keine Details verf\u00fcgbar.");
+  weekendChangesDetailsWrap.open = hasItems;
+}
+
+function buildSlotIdMap(slots) {
+  const m = new Map();
+  (slots || []).forEach(s => {
+    if (s?.slotId) m.set(s.slotId, s);
+  });
+  return m;
+}
+
+function bucketByArtist(slots) {
+  const m = new Map();
+  (slots || []).forEach(s => {
+    const id = s?.artistId || "__unknown__";
+    if (!m.has(id)) m.set(id, []);
+    m.get(id).push(s);
+  });
+  return m;
+}
+
+async function resolveChangesSnapshot(weekend, file) {
+  if (!file) return null;
+  const w = state.weekends?.[weekend];
+  if (w?.selectedFile === file && w?.snapshot) return w.snapshot;
+  const url = withBase(`/data/${state.festival}/${state.year}/snapshots/${file}`);
+  return await tryFetchJson(url, { cache: "no-store" });
+}
+
+function formatSlotMeta(slot) {
+  const date = slot?.date || extractDate(slot?.start) || "";
+  const dateLabel = date ? formatDate(date) : notAvailable();
+  const stage = normalizeStage(slot?.stage);
+  const start = formatTime(slot?.start);
+  const end = formatTime(slot?.end);
+  const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
+  return `${dateLabel} \u00b7 ${timeRange} \u00b7 ${stage}`;
+}
+
+function renderChangesSection(label, count, items) {
+  if (!count || !items?.length) return "";
+  return `
+    <div class="changesDetailSection">
+      <div class="changesDetailTitle">${escapeHtml(label)} (${count})</div>
+      <div class="changesDetailList">${items.join("")}</div>
+    </div>
+  `;
+}
+
+function renderChangeItem(slot, weekend, linkToSlot) {
+  if (!slot) return "";
+  const name = getArtistName(slot.artistId, slot);
+  const meta = formatSlotMeta(slot);
+  const nameHtml = linkToSlot && slot.slotId
+    ? `<a class="changesDetailLink" data-slot-id="${escapeAttr(slot.slotId)}" href="${escapeAttr(`#slot-${weekend}-${slot.slotId}`)}">${escapeHtml(name)}</a>`
+    : `<span class="changesDetailNameText">${escapeHtml(name)}</span>`;
+  return `
+    <div class="changesDetailItem" ${linkToSlot && slot.slotId ? `data-slot-id="${escapeAttr(slot.slotId)}"` : ""}>
+      <div class="changesDetailName">${nameHtml}</div>
+      <div class="changesDetailMeta">${escapeHtml(meta)}</div>
+    </div>
+  `;
+}
+
+function renderMovedChangeItem(pair, weekend) {
+  if (!pair?.from && !pair?.to) return "";
+  const baseSlot = pair.to || pair.from || {};
+  const name = getArtistName(pair.artistId, baseSlot);
+  const fromMeta = pair.from ? formatSlotMeta(pair.from) : notAvailable();
+  const toMeta = pair.to ? formatSlotMeta(pair.to) : notAvailable();
+  const nameHtml = pair?.to?.slotId
+    ? `<a class="changesDetailLink" data-slot-id="${escapeAttr(pair.to.slotId)}" href="${escapeAttr(`#slot-${weekend}-${pair.to.slotId}`)}">${escapeHtml(name)}</a>`
+    : `<span class="changesDetailNameText">${escapeHtml(name)}</span>`;
+  return `
+    <div class="changesDetailItem" ${pair?.to?.slotId ? `data-slot-id="${escapeAttr(pair.to.slotId)}"` : ""}>
+      <div class="changesDetailName">${nameHtml}</div>
+      <div class="changesDetailMeta">${escapeHtml(fromMeta)} -> ${escapeHtml(toMeta)}</div>
+    </div>
+  `;
+}
+
+function renderReplacedChangeItem(item) {
+  if (!item?.from && !item?.to) return "";
+  const fromName = item?.from?.artist || getArtistName(item?.meta?.from?.artistId, item?.from || {});
+  const toName = item?.to?.artist || getArtistName(item?.meta?.to?.artistId, item?.to || {});
+  const metaSlot = item.to || item.from || null;
+  const meta = metaSlot ? formatSlotMeta(metaSlot) : notAvailable();
+  return `
+    <div class="changesDetailItem" ${item?.to?.slotId ? `data-slot-id="${escapeAttr(item.to.slotId)}"` : ""}>
+      <div class="changesDetailName">${escapeHtml(fromName)} -> ${escapeHtml(toName)}</div>
+      <div class="changesDetailMeta">${escapeHtml(meta)}</div>
+    </div>
+  `;
 }
 
 // Exports ratings to a local JSON download.
@@ -1416,6 +1606,30 @@ function scrollToArtist(artistId) {
   setTimeout(() => el.classList.remove("isTarget"), 2500);
 }
 
+// Scrolls to a specific slot by slotId in the active weekend.
+function scrollToSlotId(slotId) {
+  const weekend = state.activeWeekend;
+  const w = state.weekends[weekend];
+  const slots = w?.snapshot?.slots || [];
+  const slot = slots.find(s => s.slotId === slotId);
+  if (!slot) {
+    showError("Slot im aktuellen Weekend nicht gefunden.");
+    return;
+  }
+  clearError();
+  const container = weekend === "W1" ? actsListW1 : actsListW2;
+  openDetailsForSlot(container, slot);
+  const el = document.getElementById(`slot-${weekend}-${slotId}`);
+  if (!el) {
+    showError("Act im aktuellen Weekend nicht gefunden.");
+    return;
+  }
+  el.classList.remove("isTarget");
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(() => el.classList.add("isTarget"), 50);
+  setTimeout(() => el.classList.remove("isTarget"), 2500);
+}
+
 // Opens the correct day/stage details for a slot.
 function openDetailsForSlot(container, slot) {
   if (!container || !slot) return;
@@ -1534,7 +1748,9 @@ function sortStagesByOrder(stages) {
 // Returns a genre label for a stage.
 function getStageGenre(stage) {
   const key = normalizeStageName(stage);
-  return STAGE_GENRES[key] || "";
+  const alias = STAGE_ALIASES[key];
+  const genreKey = normalizeStageName(alias || stage);
+  return STAGE_GENRES[genreKey] || "";
 }
 
 // Reads which day/stage accordions are open.
@@ -1820,10 +2036,15 @@ function normalizeStage(stage) {
   if (typeof stage === "string") {
     const s = stage.trim();
     if (!s || s === "[object Object]") return "Unknown Stage";
+    const key = normalizeStageName(s);
+    if (STAGE_ALIASES[key]) return STAGE_ALIASES[key];
     return s;
   }
   if (stage && typeof stage === "object") {
-    return String(stage.name || stage.title || stage.label || stage.stageName || stage.stage_name || "Unknown Stage").trim();
+    const raw = String(stage.name || stage.title || stage.label || stage.stageName || stage.stage_name || "Unknown Stage").trim();
+    const key = normalizeStageName(raw);
+    if (STAGE_ALIASES[key]) return STAGE_ALIASES[key];
+    return raw;
   }
   return "Unknown Stage";
 }
