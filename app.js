@@ -131,6 +131,7 @@ let toastTimer = null;
 let menuOpen = false;
 let menuScrollY = 0;
 let changesDetailsUid = 0;
+let changesSelectionUid = 0;
 
 const state = {
   festival: DEFAULT_FESTIVAL,
@@ -144,6 +145,7 @@ const state = {
   artists: { list: [], byId: new Map() },
   changesIndex: null,
   weekendChanges: { W1: null, W2: null },
+  selectedChanges: { W1: null, W2: null },
   ratings: {}
 };
 
@@ -206,6 +208,7 @@ async function init() {
 
   await Promise.all(WEEKENDS.map((w) => loadSnapshotForWeekend(w)));
 
+  setDefaultSelectedChanges();
   renderWeekendChangesBox();
   setActiveWeekend(state.activeWeekend, false);
 }
@@ -367,6 +370,32 @@ function bindUi() {
       if (!slotId) return;
       e.preventDefault();
       scrollToSlotId(slotId);
+    });
+  }
+
+  if (weekendChangesHistory) {
+    weekendChangesHistory.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".changesHistoryBtn");
+      if (!btn) return;
+      e.preventDefault();
+      const file = btn.getAttribute("data-file");
+      const weekend = btn.getAttribute("data-weekend") || state.activeWeekend;
+      if (!file || !weekend) return;
+      const uid = ++changesSelectionUid;
+      const url = withBase(`/data/${state.festival}/${state.year}/changes/${file}`);
+      const data = await tryFetchJson(url, { cache: "no-store" });
+      if (uid !== changesSelectionUid) return;
+      if (!data) return;
+      state.selectedChanges[weekend] = {
+        data,
+        entry: {
+          weekend,
+          file,
+          createdAt: btn.getAttribute("data-created-at") || data?.meta?.createdAt || null,
+          summary: data?.summary || null
+        }
+      };
+      renderWeekendChangesBox();
     });
   }
 
@@ -586,6 +615,18 @@ async function loadWeekendChanges() {
     tryFetchJson(`${base}/latest_W2.json`, { cache: "no-store" })
   ]);
   state.weekendChanges = { W1: w1, W2: w2 };
+}
+
+function setDefaultSelectedChanges() {
+  WEEKENDS.forEach((weekend) => {
+    const data = state.weekendChanges?.[weekend] || null;
+    if (!data) return;
+    const file = state.changesIndex?.latest?.[weekend] || null;
+    state.selectedChanges[weekend] = {
+      data,
+      entry: { weekend, file, createdAt: data?.meta?.createdAt || null, summary: data?.summary || null }
+    };
+  });
 }
 
 // ====== RENDER ======
@@ -925,7 +966,8 @@ function updateMenuDayLinks(dates) {
 // Renders the changes summary card.
 function renderWeekendChangesBox() {
   if (!weekendChangesBox || !weekendChangesSummary || !weekendChangesHistory) return;
-  const data = state.weekendChanges?.[state.activeWeekend] || null;
+  const selected = state.selectedChanges?.[state.activeWeekend] || null;
+  const data = selected?.data || state.weekendChanges?.[state.activeWeekend] || null;
 
   if (weekendChangesTitle) {
     const weekendLabel = state.activeWeekend === "W2"
@@ -949,11 +991,20 @@ function renderWeekendChangesBox() {
   weekendChangesBox.hidden = false;
 }
 
+function isSelectedChange(entry, selected) {
+  if (!entry || !selected) return false;
+  const selectedFile = selected?.entry?.file;
+  if (selectedFile && entry.file === selectedFile) return true;
+  const selectedCreatedAt = selected?.entry?.createdAt || selected?.data?.meta?.createdAt;
+  return !!selectedCreatedAt && entry.createdAt === selectedCreatedAt;
+}
+
 // Renders the change history list.
 function renderWeekendChangesHistory() {
   if (!weekendChangesHistory) return;
   const idx = state.changesIndex;
   const weekend = state.activeWeekend;
+  const selected = state.selectedChanges?.[weekend] || null;
   if (!idx?.entries?.length) {
     weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
     return;
@@ -961,8 +1012,7 @@ function renderWeekendChangesHistory() {
 
   const entries = idx.entries
     .filter(e => e.weekend === weekend)
-    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))
-    .slice(0, 5);
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
 
   if (!entries.length) {
     weekendChangesHistory.textContent = t("weekend_changes_empty") || "Keine Historie.";
@@ -972,10 +1022,10 @@ function renderWeekendChangesHistory() {
   weekendChangesHistory.innerHTML = entries.map(e => {
     const when = formatDateTime(e.createdAt);
     const s = e.summary || {};
-    const href = withBase(`/data/${state.festival}/${state.year}/changes/${e.file}`);
+    const isActive = isSelectedChange(e, selected);
     return `
-      <div class="changesHistoryItem">
-        <a href="${escapeAttr(href)}" target="_blank" rel="noopener">${escapeHtml(when)}</a>
+      <div class="changesHistoryItem${isActive ? " isActive" : ""}">
+        <button class="changesHistoryBtn" type="button" data-weekend="${escapeAttr(weekend)}" data-file="${escapeAttr(e.file)}" data-created-at="${escapeAttr(e.createdAt || "")}">${escapeHtml(when)}</button>
         <span>
           ${t("changes_added") || "Added"}: <strong>${s.added ?? 0}</strong>
           \u00b7 ${t("changes_removed") || "Removed"}: <strong>${s.removed ?? 0}</strong>
@@ -990,7 +1040,7 @@ function renderWeekendChangesHistory() {
 async function renderWeekendChangesDetails() {
   if (!weekendChangesDetails || !weekendChangesDetailsWrap) return;
   const weekend = state.activeWeekend;
-  const data = state.weekendChanges?.[weekend];
+  const data = state.selectedChanges?.[weekend]?.data || state.weekendChanges?.[weekend];
   const uid = ++changesDetailsUid;
 
   if (!data?.meta?.from || !data?.meta?.to) {
