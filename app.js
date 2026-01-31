@@ -74,6 +74,7 @@ const STAGE_ALIASES = {
 const langSelect = document.getElementById("langSelect");
 const lastCheckedPill = document.getElementById("lastCheckedPill");
 const lastUpdatedPill = document.getElementById("lastUpdatedPill");
+const topbar = document.getElementById("top");
 
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
@@ -118,6 +119,8 @@ const donateBtn = document.getElementById("donateBtn");
 const feedbackBtn = document.getElementById("feedbackBtn");
 const plannerExportBox = document.getElementById("plannerExportBox");
 const mobileExportAnchor = document.getElementById("mobileExportAnchor");
+const controlsCard = document.getElementById("controlsCard");
+const mobileControlsAnchor = document.getElementById("mobileControlsAnchor");
 
 // ====== STATE ======
 let lang = localStorage.getItem("fp_lang") || "de";
@@ -191,6 +194,8 @@ async function init() {
   ensureCanonicalUrl();
 
   bindUi();
+  setupTopbarHeight();
+  setupMobileControlsPlacement();
   setupMobileExportPlacement();
 
   try {
@@ -1000,6 +1005,12 @@ function handleMenuItem(item) {
     if (weekend) setActiveWeekend(weekend, true);
     const id = weekend === "W2" ? "#w2Section" : "#w1Section";
     postClose = () => scrollToTarget(id);
+  } else if (action === "setLang") {
+    const nextLang = item.getAttribute("data-lang");
+    if (nextLang && langSelect) {
+      langSelect.value = nextLang;
+      langSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    }
   } else if (action === "favoritesToggle") {
     setFavoritesOnly(!favoritesOnly);
   } else if (action === "searchFocus") {
@@ -1023,9 +1034,15 @@ function handleMenuItem(item) {
 // Scrolls smoothly to the given selector.
 function scrollToTarget(selector) {
   if (!selector) return;
+  if (selector === "#top") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return;
+  }
   const el = document.querySelector(selector);
   if (!el) return;
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
+  const y = el.getBoundingClientRect().top + window.scrollY - Math.ceil(topbarHeight) - 8;
+  window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
 }
 
 // Populates menu day links for quick navigation.
@@ -2426,6 +2443,57 @@ function positionPlayOverlay(trigger) {
   if (panelRect.bottom > window.innerHeight - 8 && rect.top > panelRect.height + margin) {
     playOverlayPanel.style.top = `${rect.top - margin}px`;
     playOverlayPanel.style.transform = "translate(-50%, -100%)";
+  }
+}
+
+// Syncs a CSS var with the current topbar height (for fixed layout padding).
+function setupTopbarHeight() {
+  if (!topbar) return;
+  const update = () => {
+    const h = Math.ceil(topbar.getBoundingClientRect().height);
+    document.documentElement.style.setProperty("--topbar-h", `${h}px`);
+  };
+  update();
+  window.addEventListener("resize", update);
+  if (document.fonts && typeof document.fonts.addEventListener === "function") {
+    document.fonts.addEventListener("loadingdone", update);
+  }
+}
+
+// Moves the controls card for mobile layout changes.
+function setupMobileControlsPlacement() {
+  if (!controlsCard || !mobileControlsAnchor) return;
+  const originalParent = controlsCard.parentNode;
+  const originalNext = controlsCard.nextSibling;
+  const mq = window.matchMedia("(max-width: 980px)");
+
+  const applyPlacement = () => {
+    if (mq.matches) {
+      const anchorParent = mobileControlsAnchor.parentNode;
+      if (controlsCard.parentNode !== anchorParent) {
+        const next = mobileControlsAnchor.nextSibling;
+        if (next) {
+          anchorParent.insertBefore(controlsCard, next);
+        } else {
+          anchorParent.appendChild(controlsCard);
+        }
+      }
+      return;
+    }
+    if (controlsCard.parentNode !== originalParent) {
+      if (originalNext && originalNext.parentNode === originalParent) {
+        originalParent.insertBefore(controlsCard, originalNext);
+      } else {
+        originalParent.appendChild(controlsCard);
+      }
+    }
+  };
+
+  applyPlacement();
+  if (typeof mq.addEventListener === "function") {
+    mq.addEventListener("change", applyPlacement);
+  } else if (typeof mq.addListener === "function") {
+    mq.addListener(applyPlacement);
   }
 }
 

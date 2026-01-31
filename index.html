@@ -74,26 +74,6 @@
       </div>
     </div>
 
-    <div class="controls">
-      <div class="ctrl">
-        <span data-i18n="language">Sprache</span>
-        <select id="langSelect" aria-label="Sprache" class="selectNative" data-custom-select>
-          <option value="de">DE</option>
-          <option value="en">EN</option>
-        </select>
-      </div>
-
-      <div class="ctrl">
-        <span data-i18n="last_checked">Zuletzt gepr&uuml;ft</span>
-        <div class="pill" id="lastCheckedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
-      </div>
-
-      <div class="ctrl">
-        <span data-i18n="lineup_status">Line-up Stand</span>
-        <div class="pill" id="lastUpdatedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
-      </div>
-    </div>
-
     <button class="menuBtn" id="menuBtn" type="button" aria-label="Men&uuml;" aria-expanded="false">
       <span class="menuIcon" aria-hidden="true"></span>
     </button>
@@ -117,6 +97,7 @@
           <div class="introOnboarding muted" data-i18n="hero_onboarding">So funktioniert&rsquo;s: &#11088; DJ bewerten &#8594; &#10084;&#65039; Favoriten markieren &#8594; &#127911; besser vorbereitet ins Festival</div>
         </div>
       </div>
+      <div id="mobileControlsAnchor"></div>
       <div id="mobileExportAnchor"></div>
 
       <!-- Error banner -->
@@ -194,6 +175,29 @@
 
     <!-- Sidebar cards -->
     <aside class="panel side">
+      <!-- Status / language -->
+      <div class="card controlsCard" id="controlsCard">
+        <div class="controls">
+          <div class="ctrl">
+            <span data-i18n="language">Sprache</span>
+            <select id="langSelect" aria-label="Sprache" class="selectNative" data-custom-select>
+              <option value="de">DE</option>
+              <option value="en">EN</option>
+            </select>
+          </div>
+
+          <div class="ctrl">
+            <span data-i18n="last_checked">Zuletzt gepr&uuml;ft</span>
+            <div class="pill" id="lastCheckedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
+          </div>
+
+          <div class="ctrl">
+            <span data-i18n="lineup_status">Line-up Stand</span>
+            <div class="pill" id="lastUpdatedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Changes / diff summary -->
       <div id="changesBox" class="card" hidden>
         <div class="cardTitle" data-i18n="weekend_changes_title">&Auml;nderungen Weekend</div>
@@ -270,6 +274,11 @@
       <button class="menuItem" data-action="weekend" data-weekend="W2" type="button">Weekend 2</button>
       <div class="menuSubTitle">Tage</div>
       <div id="menuDayLinks" class="menuDayLinks"></div>
+    </div>
+    <div class="menuGroup">
+      <div class="menuGroupTitle" data-i18n="language">Sprache</div>
+      <button class="menuItem" data-action="setLang" data-lang="de" type="button">DE</button>
+      <button class="menuItem" data-action="setLang" data-lang="en" type="button">EN</button>
     </div>
     <div class="menuGroup">
       <div class="menuGroupTitle">Ansichten</div>
