@@ -348,6 +348,42 @@ function bindUi() {
   if (favoritesToggle) {
     favoritesToggle.addEventListener("click", () => setFavoritesOnly(!favoritesOnly));
   }
+  if (favoritesList) {
+    favoritesList.addEventListener("click", async (e) => {
+      const link = e.target.closest("[data-action='scrollLineup']");
+      if (link) {
+        e.preventDefault();
+        scrollToTarget("#lineupListAnchor");
+        return;
+      }
+
+      const removeBtn = e.target.closest("[data-action='removeFavorite']");
+      if (removeBtn) {
+        e.preventDefault();
+        const id = removeBtn.getAttribute("data-artist-id");
+        if (id) {
+          await setRating(id, "unrated");
+          renderActiveWeekend();
+          showToast(t("saved") || "Gespeichert \u2713");
+        }
+        return;
+      }
+
+      if (e.target.closest("button, a, input, label")) return;
+      const item = e.target.closest(".favItem");
+      const id = item?.getAttribute("data-artist-id");
+      if (id) scrollToArtist(id);
+    });
+    favoritesList.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      if (e.target.closest("button, a, input, label")) return;
+      const item = e.target.closest(".favItem");
+      const id = item?.getAttribute("data-artist-id");
+      if (!id) return;
+      e.preventDefault();
+      scrollToArtist(id);
+    });
+  }
   if (menuBtn && menuSheet && menuOverlay) {
     menuBtn.addEventListener("click", () => toggleMenu());
     menuOverlay.addEventListener("click", () => closeMenu());
@@ -800,6 +836,12 @@ function renderFavorites() {
   const visibleLikedIds = likedIds.filter(id => w.artistSlots.has(id));
   updateFavoritesSummary(visibleLikedIds.length);
 
+  if (favoritesPlanNote) {
+    const note = t("plan_note") || "Deine Favoriten bilden automatisch die Basis f\u00fcr deine Tagesplanung.";
+    favoritesPlanNote.textContent = note;
+    favoritesPlanNote.hidden = visibleLikedIds.length === 0;
+  }
+
   const items = visibleLikedIds.map((id) => {
     const slots = w.artistSlots.get(id) || [];
     if (!slots.length) return null;
@@ -811,10 +853,16 @@ function renderFavorites() {
     const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
     const meta = `${slot.date || notAvailable()} \u00b7 ${stage} \u00b7 ${timeRange}`;
 
+    const removeLabel = t("favorites_remove") || "Aus Favoriten entfernen";
     return `
-      <div class="favItem">
-        <div class="actName">${escapeHtml(name)}</div>
-        <div class="actMeta">${escapeHtml(meta)}</div>
+      <div class="favItem" data-artist-id="${escapeAttr(id)}" role="button" tabindex="0" aria-label="${escapeAttr(name)}">
+        <div class="favItemTop">
+          <div>
+            <div class="actName">${escapeHtml(name)}</div>
+            <div class="actMeta">${escapeHtml(meta)}</div>
+          </div>
+          <button class="favRemoveBtn" type="button" data-action="removeFavorite" data-artist-id="${escapeAttr(id)}" aria-label="${escapeAttr(removeLabel)}">${escapeHtml(removeLabel)}</button>
+        </div>
         <div class="playRow" style="margin-top:8px">
           <button class="playBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Open play links for ${name}`)}">
             <span class="playIcon" aria-hidden="true">▶</span>
@@ -829,16 +877,47 @@ function renderFavorites() {
     `;
   }).filter(Boolean);
 
-  favoritesList.innerHTML = items.length
-    ? items.join("")
-    : `<div class="muted">${escapeHtml(t("no_favorites") || "Noch keine Favoriten.")}</div>`;
+  if (items.length) {
+    favoritesList.innerHTML = items.join("");
+    return;
+  }
+
+  const emptyLines = [
+    t("favorites_empty_line1") || "Noch keine Favoriten ausgew\u00e4hlt.",
+    t("favorites_empty_line2") || "Starte, indem du Acts mit \u2764\ufe0f markierst oder \ud83c\udfa7 kurz reinh\u00f6rst.",
+    t("favorites_empty_line3") || "Deine Favoriten bilden automatisch die Basis f\u00fcr deine Tagesplanung."
+  ];
+  const tip = t("favorites_empty_tip") || "\ud83d\udca1 Tipp: 5\u201310 Favoriten reichen f\u00fcr einen guten \u00dcberblick.";
+  const linkLabel = t("favorites_empty_link") || "\u21b3 Zur\u00fcck zur Line-up-Liste";
+  const previewTitle = t("favorites_empty_preview_title") || "Beispiel \u2013 so k\u00f6nnte dein Tag aussehen";
+  const previewDay = t("favorites_empty_preview_day") || "\u2b50 Mainstage \u2013 Freitag";
+  const previewItems = [
+    t("favorites_empty_preview_item_a") || "\u2022 Artist A",
+    t("favorites_empty_preview_item_b") || "\u2022 Artist B",
+    t("favorites_empty_preview_item_c") || "\u2022 Artist C"
+  ];
+
+  favoritesList.innerHTML = `
+    <div class="favEmpty">
+      <div class="favEmptyText">${emptyLines.map(line => escapeHtml(line)).join("<br>")}</div>
+      <div class="favEmptyTip muted">${escapeHtml(tip)}</div>
+      <button class="favEmptyLink" type="button" role="link" aria-label="${escapeAttr(linkLabel)}" data-action="scrollLineup">${escapeHtml(linkLabel)}</button>
+      <div class="favEmptyPreview" aria-hidden="true">
+        <div class="favEmptyPreviewTitle">${escapeHtml(previewTitle)}</div>
+        <div class="favEmptyPreviewDay">${escapeHtml(previewDay)}</div>
+        <div class="favEmptyPreviewList">
+          ${previewItems.map(item => `<div>${escapeHtml(item)}</div>`).join("")}
+        </div>
+      </div>
+    </div>
+  `;
 
 }
 
 // Updates the favorites count pill and label.
 function updateFavoritesSummary(count) {
   if (!favoritesToggle) return;
-  const label = t("favorites_count") || "Deine Favoriten: {count} DJs";
+  const label = t("favorites_count") || "\u2764\ufe0f Deine Favoriten: {count} DJs";
   favoritesToggle.textContent = label.replace("{count}", String(count));
   const toggleLabel = t("favorites_toggle") || "Nur Favoriten anzeigen";
   favoritesToggle.setAttribute("aria-label", toggleLabel);
@@ -2641,4 +2720,5 @@ async function dbGetAll(prefix){
     req.onerror = () => reject(req.error);
   });
 }
+
 

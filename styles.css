@@ -371,6 +371,10 @@ button{
   max-height:220px;
   overflow:auto;
 }
+.lineupAnchor{
+  height:0;
+  scroll-margin-top:90px;
+}
 .searchItem{
   display:flex;
   justify-content:space-between;
@@ -683,6 +687,53 @@ button{
   border-color:rgba(107,92,255,.45);
 }
 .favPlanNote{margin-bottom:10px}
+.favEmpty{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+  background:rgba(255,255,255,.03);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.favEmptyText{font-size:13px;line-height:1.5}
+.favEmptyTip{font-size:12px}
+.favEmptyLink{
+  background:none;
+  border:0;
+  padding:0;
+  margin:0;
+  color:var(--muted);
+  text-align:left;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  min-height:var(--tap);
+  font:inherit;
+}
+.favEmptyLink:hover{color:var(--accent);text-decoration:underline}
+.favEmptyLink:focus-visible{
+  outline:none;
+  color:var(--accent);
+  text-decoration:underline;
+  box-shadow:0 0 0 3px rgba(107,92,255,.25);
+  border-radius:10px;
+  padding:0 6px;
+}
+.favEmptyPreview{
+  border:1px dashed var(--border);
+  border-radius:12px;
+  padding:10px;
+  background:rgba(255,255,255,.02);
+  color:var(--muted);
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.favEmptyPreviewTitle{color:var(--text);font-weight:700}
+.favEmptyPreviewDay{color:var(--muted);font-weight:600}
+.favEmptyPreviewList{display:flex;flex-direction:column;gap:4px}
 
 .btn{
   display:inline-flex;
@@ -717,6 +768,39 @@ button{
   border-radius:14px;
   padding:12px;
   background:rgba(255,255,255,.04);
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  caret-color:transparent;
+}
+.favItem:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(107,92,255,.25);
+  border-color:rgba(107,92,255,.55);
+}
+.favItemTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+.favRemoveBtn{
+  min-height:var(--tap);
+  padding:6px 8px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+}
+.favRemoveBtn:hover{color:var(--text);background:rgba(255,255,255,.08)}
+.favRemoveBtn:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(107,92,255,.25);
+  border-color:rgba(107,92,255,.55);
 }
 .footerLinks{display:flex;gap:12px;justify-content:flex-start;color:var(--muted);font-size:13px;flex-wrap:wrap}
 .privacyNote{margin-top:8px;font-size:12px;line-height:1.5}
