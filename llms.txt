@@ -7,3 +7,12 @@ Key URLs:
 - https://festival-planner.tschann.me/privacy/
 - https://festival-planner.tschann.me/impressum/
 - https://github.com/Pontifunk/festival-planner
+
+Primary URLs:
+- https://festival-planner.tschann.me/
+- https://festival-planner.tschann.me/tomorrowland/2026/w1/
+- https://festival-planner.tschann.me/tomorrowland/2026/w2/
+- https://festival-planner.tschann.me/about/
+- https://festival-planner.tschann.me/changelog/
+- https://festival-planner.tschann.me/privacy/
+- https://festival-planner.tschann.me/impressum/

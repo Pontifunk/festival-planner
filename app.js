@@ -27,6 +27,10 @@ const RATING_CHIP_FALLBACKS = {
 };
 const BASE_PREFIX = getBasePrefix();
 const withBase = (path) => `${BASE_PREFIX}${path}`;
+const SITE_ORIGIN = (location.origin && location.origin !== "null")
+  ? location.origin
+  : "https://festival-planner.tschann.me";
+const OG_IMAGE_PATH = "/icons/og.png";
 
 const STAGE_ORDER = [
   "MAINSTAGE",
@@ -123,8 +127,12 @@ const controlsCard = document.getElementById("controlsCard");
 const mobileControlsAnchor = document.getElementById("mobileControlsAnchor");
 
 // ====== STATE ======
-let lang = localStorage.getItem("fp_lang") || "de";
-let route = parseRoute(location.pathname);
+const BOOT_CONTEXT = getBootContext();
+const storedLang = localStorage.getItem("fp_lang");
+let lang = storedLang || BOOT_CONTEXT?.lang || "de";
+if (!storedLang && BOOT_CONTEXT?.lang) localStorage.setItem("fp_lang", BOOT_CONTEXT.lang);
+let route = ensureRouteDefaults(resolveInitialRoute(location.pathname, BOOT_CONTEXT));
+applySeoFromRoute(route);
 let selectUid = 0;
 const customSelectMap = new WeakMap();
 let ratings = {};
@@ -190,6 +198,7 @@ async function init() {
     route.weekend = DEFAULT_WEEKEND.toLowerCase();
   }
 
+  applySeoFromRoute(route);
   normalizeUrlIfNeeded();
   ensureCanonicalUrl();
 
@@ -1807,6 +1816,7 @@ function setActiveWeekend(weekend, updateRoute = true) {
   if (updateRoute) {
     route.weekend = normalized.toLowerCase();
     setCanonicalRoute(route);
+    applySeoFromRoute(route);
   }
 
   renderActiveWeekend();
@@ -1972,6 +1982,99 @@ function getBasePrefix() {
   const parts = location.pathname.split("/").filter(Boolean);
   const baseParts = parts.length >= 3 ? parts.slice(0, parts.length - 3) : parts;
   return baseParts.length ? `/${baseParts.join("/")}` : "";
+}
+
+function getBootContext() {
+  if (typeof window === "undefined") return null;
+  const boot = window.__FP_BOOT;
+  if (!boot || typeof boot !== "object") return null;
+  const festival = cleanSegment(boot.event, /^[a-z0-9-]+$/i, "");
+  const year = cleanSegment(boot.year, /^\d{4}$/, "");
+  const weekend = cleanSegment(String(boot.weekend || ""), /^(w1|w2)$/i, "");
+  const lang = cleanSegment(boot.lang, /^(de|en)$/i, "");
+  if (!festival && !year && !weekend && !lang) return null;
+  return { festival, year, weekend, lang };
+}
+
+function resolveInitialRoute(pathname, boot) {
+  if (boot?.festival && boot?.year && boot?.weekend) {
+    return { festival: boot.festival, year: boot.year, weekend: boot.weekend };
+  }
+  return parseRoute(pathname);
+}
+
+function ensureRouteDefaults(r) {
+  const next = { ...r };
+  if (!next.festival) next.festival = DEFAULT_FESTIVAL;
+  if (!next.year) next.year = DEFAULT_YEAR;
+  const weekend = normalizeWeekend(next.weekend);
+  next.weekend = weekend ? weekend.toLowerCase() : DEFAULT_WEEKEND.toLowerCase();
+  return next;
+}
+
+function formatFestivalName(slug) {
+  const value = String(slug || "").trim();
+  if (!value) return "Festival";
+  return value
+    .split("-")
+    .map(part => part ? part[0].toUpperCase() + part.slice(1) : "")
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function upsertMetaTag(attr, key, content) {
+  if (!document?.head) return;
+  if (!content) return;
+  let meta = document.head.querySelector(`meta[${attr}="${key}"]`);
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute(attr, key);
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute("content", content);
+}
+
+function upsertLinkRel(rel, href) {
+  if (!document?.head) return;
+  if (!href) return;
+  let link = document.head.querySelector(`link[rel="${rel}"]`);
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", rel);
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", href);
+}
+
+function applySeoFromRoute(r) {
+  if (!r || typeof document === "undefined") return;
+  const normalized = ensureRouteDefaults(r);
+  const festivalName = formatFestivalName(normalized.festival);
+  const year = normalized.year;
+  const weekend = normalizeWeekend(normalized.weekend);
+  const weekendLabel = weekend ? `Weekend ${weekend.slice(1)}` : "";
+  const title = weekend
+    ? `${festivalName} ${year} ${weekendLabel} Lineup Planner | Festival Planner`
+    : `${festivalName} ${year} Lineup Planner | Festival Planner`;
+  const description = weekend
+    ? `Privacy-first ${festivalName} ${year} ${weekendLabel} lineup planner to rate DJs, save favorites locally, and plan your schedule - no account, no tracking.`
+    : `Privacy-first ${festivalName} ${year} lineup planner to rate DJs, save favorites locally, and plan W1/W2 - no account, no tracking.`;
+
+  document.title = title;
+  upsertMetaTag("name", "description", description);
+
+  const canonical = `${SITE_ORIGIN}${canonicalPath(normalized)}`;
+  upsertLinkRel("canonical", canonical);
+  upsertMetaTag("property", "og:title", title);
+  upsertMetaTag("property", "og:description", description);
+  upsertMetaTag("property", "og:url", canonical);
+  upsertMetaTag("property", "og:type", "website");
+  upsertMetaTag("property", "og:image", `${SITE_ORIGIN}${OG_IMAGE_PATH}`);
+
+  upsertMetaTag("name", "twitter:card", "summary");
+  upsertMetaTag("name", "twitter:title", title);
+  upsertMetaTag("name", "twitter:description", description);
 }
 
 // Parses festival/year/weekend from the current path.

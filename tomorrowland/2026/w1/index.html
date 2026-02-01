@@ -5,20 +5,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <title>Tomorrowland 2026 Lineup Planner | Festival Planner</title>
-  <meta name="description" content="Privacy-first Tomorrowland 2026 lineup planner to rate DJs, save favorites locally, and plan W1/W2&mdash;no account, no tracking.">
-  <link rel="canonical" href="https://festival-planner.tschann.me/">
+  <title>Tomorrowland 2026 Weekend 1 Lineup Planner | Festival Planner</title>
+  <meta name="description" content="Privacy-first Tomorrowland 2026 Weekend 1 lineup planner to rate DJs, save favorites locally, and plan your schedule&mdash;no account, no tracking.">
+  <link rel="canonical" href="https://festival-planner.tschann.me/tomorrowland/2026/w1/">
 
   <!-- Open Graph / Twitter cards -->
-  <meta property="og:title" content="Tomorrowland 2026 Lineup Planner | Festival Planner">
-  <meta property="og:description" content="Privacy-first Tomorrowland 2026 lineup planner to rate DJs, save favorites locally, and plan W1/W2&mdash;no account, no tracking.">
-  <meta property="og:url" content="https://festival-planner.tschann.me/">
+  <meta property="og:title" content="Tomorrowland 2026 Weekend 1 Lineup Planner | Festival Planner">
+  <meta property="og:description" content="Privacy-first Tomorrowland 2026 Weekend 1 lineup planner to rate DJs, save favorites locally, and plan your schedule&mdash;no account, no tracking.">
+  <meta property="og:url" content="https://festival-planner.tschann.me/tomorrowland/2026/w1/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://festival-planner.tschann.me/icons/og.png">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tomorrowland 2026 Lineup Planner | Festival Planner">
-  <meta name="twitter:description" content="Privacy-first Tomorrowland 2026 lineup planner to rate DJs, save favorites locally, and plan W1/W2&mdash;no account, no tracking.">
+  <meta name="twitter:title" content="Tomorrowland 2026 Weekend 1 Lineup Planner | Festival Planner">
+  <meta name="twitter:description" content="Privacy-first Tomorrowland 2026 Weekend 1 lineup planner to rate DJs, save favorites locally, and plan your schedule&mdash;no account, no tracking.">
   <meta name="twitter:image" content="https://festival-planner.tschann.me/icons/og.png">
 
   <!-- Structured data -->
@@ -26,11 +26,11 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Festival Planner",
-      "url": "https://festival-planner.tschann.me/",
+      "name": "Festival Planner - Tomorrowland 2026 Weekend 1",
+      "url": "https://festival-planner.tschann.me/tomorrowland/2026/w1/",
       "applicationCategory": "MusicApplication",
       "operatingSystem": "Web",
-      "description": "Privacy-first Tomorrowland 2026 lineup planner with local-only ratings (IndexedDB)."
+      "description": "Privacy-first Tomorrowland 2026 Weekend 1 lineup planner with local-only ratings (IndexedDB)."
     }
   </script>
 
@@ -48,8 +48,8 @@
   </script>
 
   <!-- PWA setup -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="favicon.ico">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.ico">
   <meta name="theme-color" content="#2c1a60">
 
   <!-- iOS / mobile PWA -->
@@ -62,7 +62,7 @@
   <meta name="robots" content="index, follow">
 
   <!-- App styles -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body>
@@ -303,10 +303,13 @@
   <div id="actionToast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <!-- App logic + service worker registration -->
-  <script src="app.js"></script>
+  <script>
+    window.__FP_BOOT = { event: "tomorrowland", year: 2026, weekend: "w1", lang: "de" };
+  </script>
+  <script src="/app.js" defer></script>
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
+      navigator.serviceWorker.register("/service-worker.js")
         .then((reg) => {
           if (typeof window.setupServiceWorkerUpdates === "function") {
             window.setupServiceWorkerUpdates(reg);
@@ -317,4 +320,6 @@
   </script>
 </body>
 </html>
+
+
 
