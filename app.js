@@ -560,7 +560,7 @@ async function loadSnapshotIndex() {
   WEEKENDS.forEach((weekend) => {
     const options = (index.snapshots || [])
       .filter(s => String(s.file || "").toUpperCase().endsWith(`_${weekend}.JSON`))
-      .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+      .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
 
     state.weekends[weekend].options = options;
     setSnapshotOptions(weekend);
