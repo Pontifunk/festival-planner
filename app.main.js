@@ -75,7 +75,7 @@ function setupServiceWorkerUpdates(registration) {
 
   const setLabels = () => {
     textEl.textContent = t("update_available") || "Update available";
-    button.textContent = t("reload") || "Reload";
+    button.textContent = t("reload_safe") || t("reload") || "Reload";
   };
 
   const show = () => {
@@ -192,6 +192,12 @@ function bindUi() {
   }
   if (favoritesToggle) {
     favoritesToggle.addEventListener("click", () => setFavoritesOnly(!favoritesOnly));
+  }
+  if (favoritesToggleAll) {
+    favoritesToggleAll.addEventListener("click", () => setFavoritesOnly(false));
+  }
+  if (favoritesToggleOnly) {
+    favoritesToggleOnly.addEventListener("click", () => setFavoritesOnly(true));
   }
   if (favoritesList) {
     favoritesList.addEventListener("click", async (e) => {

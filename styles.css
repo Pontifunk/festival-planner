@@ -551,6 +551,9 @@ button{
 
 .act:hover{background:rgba(255,255,255,.06)}
 .actName{font-weight:900;font-size:18px}
+.actNameLink{color:var(--text);text-decoration:none}
+.actNameLink:hover{text-decoration:underline}
+.actNameLink:focus-visible{outline:2px solid rgba(107,92,255,.7);outline-offset:2px;border-radius:4px}
 .actMeta{color:var(--muted);font-size:12px;margin-top:4px}
 
 .badges{
@@ -576,6 +579,36 @@ button{
 .badge.warn{border-color:rgba(242,201,76,.35);color:var(--warn);background:rgba(242,201,76,.10)}
 .badge.bad{border-color:rgba(224,86,91,.35);color:var(--danger);background:rgba(224,86,91,.10)}
 
+/* inline favorites bar */
+.inlineFavoritesBar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:8px 0 12px;
+  padding:8px 10px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+}
+.inlineToggle{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.inlineToggleBtn{
+  min-height:40px;
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font-weight:800;
+  font-size:12px;
+  cursor:pointer;
+}
+.inlineToggleBtn.isActive{
+  background:rgba(107,92,255,.25);
+  border-color:rgba(107,92,255,.45);
+}
+.inlineProgress{color:var(--muted);font-size:12px;font-weight:700}
+
 /* rating bar (explicit options instead of cycle click) */
 .ratingSelect{
   grid-area:rating;
@@ -584,6 +617,57 @@ button{
   gap:6px;
   flex-wrap:wrap;
   justify-content:flex-end;
+}
+
+/* segmented rating controls */
+.ratingSegmented{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.ratingSegBtn{
+  min-height:40px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  font-weight:900;
+  font-size:11px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.ratingSegBtn:hover{background:rgba(255,255,255,.08)}
+.ratingSegBtn .ratingEmoji{font-size:15px;line-height:1}
+.ratingSegBtn .segLabel{font-size:11px;color:var(--muted)}
+.ratingSegBtn.isActive{
+  border-color:rgba(107,92,255,.6);
+  background:rgba(107,92,255,.18);
+  box-shadow:0 0 0 2px rgba(107,92,255,.2), 0 0 14px rgba(107,92,255,.35);
+}
+.ratingSegBtn[data-rate="liked"].isActive{
+  border-color:rgba(86,210,155,.6);
+  background:rgba(86,210,155,.16);
+  box-shadow:0 0 0 2px rgba(86,210,155,.2), 0 0 14px rgba(86,210,155,.35);
+}
+.ratingSegBtn[data-rate="maybe"].isActive{
+  border-color:rgba(242,201,76,.7);
+  background:rgba(242,201,76,.16);
+  box-shadow:0 0 0 2px rgba(242,201,76,.2), 0 0 14px rgba(242,201,76,.35);
+}
+.ratingSegBtn[data-rate="disliked"].isActive{
+  border-color:rgba(224,86,91,.7);
+  background:rgba(224,86,91,.16);
+  box-shadow:0 0 0 2px rgba(224,86,91,.2), 0 0 14px rgba(224,86,91,.35);
+}
+.ratingSegBtn[data-rate="unrated"].isActive{
+  border-color:rgba(255,255,255,.4);
+  background:rgba(255,255,255,.12);
+  box-shadow:0 0 0 2px rgba(255,255,255,.12), 0 0 10px rgba(255,255,255,.2);
 }
 
 .playRow{
@@ -1068,9 +1152,16 @@ body.menuOpen{
     width: 100%;
   }
 
+  .inlineFavoritesBar{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
   .ratingBar{
     justify-content:flex-start;
   }
+
+  .ratingSegmented{justify-content:flex-start}
 
   .pill{max-width: 100%;}
 }
@@ -1088,6 +1179,9 @@ body.menuOpen{
   .ratingSelect{width:100%}
   .ratingChip{padding:6px}
   .ratingLabel{display:none}
+  .ratingSegmented{width:100%}
+  .ratingSegBtn{flex:1 1 auto;justify-content:center}
+  .ratingSegBtn .segLabel{display:none}
 }
 
 

@@ -136,6 +136,13 @@
       </div>
 
       <div id="activeFilters" class="activeFilters" aria-live="polite" hidden></div>
+      <div id="inlineFavoritesBar" class="inlineFavoritesBar" aria-live="polite">
+        <div class="inlineToggle" role="group" aria-label="Favoriten Filter">
+          <button class="inlineToggleBtn" id="favoritesToggleAll" type="button" data-i18n="toggle_all">Alle</button>
+          <button class="inlineToggleBtn" id="favoritesToggleOnly" type="button" data-i18n="toggle_favorites_only">Nur Favoriten</button>
+        </div>
+        <div class="inlineProgress" id="ratingProgress"></div>
+      </div>
 
       <!-- Live search results -->
       <div id="searchResults" class="searchResults" hidden></div>
@@ -188,14 +195,14 @@
             </select>
           </div>
 
-          <div class="ctrl">
+          <div class="ctrl" id="lastCheckedRow">
             <span data-i18n="last_checked">Zuletzt gepr&uuml;ft</span>
-            <div class="pill" id="lastCheckedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
+            <div class="pill" id="lastCheckedPill"></div>
           </div>
 
-          <div class="ctrl">
+          <div class="ctrl" id="lastUpdatedRow">
             <span data-i18n="lineup_status">Line-up-Stand</span>
-            <div class="pill" id="lastUpdatedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
+            <div class="pill" id="lastUpdatedPill"></div>
           </div>
         </div>
       </div>

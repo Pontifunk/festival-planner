@@ -115,6 +115,7 @@
   "snapshot_w2_aria": "Snapshot Wochenende 2",
   "update_available": "Update verf\u00fcgbar",
   "reload": "Neu laden",
+  "reload_safe": "Neu laden (deine Ratings bleiben lokal gespeichert).",
   "donation_link_coming": "Spendenlink folgt",
   "base_data_load_error": "Fehler beim Laden der Grunddaten.",
   "no_data_available": "Keine Daten verf\u00fcgbar.",
@@ -136,5 +137,13 @@
   "rating_action_maybe": "Vielleicht",
   "rating_action_disliked": "Mag ich nicht",
   "rating_action_unrated": "Unbewertet / Zur\u00fccksetzen",
+  "rating_reset": "Reset",
+  "rating_badge_liked": "Gef\u00e4llt",
+  "rating_badge_maybe": "Vielleicht",
+  "rating_badge_disliked": "Nein",
+  "rating_badge_unrated": "Unbewertet",
+  "toggle_all": "Alle",
+  "toggle_favorites_only": "Nur Favoriten",
+  "rating_progress": "Du hast {rated}/{total} Artists bewertet.",
   "not_available_yet": "Noch nicht verf\u00fcgbar"
 }

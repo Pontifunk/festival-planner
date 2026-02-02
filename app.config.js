@@ -76,12 +76,18 @@ const STAGE_ALIASES = {
 
 // ====== DOM ======
 const langSelect = document.getElementById("langSelect");
+const lastCheckedRow = document.getElementById("lastCheckedRow");
 const lastCheckedPill = document.getElementById("lastCheckedPill");
+const lastUpdatedRow = document.getElementById("lastUpdatedRow");
 const lastUpdatedPill = document.getElementById("lastUpdatedPill");
 const topbar = document.getElementById("top");
 
 const searchInput = document.getElementById("searchInput");
 const searchResults = document.getElementById("searchResults");
+const inlineFavoritesBar = document.getElementById("inlineFavoritesBar");
+const favoritesToggleAll = document.getElementById("favoritesToggleAll");
+const favoritesToggleOnly = document.getElementById("favoritesToggleOnly");
+const ratingProgress = document.getElementById("ratingProgress");
 const ratingFilter = document.getElementById("ratingFilter");
 const dayFilter = document.getElementById("dayFilter");
 const stageFilter = document.getElementById("stageFilter");

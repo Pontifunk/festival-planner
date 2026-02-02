@@ -6,6 +6,8 @@ function renderActiveWeekend() {
   }
   updateFiltersUI(state.activeWeekend);
   renderWeekend(state.activeWeekend);
+  updateInlineFavoritesToggleUI();
+  updateRatingsProgress();
   renderFavorites();
   updateSearchResults();
   renderActiveFilters();
@@ -38,6 +40,7 @@ function renderWeekend(weekend) {
   const openState = resolveOpenState(grouped, prevOpen, activeFilters);
   w.grouped = grouped;
   w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
+  w.artistSlugMap = buildArtistSlugMap(w.snapshot.slots);
   const dayList = Array.from(new Set(w.snapshot.slots.map(s => s.date || extractDate(s.start) || (t("unknown") || "Unknown")))).sort();
   updateMenuDayLinks(dayList);
 
@@ -108,6 +111,7 @@ function renderDayGroup(group, weekend, openState) {
 function renderSlot(slot, weekend) {
   const artistId = slot.artistId || "";
   const name = slot.artist || (t("unknown_artist") || "Unknown artist");
+  const artistUrl = getArtistPageUrl(weekend, artistId);
   const stage = normalizeStage(slot.stage);
   const start = formatTime(slot.start);
   const end = formatTime(slot.end);
@@ -115,33 +119,40 @@ function renderSlot(slot, weekend) {
 
   const r = ratings[artistId] || "unrated";
   const ratingLabels = getRatingActionLabels();
+  const badge = badgeFor(r);
+  const resetLabel = t("rating_reset") || "Reset";
 
   const slotId = slot.slotId ? `slot-${weekend}-${slot.slotId}` : `slot-${weekend}-${hashMini(name + stage + timeRange)}`;
 
   return `
     <div class="act slot" id="${escapeAttr(slotId)}" data-artist-id="${escapeAttr(artistId)}">
       <div>
-        <div class="actName">${escapeHtml(name)}</div>
+        <div class="actName">
+          ${artistUrl
+            ? `<a class="actNameLink" href="${escapeAttr(artistUrl)}">${escapeHtml(name)}</a>`
+            : `${escapeHtml(name)}`}
+        </div>
         <div class="actMeta">${escapeHtml(timeRange)} \u00b7 ${escapeHtml(stage)}</div>
       </div>
 
       <div class="badges">
-        <div class="ratingSelect" data-id="${escapeAttr(artistId)}" role="radiogroup" aria-label="${escapeAttr(t("rating_label") || "Rating")}">
-          <button class="ratingChip ${r === "liked" ? "isActive" : ""}" data-rate="liked" type="button" role="radio" aria-checked="${r === "liked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.liked)}" aria-label="${escapeAttr(ratingLabels.liked)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("liked"))}</span>
-            <span class="ratingLabel">${escapeHtml(t("liked"))}</span>
+        <div class="badge ${escapeAttr(badge.cls)}">${escapeHtml(badge.text)}</div>
+        <div class="ratingSegmented" data-id="${escapeAttr(artistId)}" role="group" aria-label="${escapeAttr(t("rating_label") || "Rating")}">
+          <button class="ratingSegBtn ${r === "liked" ? "isActive" : ""}" data-rate="liked" type="button" aria-pressed="${r === "liked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.liked)}" aria-label="${escapeAttr(ratingLabels.liked)}">
+            <span class="ratingEmoji" aria-hidden="true">👍</span>
+            <span class="segLabel">${escapeHtml(t("liked"))}</span>
           </button>
-          <button class="ratingChip ${r === "maybe" ? "isActive" : ""}" data-rate="maybe" type="button" role="radio" aria-checked="${r === "maybe" ? "true" : "false"}" title="${escapeAttr(ratingLabels.maybe)}" aria-label="${escapeAttr(ratingLabels.maybe)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("maybe"))}</span>
-            <span class="ratingLabel">${escapeHtml(t("maybe"))}</span>
+          <button class="ratingSegBtn ${r === "maybe" ? "isActive" : ""}" data-rate="maybe" type="button" aria-pressed="${r === "maybe" ? "true" : "false"}" title="${escapeAttr(ratingLabels.maybe)}" aria-label="${escapeAttr(ratingLabels.maybe)}">
+            <span class="ratingEmoji" aria-hidden="true">🤔</span>
+            <span class="segLabel">${escapeHtml(t("maybe"))}</span>
           </button>
-          <button class="ratingChip ${r === "disliked" ? "isActive" : ""}" data-rate="disliked" type="button" role="radio" aria-checked="${r === "disliked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.disliked)}" aria-label="${escapeAttr(ratingLabels.disliked)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("disliked"))}</span>
-            <span class="ratingLabel">${escapeHtml(t("disliked"))}</span>
+          <button class="ratingSegBtn ${r === "disliked" ? "isActive" : ""}" data-rate="disliked" type="button" aria-pressed="${r === "disliked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.disliked)}" aria-label="${escapeAttr(ratingLabels.disliked)}">
+            <span class="ratingEmoji" aria-hidden="true">👎</span>
+            <span class="segLabel">${escapeHtml(t("disliked"))}</span>
           </button>
-          <button class="ratingChip ${r === "unrated" ? "isActive" : ""}" data-rate="unrated" type="button" role="radio" aria-checked="${r === "unrated" ? "true" : "false"}" title="${escapeAttr(ratingLabels.unrated)}" aria-label="${escapeAttr(ratingLabels.unrated)}">
-            <span class="ratingEmoji" aria-hidden="true">${escapeHtml(getRatingChipIcon("unrated"))}</span>
-            <span class="ratingLabel">${escapeHtml(t("unrated"))}</span>
+          <button class="ratingSegBtn ${r === "unrated" ? "isActive" : ""}" data-rate="unrated" type="button" aria-pressed="${r === "unrated" ? "true" : "false"}" title="${escapeAttr(ratingLabels.unrated)}" aria-label="${escapeAttr(ratingLabels.unrated)}">
+            <span class="ratingEmoji" aria-hidden="true">↺</span>
+            <span class="segLabel">${escapeHtml(resetLabel)}</span>
           </button>
         </div>
 
@@ -159,6 +170,15 @@ function renderSlot(slot, weekend) {
       </div>
     </div>
   `;
+}
+
+function getArtistPageUrl(weekend, artistId) {
+  if (!artistId) return "";
+  const w = state.weekends[weekend];
+  const slug = w?.artistSlugMap?.get(artistId);
+  if (!slug) return "";
+  const wk = String(weekend || "").toLowerCase();
+  return `${BASE_PREFIX}/${state.festival}/${state.year}/${wk}/artist/${slug}/`;
 }
 
 // Renders the favorites list and summary.
@@ -264,6 +284,36 @@ function updateFavoritesToggleUI() {
   favoritesToggle.setAttribute("aria-pressed", favoritesOnly ? "true" : "false");
 }
 
+// Syncs inline favorites toggle state.
+function updateInlineFavoritesToggleUI() {
+  if (!favoritesToggleAll || !favoritesToggleOnly) return;
+  favoritesToggleAll.classList.toggle("isActive", !favoritesOnly);
+  favoritesToggleOnly.classList.toggle("isActive", favoritesOnly);
+  favoritesToggleAll.setAttribute("aria-pressed", favoritesOnly ? "false" : "true");
+  favoritesToggleOnly.setAttribute("aria-pressed", favoritesOnly ? "true" : "false");
+}
+
+// Updates the rating progress line near the inline favorites toggle.
+function updateRatingsProgress() {
+  if (!ratingProgress) return;
+  const w = state.weekends[state.activeWeekend];
+  const total = w?.artistSlots?.size || 0;
+  if (!total) {
+    ratingProgress.textContent = "";
+    ratingProgress.hidden = true;
+    return;
+  }
+  let rated = 0;
+  w.artistSlots.forEach((_, artistId) => {
+    if (ratings[artistId] && ratings[artistId] !== "unrated") rated += 1;
+  });
+  const template = t("rating_progress") || "You have rated {rated}/{total} artists.";
+  ratingProgress.textContent = template
+    .replace("{rated}", String(rated))
+    .replace("{total}", String(total));
+  ratingProgress.hidden = false;
+}
+
 // Enables or disables favorites-only filtering.
 function setFavoritesOnly(next) {
   favoritesOnly = !!next;
@@ -276,6 +326,7 @@ function setFavoritesOnly(next) {
     syncCustomSelect(ratingFilter);
   }
   updateFavoritesToggleUI();
+  updateInlineFavoritesToggleUI();
   renderActiveWeekend();
 }
 
@@ -743,13 +794,31 @@ async function importRatings(e) {
 // Updates last-checked and last-updated pills.
 function renderStatusPills() {
   const w = state.weekends[state.activeWeekend];
-  const lastChecked = w.snapshot?.meta?.createdAt
-    ? formatDateTime(w.snapshot.meta.createdAt)
-    : notAvailable();
-  lastCheckedPill.textContent = lastChecked;
+  const createdAt = w.snapshot?.meta?.createdAt || "";
+  const hasMeta = !!w.snapshot?.meta;
 
-  const slotCount = w.snapshot?.slots?.length ?? 0;
-  lastUpdatedPill.textContent = `${slotCount} ${t("slots") || "Slots"}`;
+  if (lastCheckedRow && lastCheckedPill) {
+    if (createdAt) {
+      lastCheckedPill.textContent = formatDateTime(createdAt);
+      lastCheckedRow.hidden = false;
+    } else {
+      lastCheckedPill.textContent = "";
+      lastCheckedRow.hidden = true;
+    }
+  }
+
+  if (lastUpdatedRow && lastUpdatedPill) {
+    const select = snapshotSelectForWeekend(state.activeWeekend);
+    const label = select ? getSelectLabel(select, w.selectedFile) : (w.selectedFile || "");
+    if (hasMeta && label) {
+      const datePart = createdAt ? ` (${formatDateTime(createdAt)})` : "";
+      lastUpdatedPill.textContent = `${label}${datePart}`;
+      lastUpdatedRow.hidden = false;
+    } else {
+      lastUpdatedPill.textContent = "";
+      lastUpdatedRow.hidden = true;
+    }
+  }
 }
 
 // Rebuilds day/stage filter options from snapshot data.
@@ -936,8 +1005,8 @@ function getSelectLabel(selectEl, value) {
 // Returns the label for a rating filter chip.
 function ratingChipLabel(value) {
   if (value === "liked") return translateOr("rating_chip_liked", "❤︎");
-  if (value === "maybe") return translateOr("rating_chip_maybe", "ðŸ¤”");
-  if (value === "disliked") return translateOr("rating_chip_disliked", "ðŸ‘Ž");
+  if (value === "maybe") return translateOr("rating_chip_maybe", "🤔");
+  if (value === "disliked") return translateOr("rating_chip_disliked", "👎");
   if (value === "unrated") return translateOr("rating_chip_unrated", translateOr("unrated", "Unrated"));
   return value;
 }
@@ -976,11 +1045,11 @@ function bindRatingMenus(container, weekend) {
   const ratingCycle = RATING_CYCLE;
 
   container.addEventListener("click", async (e) => {
-    const chip = e.target.closest(".ratingChip");
+    const chip = e.target.closest(".ratingSegBtn");
     if (chip && container.contains(chip)) {
       e.preventDefault();
       e.stopPropagation();
-      const sel = chip.closest(".ratingSelect");
+      const sel = chip.closest(".ratingSegmented");
       const id = sel?.getAttribute("data-id");
       const rate = chip.getAttribute("data-rate");
       if (id && rate) {
@@ -993,7 +1062,7 @@ function bindRatingMenus(container, weekend) {
 
     const slotEl = e.target.closest(".slot");
     if (slotEl && container.contains(slotEl)) {
-      if (e.target.closest(".ratingSelect, a, button, input, label")) return;
+      if (e.target.closest(".ratingSegmented, a, button, input, label")) return;
       const id = slotEl.getAttribute("data-artist-id") || "";
       if (!id) return;
       const current = ratings[id] || "unrated";

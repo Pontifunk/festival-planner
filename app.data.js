@@ -180,6 +180,39 @@ function buildArtistSlotMap(slots) {
   return map;
 }
 
+// Builds stable artist slugs per weekend (used for static artist pages).
+function buildArtistSlugMap(slots) {
+  const baseById = new Map();
+  const counts = new Map();
+
+  slots.forEach((slot) => {
+    const id = slot.artistId || "";
+    if (!id || baseById.has(id)) return;
+    const base = slugifyArtist(slot.artistNormalized || slot.artist || "artist");
+    baseById.set(id, base);
+    counts.set(base, (counts.get(base) || 0) + 1);
+  });
+
+  const out = new Map();
+  baseById.forEach((base, id) => {
+    const suffix = (counts.get(base) || 0) > 1 ? `-${id.slice(0, 6)}` : "";
+    out.set(id, `${base}${suffix}`);
+  });
+  return out;
+}
+
+function slugifyArtist(value) {
+  const base = String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return base || "artist";
+}
+
 // Counts total slots in grouped data.
 function countGroupedSlots(grouped) {
   let count = 0;

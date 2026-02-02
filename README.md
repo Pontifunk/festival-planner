@@ -113,6 +113,38 @@ No build step required.
 
 ---
 
+## Artist Pages (SEO)
+
+Artist detail pages are generated statically from the latest snapshot.
+After updating snapshots, re-run the generator so links and sitemap stay in sync:
+
+- PowerShell: `powershell -File scripts/generate-artist-pages.ps1`
+- Node (optional): `node scripts/generate-artist-pages.mjs`
+
+You can override defaults via environment variables:
+- `SITE_ORIGIN` (e.g. `https://festival-planner.tschann.me`)
+- `FESTIVAL` (e.g. `tomorrowland`)
+- `YEAR` (e.g. `2026`)
+- `LOCALE` (`en` or `de`)
+
+---
+
+## Daily Generation (optional)
+
+If you want artist pages to refresh daily, you can use a scheduled GitHub Action to:
+1) update snapshots (if you already automate that),
+2) regenerate artist pages,
+3) commit the updated `sitemap.xml` and artist pages.
+
+Privacy note: this is build-time automation only and does not add any tracking or analytics.
+
+Example (pseudo-steps):
+- run your snapshot update script (if applicable)
+- run `scripts/generate-artist-pages.ps1` (or `.mjs`)
+- commit changes and push
+
+---
+
 ## Manual Smoke Checks
 
 Use these quick checks after changes (especially Service Worker updates):

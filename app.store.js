@@ -1,9 +1,9 @@
 ﻿// ====== RATINGS ======
 function badgeFor(r) {
-  if (r === "liked") return { cls: "ok", text: t("liked") };
-  if (r === "maybe") return { cls: "warn", text: t("maybe") };
-  if (r === "disliked") return { cls: "bad", text: t("disliked") };
-  return { cls: "", text: t("unrated") };
+  if (r === "liked") return { cls: "ok", text: t("rating_badge_liked") || t("liked") };
+  if (r === "maybe") return { cls: "warn", text: t("rating_badge_maybe") || t("maybe") };
+  if (r === "disliked") return { cls: "bad", text: t("rating_badge_disliked") || t("disliked") };
+  return { cls: "", text: t("rating_badge_unrated") || t("unrated") };
 }
 
 // Updates rating state and persists to IndexedDB.
