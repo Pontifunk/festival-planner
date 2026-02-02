@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>About &ndash; Festival Planner</title>
-  <meta name="description" content="Festival Planner is a privacy-first Tomorrowland 2026 lineup planner with local-only storage and import/export support.">
+  <title data-i18n-key="about_title">&Uuml;ber &ndash; Festival Planner</title>
+  <meta name="description" content="Festival Planner ist ein datenschutzfreundlicher Tomorrowland 2026 Line-up-Planer mit lokaler Speicherung und Import/Export." data-i18n-key="about_desc" data-i18n-attr="content">
   <link rel="canonical" href="https://festival-planner.tschann.me/about/">
 
   <meta property="og:title" content="About &ndash; Festival Planner">
@@ -25,20 +25,99 @@
 <body>
   <main class="legalLayout">
     <section class="legalPanel">
-      <h1>About Festival Planner</h1>
-      <p>Festival Planner is an unofficial Tomorrowland 2026 lineup planner. It helps you rate DJs, mark favorites, and prepare your weekend plan without creating an account.</p>
-      <p><strong>Privacy-first by design:</strong> no tracking, no cookies, no analytics, and no external SDKs.</p>
-      <p><strong>Local storage only:</strong> your ratings and favorites are stored in your browser using IndexedDB. Nothing is uploaded.</p>
-      <p><strong>Import and export:</strong> you can export your ratings to a JSON file and import them again later on the same or another device.</p>
-      <p><strong>Data disclaimer:</strong> lineup data can change at any time. Official festival announcements always take priority.</p>
-      <p>
-        Project links:
-        <a href="https://github.com/Pontifunk/festival-planner" target="_blank" rel="noopener noreferrer">GitHub repo</a>
+      <div class="controls" style="display:flex; gap:8px; justify-content:flex-end; margin-bottom:12px;">
+        <button class="btn" type="button" data-lang-toggle="de" aria-pressed="false" data-i18n-key="lang_de_label" data-i18n-attr="aria-label">DE</button>
+        <button class="btn" type="button" data-lang-toggle="en" aria-pressed="false" data-i18n-key="lang_en_label" data-i18n-attr="aria-label">EN</button>
+      </div>
+      <h1 data-i18n-key="about_h1">&Uuml;ber Festival Planner</h1>
+      <p data-i18n-key="about_p1">Festival Planner ist ein inoffizieller Tomorrowland 2026 Line-up-Planer. Er hilft dir, DJs zu bewerten, Favoriten zu markieren und dein Wochenende vorzubereiten &ndash; ohne Account.</p>
+      <p data-i18n-key="about_p2" data-i18n-html><strong>Datenschutzfreundlich:</strong> kein Tracking, keine Cookies, keine Analytics und keine externen SDKs.</p>
+      <p data-i18n-key="about_p3" data-i18n-html><strong>Nur lokal gespeichert:</strong> deine Bewertungen und Favoriten werden im Browser per IndexedDB gespeichert. Es wird nichts hochgeladen.</p>
+      <p data-i18n-key="about_p4" data-i18n-html><strong>Import &amp; Export:</strong> du kannst deine Bewertungen als JSON exportieren und sp&auml;ter wieder importieren.</p>
+      <p data-i18n-key="about_p5" data-i18n-html><strong>Datenhinweis:</strong> Line-up-Daten k&ouml;nnen sich jederzeit &auml;ndern. Offizielle Ank&uuml;ndigungen des Festivals haben Vorrang.</p>
+      <p data-i18n-key="about_links" data-i18n-html>
+        Projektlinks:
+        <a href="https://github.com/Pontifunk/festival-planner" target="_blank" rel="noopener noreferrer">GitHub-Repo</a>
         &middot;
-        <a href="https://github.com/Pontifunk/festival-planner/issues/new/choose" target="_blank" rel="noopener noreferrer">Report an issue</a>
+        <a href="https://github.com/Pontifunk/festival-planner/issues/new/choose" target="_blank" rel="noopener noreferrer">Problem melden</a>
       </p>
-      <p><a href="/" rel="noopener">Back to the planner</a></p>
+      <p><a href="/" rel="noopener" data-i18n-key="about_back">Zur&uuml;ck zum Planner</a></p>
     </section>
   </main>
+
+  <script>
+    (function () {
+      const I18N = {
+        de: {
+          lang_de_label: "Deutsch",
+          lang_en_label: "Englisch",
+          about_title: "\u00dcber \u2013 Festival Planner",
+          about_desc: "Festival Planner ist ein datenschutzfreundlicher Tomorrowland 2026 Line-up-Planer mit lokaler Speicherung und Import/Export.",
+          about_h1: "\u00dcber Festival Planner",
+          about_p1: "Festival Planner ist ein inoffizieller Tomorrowland 2026 Line-up-Planer. Er hilft dir, DJs zu bewerten, Favoriten zu markieren und dein Wochenende vorzubereiten \u2013 ohne Account.",
+          about_p2: "<strong>Datenschutzfreundlich:</strong> kein Tracking, keine Cookies, keine Analytics und keine externen SDKs.",
+          about_p3: "<strong>Nur lokal gespeichert:</strong> deine Bewertungen und Favoriten werden im Browser per IndexedDB gespeichert. Es wird nichts hochgeladen.",
+          about_p4: "<strong>Import &amp; Export:</strong> du kannst deine Bewertungen als JSON exportieren und sp\u00e4ter wieder importieren.",
+          about_p5: "<strong>Datenhinweis:</strong> Line-up-Daten k\u00f6nnen sich jederzeit \u00e4ndern. Offizielle Ank\u00fcndigungen des Festivals haben Vorrang.",
+          about_links: "Projektlinks: <a href=\"https://github.com/Pontifunk/festival-planner\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub-Repo</a> \u00b7 <a href=\"https://github.com/Pontifunk/festival-planner/issues/new/choose\" target=\"_blank\" rel=\"noopener noreferrer\">Problem melden</a>",
+          about_back: "Zur\u00fcck zum Planner"
+        },
+        en: {
+          lang_de_label: "German",
+          lang_en_label: "English",
+          about_title: "About \u2013 Festival Planner",
+          about_desc: "Festival Planner is a privacy-first Tomorrowland 2026 lineup planner with local-only storage and import/export support.",
+          about_h1: "About Festival Planner",
+          about_p1: "Festival Planner is an unofficial Tomorrowland 2026 lineup planner. It helps you rate DJs, mark favorites, and prepare your weekend plan without creating an account.",
+          about_p2: "<strong>Privacy-first by design:</strong> no tracking, no cookies, no analytics, and no external SDKs.",
+          about_p3: "<strong>Local storage only:</strong> your ratings and favorites are stored in your browser using IndexedDB. Nothing is uploaded.",
+          about_p4: "<strong>Import and export:</strong> you can export your ratings to a JSON file and import them again later on the same or another device.",
+          about_p5: "<strong>Data disclaimer:</strong> lineup data can change at any time. Official festival announcements always take priority.",
+          about_links: "Project links: <a href=\"https://github.com/Pontifunk/festival-planner\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub repo</a> \u00b7 <a href=\"https://github.com/Pontifunk/festival-planner/issues/new/choose\" target=\"_blank\" rel=\"noopener noreferrer\">Report an issue</a>",
+          about_back: "Back to the planner"
+        }
+      };
+
+      const params = new URLSearchParams(location.search);
+      const stored = localStorage.getItem("fp_lang");
+      let lang = (params.get("lang") || stored || document.documentElement.lang || "de").toLowerCase();
+      if (!I18N[lang]) lang = "de";
+
+      const apply = (next) => {
+        if (!I18N[next]) return;
+        lang = next;
+        document.documentElement.lang = next;
+        localStorage.setItem("fp_lang", next);
+
+        document.querySelectorAll("[data-i18n-key]").forEach((el) => {
+          const key = el.getAttribute("data-i18n-key");
+          const value = I18N[next][key];
+          if (value === undefined) return;
+          const attr = el.getAttribute("data-i18n-attr");
+          if (attr) {
+            el.setAttribute(attr, value);
+            return;
+          }
+          if (el.hasAttribute("data-i18n-html")) {
+            el.innerHTML = value;
+          } else {
+            el.textContent = value;
+          }
+        });
+
+        document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
+          const active = btn.getAttribute("data-lang-toggle") === next;
+          btn.classList.toggle("isActive", active);
+          btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      };
+
+      document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => apply(btn.getAttribute("data-lang-toggle")));
+      });
+
+      apply(lang);
+    })();
+  </script>
 </body>
 </html>

@@ -5,7 +5,8 @@
   "scripts": {
     "snapshot": "node snapshot-from-tml.mjs",
     "artists": "node scrape-artists-from-tml.mjs",
-    "changes": "node generate-changes.mjs"
+    "changes": "node generate-changes.mjs",
+    "i18n:check": "node check-i18n.mjs"
   },
   "dependencies": {
     "playwright": "^1.55.0"

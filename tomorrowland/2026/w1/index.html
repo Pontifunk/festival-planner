@@ -5,20 +5,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <title>Tomorrowland 2026 Weekend 1 Lineup Planner | Festival Planner</title>
-  <meta name="description" content="Privacy-first Tomorrowland 2026 Weekend 1 lineup planner to rate DJs, save favorites locally, and plan your schedule&mdash;no account, no tracking.">
+  <title>Tomorrowland 2026 Wochenende 1 Line-up-Planer | Festival Planner</title>
+  <meta name="description" content="Datenschutzfreundlicher Tomorrowland 2026 Wochenende 1 Line-up-Planer: DJs bewerten, Favoriten lokal speichern und den Tagesplan erstellen &mdash; ohne Account, ohne Tracking.">
   <link rel="canonical" href="https://festival-planner.tschann.me/tomorrowland/2026/w1/">
 
   <!-- Open Graph / Twitter cards -->
-  <meta property="og:title" content="Tomorrowland 2026 Weekend 1 Lineup Planner | Festival Planner">
-  <meta property="og:description" content="Privacy-first Tomorrowland 2026 Weekend 1 lineup planner to rate DJs, save favorites locally, and plan your schedule&mdash;no account, no tracking.">
+  <meta property="og:title" content="Tomorrowland 2026 Wochenende 1 Line-up-Planer | Festival Planner">
+  <meta property="og:description" content="Datenschutzfreundlicher Tomorrowland 2026 Wochenende 1 Line-up-Planer: DJs bewerten, Favoriten lokal speichern und den Tagesplan erstellen &mdash; ohne Account, ohne Tracking.">
   <meta property="og:url" content="https://festival-planner.tschann.me/tomorrowland/2026/w1/">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://festival-planner.tschann.me/icons/og.png">
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tomorrowland 2026 Weekend 1 Lineup Planner | Festival Planner">
-  <meta name="twitter:description" content="Privacy-first Tomorrowland 2026 Weekend 1 lineup planner to rate DJs, save favorites locally, and plan your schedule&mdash;no account, no tracking.">
+  <meta name="twitter:title" content="Tomorrowland 2026 Wochenende 1 Line-up-Planer | Festival Planner">
+  <meta name="twitter:description" content="Datenschutzfreundlicher Tomorrowland 2026 Wochenende 1 Line-up-Planer: DJs bewerten, Favoriten lokal speichern und den Tagesplan erstellen &mdash; ohne Account, ohne Tracking.">
   <meta name="twitter:image" content="https://festival-planner.tschann.me/icons/og.png">
 
   <!-- Structured data -->
@@ -26,11 +26,11 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Festival Planner - Tomorrowland 2026 Weekend 1",
+      "name": "Festival Planner - Tomorrowland 2026 Wochenende 1",
       "url": "https://festival-planner.tschann.me/tomorrowland/2026/w1/",
       "applicationCategory": "MusicApplication",
       "operatingSystem": "Web",
-      "description": "Privacy-first Tomorrowland 2026 Weekend 1 lineup planner with local-only ratings (IndexedDB)."
+      "description": "Datenschutzfreundlicher Tomorrowland 2026 Wochenende 1 Line-up-Planer mit lokalen Bewertungen (IndexedDB)."
     }
   </script>
 
@@ -76,15 +76,15 @@
       </div>
     </div>
 
-    <button class="menuBtn" id="menuBtn" type="button" aria-label="Men&uuml;" aria-expanded="false">
+    <button class="menuBtn" id="menuBtn" type="button" aria-label="Men&uuml;" data-i18n-aria-label="menu_button_aria" aria-expanded="false">
       <span class="menuIcon" aria-hidden="true"></span>
     </button>
   </header>
 
   <!-- Service worker update banner -->
   <div id="updateBanner" class="updateBanner" hidden>
-    <div id="updateBannerText" class="updateBannerText">Update verf\u00fcgbar</div>
-    <button id="updateReloadBtn" class="btn primary" type="button">Neu laden</button>
+    <div id="updateBannerText" class="updateBannerText" data-i18n="update_available">Update verf\u00fcgbar</div>
+    <button id="updateReloadBtn" class="btn primary" type="button" data-i18n="reload">Neu laden</button>
   </div>
 
   <main class="layout">
@@ -109,23 +109,23 @@
       <div class="toolbar">
         <div class="ctrl searchCtrl">
           <span data-i18n="search">Suche</span>
-          <input id="searchInput" type="search" placeholder="Suche nach Artist" />
+          <input id="searchInput" type="search" placeholder="Suche nach K&uuml;nstler" data-i18n-placeholder="search_placeholder" />
         </div>
         <div class="ctrl">
           <span data-i18n="day_label">Tag</span>
-          <select id="dayFilter" aria-label="Tag" class="selectNative" data-custom-select>
+          <select id="dayFilter" aria-label="Tag" data-i18n-aria-label="day_filter_aria" class="selectNative" data-custom-select>
             <option value="all" data-i18n="all_days">Alle Tage</option>
           </select>
         </div>
         <div class="ctrl">
           <span data-i18n="stage_label">B&uuml;hne</span>
-          <select id="stageFilter" aria-label="B&uuml;hne" class="selectNative" data-custom-select>
+          <select id="stageFilter" aria-label="B&uuml;hne" data-i18n-aria-label="stage_filter_aria" class="selectNative" data-custom-select>
             <option value="all" data-i18n="all_stages">Alle B&uuml;hnen</option>
           </select>
         </div>
         <div class="ctrl">
           <span data-i18n="rating_label">Bewertung</span>
-          <select id="ratingFilter" aria-label="Filter" class="selectNative" data-custom-select>
+          <select id="ratingFilter" aria-label="Filter" data-i18n-aria-label="rating_filter_aria" class="selectNative" data-custom-select>
             <option value="all" data-i18n="filter_all">Alle</option>
             <option value="liked" data-i18n="filter_liked">Gef&auml;llt mir</option>
             <option value="maybe" data-i18n="filter_maybe">Vielleicht</option>
@@ -143,18 +143,18 @@
       <div id="lineupListAnchor" class="lineupAnchor" aria-hidden="true"></div>
 
       <!-- Weekend tabs -->
-      <div class="weekendTabs" role="tablist" aria-label="Weekends">
-        <button class="tabBtn isActive" data-weekend="W1" role="tab" aria-selected="true" data-i18n="weekend_1">Weekend 1</button>
-        <button class="tabBtn" data-weekend="W2" role="tab" aria-selected="false" data-i18n="weekend_2">Weekend 2</button>
+      <div class="weekendTabs" role="tablist" aria-label="Wochenenden" data-i18n-aria-label="menu_weekends_aria">
+        <button class="tabBtn isActive" data-weekend="W1" role="tab" aria-selected="true" data-i18n="weekend_1">Wochenende 1</button>
+        <button class="tabBtn" data-weekend="W2" role="tab" aria-selected="false" data-i18n="weekend_2">Wochenende 2</button>
       </div>
 
       <!-- Weekend 1 panel -->
       <section class="weekendPanel isActive" id="panelW1" data-weekend="W1" role="tabpanel" aria-labelledby="w1Section">
         <div class="weekendHeader">
-          <div class="weekendTitle" id="w1Section" data-i18n="weekend_1">Weekend 1</div>
+          <div class="weekendTitle" id="w1Section" data-i18n="weekend_1">Wochenende 1</div>
           <div class="ctrl">
             <span data-i18n="snapshot_label">Snapshot</span>
-            <select id="snapshotSelectW1" aria-label="Snapshot W1" class="selectNative" data-custom-select></select>
+            <select id="snapshotSelectW1" aria-label="Snapshot W1" data-i18n-aria-label="snapshot_w1_aria" class="selectNative" data-custom-select></select>
           </div>
         </div>
         <div id="weekendMetaW1" class="weekendMeta"></div>
@@ -164,10 +164,10 @@
       <!-- Weekend 2 panel -->
       <section class="weekendPanel" id="panelW2" data-weekend="W2" role="tabpanel" aria-labelledby="w2Section">
         <div class="weekendHeader">
-          <div class="weekendTitle" id="w2Section" data-i18n="weekend_2">Weekend 2</div>
+          <div class="weekendTitle" id="w2Section" data-i18n="weekend_2">Wochenende 2</div>
           <div class="ctrl">
             <span data-i18n="snapshot_label">Snapshot</span>
-            <select id="snapshotSelectW2" aria-label="Snapshot W2" class="selectNative" data-custom-select></select>
+            <select id="snapshotSelectW2" aria-label="Snapshot W2" data-i18n-aria-label="snapshot_w2_aria" class="selectNative" data-custom-select></select>
           </div>
         </div>
         <div id="weekendMetaW2" class="weekendMeta"></div>
@@ -183,8 +183,8 @@
           <div class="ctrl">
             <span data-i18n="language">Sprache</span>
             <select id="langSelect" aria-label="Sprache" class="selectNative" data-custom-select>
-              <option value="de">DE</option>
-              <option value="en">EN</option>
+              <option value="de" data-i18n="lang_de_short">DE</option>
+              <option value="en" data-i18n="lang_en_short">EN</option>
             </select>
           </div>
 
@@ -194,7 +194,7 @@
           </div>
 
           <div class="ctrl">
-            <span data-i18n="lineup_status">Line-up Stand</span>
+            <span data-i18n="lineup_status">Line-up-Stand</span>
             <div class="pill" id="lastUpdatedPill" data-i18n="not_available_yet">Noch nicht verf&uuml;gbar</div>
           </div>
         </div>
@@ -202,7 +202,7 @@
 
       <!-- Changes / diff summary -->
       <div id="changesBox" class="card" hidden>
-        <div class="cardTitle" data-i18n="weekend_changes_title">&Auml;nderungen Weekend</div>
+        <div class="cardTitle" data-i18n="weekend_changes_title">&Auml;nderungen</div>
         <div id="weekendChangesSummary" class="changesSummary"></div>
         <details class="changesDetails" id="weekendChangesDetailsWrap" open>
           <summary data-i18n="changes_details">Details</summary>
@@ -232,7 +232,7 @@
       <!-- Feedback -->
       <div class="card">
         <div class="cardTitle" data-i18n="feedback">Feedback</div>
-        <a class="btn" id="feedbackBtn" href="#" target="_blank" rel="noopener noreferrer">GitHub Issues</a>
+        <a class="btn" id="feedbackBtn" href="#" target="_blank" rel="noopener noreferrer" data-i18n="feedback_github">GitHub-Issues</a>
       </div>
 
       <!-- Favorites -->
@@ -266,35 +266,35 @@
   <aside class="menuSheet" id="menuSheet" aria-hidden="true">
     <div class="menuHandle"></div>
     <div class="menuHeader">
-      <div class="menuTitle">Men&uuml;</div>
-      <button class="menuClose" id="menuCloseBtn" type="button" aria-label="Schlie&szlig;en">&times;</button>
+      <div class="menuTitle" data-i18n="menu_title">Men&uuml;</div>
+      <button class="menuClose" id="menuCloseBtn" type="button" aria-label="Schlie&szlig;en" data-i18n-aria-label="menu_close_aria">&times;</button>
     </div>
     <div class="menuGroup">
-      <div class="menuGroupTitle">Navigation</div>
-      <button class="menuItem" data-target="#top" type="button">Top</button>
-      <button class="menuItem" data-action="weekend" data-weekend="W1" type="button">Weekend 1</button>
-      <button class="menuItem" data-action="weekend" data-weekend="W2" type="button">Weekend 2</button>
-      <div class="menuSubTitle">Tage</div>
+      <div class="menuGroupTitle" data-i18n="menu_navigation">Navigation</div>
+      <button class="menuItem" data-target="#top" type="button" data-i18n="menu_top">Top</button>
+      <button class="menuItem" data-action="weekend" data-weekend="W1" type="button" data-i18n="weekend_1">Wochenende 1</button>
+      <button class="menuItem" data-action="weekend" data-weekend="W2" type="button" data-i18n="weekend_2">Wochenende 2</button>
+      <div class="menuSubTitle" data-i18n="menu_days">Tage</div>
       <div id="menuDayLinks" class="menuDayLinks"></div>
     </div>
     <div class="menuGroup">
       <div class="menuGroupTitle" data-i18n="language">Sprache</div>
-      <button class="menuItem" data-action="setLang" data-lang="de" type="button">DE</button>
-      <button class="menuItem" data-action="setLang" data-lang="en" type="button">EN</button>
+      <button class="menuItem" data-action="setLang" data-lang="de" type="button" data-i18n="lang_de_short" data-i18n-aria-label="lang_de_label">DE</button>
+      <button class="menuItem" data-action="setLang" data-lang="en" type="button" data-i18n="lang_en_short" data-i18n-aria-label="lang_en_label">EN</button>
     </div>
     <div class="menuGroup">
-      <div class="menuGroupTitle">Ansichten</div>
-      <button class="menuItem" data-action="favoritesToggle" type="button">Nur Favoriten</button>
-      <button class="menuItem" data-action="searchFocus" type="button">Suche</button>
-      <button class="menuItem" data-target="#changesBox" type="button">Changes</button>
+      <div class="menuGroupTitle" data-i18n="menu_views">Ansichten</div>
+      <button class="menuItem" data-action="favoritesToggle" type="button" data-i18n="menu_favorites_only">Nur Favoriten</button>
+      <button class="menuItem" data-action="searchFocus" type="button" data-i18n="menu_search">Suche</button>
+      <button class="menuItem" data-target="#changesBox" type="button" data-i18n="menu_changes">&Auml;nderungen</button>
     </div>
     <div class="menuGroup">
-      <div class="menuGroupTitle">Daten</div>
-      <button class="menuItem" data-action="exportRatings" type="button">Ratings exportieren</button>
-      <button class="menuItem" data-action="importRatings" type="button">Ratings importieren</button>
+      <div class="menuGroupTitle" data-i18n="menu_data">Daten</div>
+      <button class="menuItem" data-action="exportRatings" type="button" data-i18n="export_ratings">Ratings exportieren</button>
+      <button class="menuItem" data-action="importRatings" type="button" data-i18n="import_ratings">Ratings importieren</button>
     </div>
     <div class="menuGroup">
-      <div class="menuGroupTitle">Info</div>
+      <div class="menuGroupTitle" data-i18n="menu_info">Info</div>
       <button class="menuItem" data-target="#privacy" type="button" data-i18n="privacy">Datenschutz</button>
     </div>
   </aside>

@@ -172,6 +172,7 @@ async function init() {
     donateBtn.classList.add("isDisabled");
     donateBtn.setAttribute("aria-disabled", "true");
     donateBtn.title = "Spendenlink folgt";
+    donateBtn.setAttribute("data-i18n-title", "donation_link_coming");
   }
   feedbackBtn.href = FEEDBACK_URL;
 
@@ -215,7 +216,7 @@ async function init() {
       loadWeekendChanges()
     ]);
   } catch (e) {
-    showError("Fehler beim Laden der Grunddaten.");
+    showError(t("base_data_load_error") || "Error loading base data.");
   }
 
   ratings = await dbGetAll(makeDbKeyPrefix(state));
@@ -235,9 +236,8 @@ function setupServiceWorkerUpdates(registration) {
   if (!registration || !banner || !textEl || !button) return;
 
   const setLabels = () => {
-    const isDe = lang === "de";
-    textEl.textContent = isDe ? "Update verf\u00fcgbar" : "Update available";
-    button.textContent = isDe ? "Neu laden" : "Reload";
+    textEl.textContent = t("update_available") || "Update available";
+    button.textContent = t("reload") || "Reload";
   };
 
   const show = () => {
@@ -707,7 +707,7 @@ function renderWeekend(weekend) {
   }
 
   if (!w.snapshot || !Array.isArray(w.snapshot.slots)) {
-    container.innerHTML = `<div class="muted">Keine Daten verf\u00fcgbar.</div>`;
+    container.innerHTML = `<div class="muted">${escapeHtml(t("no_data_available") || "No data available.")}</div>`;
     metaEl.textContent = "";
     return;
   }
@@ -719,7 +719,7 @@ function renderWeekend(weekend) {
   const openState = resolveOpenState(grouped, prevOpen, activeFilters);
   w.grouped = grouped;
   w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
-  const dayList = Array.from(new Set(w.snapshot.slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
+  const dayList = Array.from(new Set(w.snapshot.slots.map(s => s.date || extractDate(s.start) || (t("unknown") || "Unknown")))).sort();
   updateMenuDayLinks(dayList);
 
   const shownCount = countGroupedSlots(grouped);
@@ -788,7 +788,7 @@ function renderDayGroup(group, weekend, openState) {
 // Renders a single artist slot card.
 function renderSlot(slot, weekend) {
   const artistId = slot.artistId || "";
-  const name = slot.artist || "Unknown Artist";
+  const name = slot.artist || (t("unknown_artist") || "Unknown artist");
   const stage = normalizeStage(slot.stage);
   const start = formatTime(slot.start);
   const end = formatTime(slot.end);
@@ -1058,7 +1058,7 @@ function scrollToTarget(selector) {
 function updateMenuDayLinks(dates) {
   if (!menuDayLinks) return;
   if (!dates || !dates.length) {
-    menuDayLinks.innerHTML = `<div class="menuEmpty">Keine Tage</div>`;
+    menuDayLinks.innerHTML = `<div class="menuEmpty">${escapeHtml(t("no_days") || "No days")}</div>`;
     return;
   }
   menuDayLinks.innerHTML = dates.map((d) => {
@@ -1441,7 +1441,7 @@ function updateFiltersUI(weekend) {
   if (!w.filters) w.filters = { day: "all", stage: "all" };
 
   const slots = w.snapshot.slots;
-  const dates = Array.from(new Set(slots.map(s => s.date || extractDate(s.start) || "Unknown"))).sort();
+  const dates = Array.from(new Set(slots.map(s => s.date || extractDate(s.start) || (t("unknown") || "Unknown")))).sort();
 
   const currentDay = w.filters.day || dayFilter.value || "all";
   const dayVal = dates.includes(currentDay) ? currentDay : "all";
@@ -1454,7 +1454,7 @@ function updateFiltersUI(weekend) {
 
   const stageSet = new Set();
   slots.forEach(s => {
-    const date = s.date || extractDate(s.start) || "Unknown";
+    const date = s.date || extractDate(s.start) || (t("unknown") || "Unknown");
     if (dayVal !== "all" && date !== dayVal) return;
     stageSet.add(normalizeStage(s.stage));
   });
@@ -1728,7 +1728,7 @@ function updateSearchResults() {
         <div class="searchMeta">${escapeHtml(meta)}</div>
       </div>
     `;
-  }).join("") || `<div class="muted" style="padding:8px 10px">Keine Treffer.</div>`;
+  }).join("") || `<div class="muted" style="padding:8px 10px">${escapeHtml(t("no_results") || "No results.")}</div>`;
 
   Array.from(searchResults.querySelectorAll(".searchItem")).forEach(item => {
     item.addEventListener("click", () => {
@@ -1788,7 +1788,7 @@ function scrollToSlotId(slotId) {
 // Opens the correct day/stage details for a slot.
 function openDetailsForSlot(container, slot) {
   if (!container || !slot) return;
-  const day = slot.date || extractDate(slot.start) || "Unknown";
+  const day = slot.date || extractDate(slot.start) || (t("unknown") || "Unknown");
   const stage = normalizeStage(slot.stage);
   const dayEl = Array.from(container.querySelectorAll("details.dayGroup"))
     .find(el => el.getAttribute("data-day") === day);
@@ -1832,7 +1832,7 @@ function groupSlots(slots, ratingFilterValue, filters) {
     const rating = ratings[artistId] || "unrated";
     if (ratingFilterValue !== "all" && rating !== ratingFilterValue) return;
 
-    const date = slot.date || extractDate(slot.start) || "Unknown";
+    const date = slot.date || extractDate(slot.start) || (t("unknown") || "Unknown");
     const stage = normalizeStage(slot.stage);
 
     if (filters?.day && filters.day !== "all" && date !== filters.day) return;
@@ -2053,13 +2053,25 @@ function applySeoFromRoute(r) {
   const festivalName = formatFestivalName(normalized.festival);
   const year = normalized.year;
   const weekend = normalizeWeekend(normalized.weekend);
-  const weekendLabel = weekend ? `Weekend ${weekend.slice(1)}` : "";
-  const title = weekend
-    ? `${festivalName} ${year} ${weekendLabel} Lineup Planner | Festival Planner`
+  const weekendNumber = weekend ? weekend.slice(1) : "";
+  const titleTemplate = weekend ? (dict?.seo_title_weekend || "") : (dict?.seo_title_base || "");
+  const descTemplate = weekend ? (dict?.seo_desc_weekend || "") : (dict?.seo_desc_base || "");
+  const titleFallback = weekend
+    ? `${festivalName} ${year} Weekend ${weekendNumber} Lineup Planner | Festival Planner`
     : `${festivalName} ${year} Lineup Planner | Festival Planner`;
-  const description = weekend
-    ? `Privacy-first ${festivalName} ${year} ${weekendLabel} lineup planner to rate DJs, save favorites locally, and plan your schedule - no account, no tracking.`
-    : `Privacy-first ${festivalName} ${year} lineup planner to rate DJs, save favorites locally, and plan W1/W2 - no account, no tracking.`;
+  const descFallback = weekend
+    ? `Privacy-first ${festivalName} ${year} Weekend ${weekendNumber} lineup planner to rate DJs, save favorites locally, and plan your schedule — no account, no tracking.`
+    : `Privacy-first ${festivalName} ${year} lineup planner to rate DJs, save favorites locally, and plan W1/W2 — no account, no tracking.`;
+  const title = formatTemplate(titleTemplate || titleFallback, {
+    festival: festivalName,
+    year,
+    weekend: weekendNumber
+  });
+  const description = formatTemplate(descTemplate || descFallback, {
+    festival: festivalName,
+    year,
+    weekend: weekendNumber
+  });
 
   document.title = title;
   upsertMetaTag("name", "description", description);
@@ -2147,13 +2159,44 @@ async function applyTranslations(newLang) {
     if (key && dict[key]) el.textContent = dict[key];
   });
 
-  searchInput.placeholder = t("search");
+  Array.from(document.querySelectorAll("[data-i18n-placeholder]")).forEach(el => {
+    const key = el.getAttribute("data-i18n-placeholder");
+    if (key && dict[key]) el.setAttribute("placeholder", dict[key]);
+  });
+
+  Array.from(document.querySelectorAll("[data-i18n-aria-label]")).forEach(el => {
+    const key = el.getAttribute("data-i18n-aria-label");
+    if (key && dict[key]) el.setAttribute("aria-label", dict[key]);
+  });
+
+  Array.from(document.querySelectorAll("[data-i18n-title]")).forEach(el => {
+    const key = el.getAttribute("data-i18n-title");
+    if (key && dict[key]) el.setAttribute("title", dict[key]);
+  });
+
+  if (searchInput) searchInput.placeholder = t("search_placeholder") || "Search for artist";
+  if (donateBtn?.getAttribute("aria-disabled") === "true") {
+    donateBtn.title = t("donation_link_coming") || donateBtn.title;
+  }
+  if (playOverlayPanel) {
+    updatePlayDefaultUI();
+    const name = playOverlayTitle?.dataset?.artistName;
+    if (name) {
+      playOverlayTitle.textContent = formatTemplate(t("play_overlay_title") || "Open {name} in\u2026", { name });
+    }
+  }
+  applySeoFromRoute(route);
+
   document.querySelectorAll("[data-custom-select]").forEach((sel) => syncCustomSelect(sel));
 }
 
 // Returns a translated string or the key fallback.
 function t(key) {
   return dict[key] || key;
+}
+
+function formatTemplate(template, vars) {
+  return String(template || "").replace(/\{(\w+)\}/g, (_, k) => (vars && k in vars ? vars[k] : ""));
 }
 
 // Returns the localized "not available" placeholder.
@@ -2236,7 +2279,7 @@ function setSnapshotOptions(weekend) {
         const label = `${formatDateTime(o.createdAt)} \u00b7 ${o.slotCount} Slots`;
         return `<option value="${escapeAttr(o.file)}">${escapeHtml(label)}</option>`;
       }).join("")
-    : `<option value="">Keine Snapshots</option>`;
+    : `<option value="">${escapeHtml(t("no_snapshots") || "No snapshots")}</option>`;
 
   rebuildCustomSelect(select);
 }
@@ -2284,18 +2327,18 @@ function toMinutes(value) {
 function normalizeStage(stage, { useStageAliases = true } = {}) {
   if (typeof stage === "string") {
     const s = stage.trim();
-    if (!s || s === "[object Object]") return "Unknown Stage";
+    if (!s || s === "[object Object]") return t("unknown_stage") || "Unknown stage";
     const key = normalizeStageName(s);
     if (useStageAliases && STAGE_ALIASES[key]) return STAGE_ALIASES[key];
     return s;
   }
   if (stage && typeof stage === "object") {
-    const raw = String(stage.name || stage.title || stage.label || stage.stageName || stage.stage_name || "Unknown Stage").trim();
+    const raw = String(stage.name || stage.title || stage.label || stage.stageName || stage.stage_name || (t("unknown_stage") || "Unknown stage")).trim();
     const key = normalizeStageName(raw);
     if (useStageAliases && STAGE_ALIASES[key]) return STAGE_ALIASES[key];
     return raw;
   }
-  return "Unknown Stage";
+  return t("unknown_stage") || "Unknown stage";
 }
 
 // Normalizes stage names for lookup keys.
@@ -2308,7 +2351,7 @@ function normalizeStageName(name) {
 
 // Resolves artist name from metadata or slot.
 function getArtistName(artistId, slot) {
-  return state.artists.byId.get(artistId)?.name || slot.artist || "Unknown Artist";
+  return state.artists.byId.get(artistId)?.name || slot.artist || (t("unknown_artist") || "Unknown artist");
 }
 
 // Shows the top error box.
@@ -2458,7 +2501,7 @@ function ensurePlayOverlay() {
     setBtn.type = "button";
     setBtn.className = "playDefaultBtn";
     setBtn.setAttribute("data-provider", key);
-    setBtn.textContent = "Als Standard";
+    setBtn.textContent = t("play_set_default") || "Set as default";
 
     row.append(a, setBtn);
     return { row, link: a, button: setBtn };
@@ -2604,8 +2647,9 @@ function openPlayOverlay(artist, trigger) {
   ensurePlayOverlay();
   playOverlayTrigger = trigger || null;
 
-  const name = String(artist || "").trim() || "Artist";
-  playOverlayTitle.textContent = `Open ${name} in\u2026`;
+  const name = String(artist || "").trim() || (t("artist_generic") || "Artist");
+  playOverlayTitle.textContent = formatTemplate(t("play_overlay_title") || "Open {name} in\u2026", { name });
+  playOverlayTitle.dataset.artistName = name;
 
   const urls = buildPlayUrls(name);
   playOverlayLinks[0].href = urls.sp;
@@ -2640,7 +2684,7 @@ function updatePlayDefaultUI() {
     const key = btn.getAttribute("data-provider");
     const isActive = key === current;
     btn.classList.toggle("isActive", isActive);
-    btn.textContent = isActive ? "Standard" : "Als Standard";
+    btn.textContent = isActive ? (t("play_default") || "Default") : (t("play_set_default") || "Set as default");
   });
 }
 

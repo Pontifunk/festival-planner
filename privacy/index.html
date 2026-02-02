@@ -4,13 +4,51 @@
   <!-- Basic metadata + canonical target -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Datenschutz &ndash; Festival Planner</title>
+  <title data-i18n-key="privacy_redirect_title">Datenschutz &ndash; Festival Planner</title>
   <link rel="canonical" href="https://festival-planner.tschann.me/legal/privacy.html">
   <!-- Instant redirect for legacy path -->
   <meta http-equiv="refresh" content="0; url=/legal/privacy.html">
 </head>
 <body>
   <!-- Fallback link if meta refresh is blocked -->
-  <p>Weiterleitung zur Datenschutzerkl&auml;rung: <a href="/legal/privacy.html">/legal/privacy.html</a></p>
+  <p data-i18n-key="privacy_redirect_text" data-i18n-html>Weiterleitung zur Datenschutzerkl&auml;rung: <a href="/legal/privacy.html">/legal/privacy.html</a></p>
+
+  <script>
+    (function () {
+      const I18N = {
+        de: {
+          privacy_redirect_title: "Datenschutz \u2013 Festival Planner",
+          privacy_redirect_text: "Weiterleitung zur Datenschutzerkl\u00e4rung: <a href=\"/legal/privacy.html\">/legal/privacy.html</a>"
+        },
+        en: {
+          privacy_redirect_title: "Privacy \u2013 Festival Planner",
+          privacy_redirect_text: "Redirecting to the privacy policy: <a href=\"/legal/privacy.html\">/legal/privacy.html</a>"
+        }
+      };
+
+      const params = new URLSearchParams(location.search);
+      const stored = localStorage.getItem("fp_lang");
+      let lang = (params.get("lang") || stored || document.documentElement.lang || "de").toLowerCase();
+      if (!I18N[lang]) lang = "de";
+
+      document.documentElement.lang = lang;
+      localStorage.setItem("fp_lang", lang);
+      document.querySelectorAll("[data-i18n-key]").forEach((el) => {
+        const key = el.getAttribute("data-i18n-key");
+        const value = I18N[lang][key];
+        if (value === undefined) return;
+        const attr = el.getAttribute("data-i18n-attr");
+        if (attr) {
+          el.setAttribute(attr, value);
+          return;
+        }
+        if (el.hasAttribute("data-i18n-html")) {
+          el.innerHTML = value;
+        } else {
+          el.textContent = value;
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

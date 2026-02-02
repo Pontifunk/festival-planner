@@ -4,7 +4,7 @@
   <!-- Basic metadata -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Datenschutz &ndash; Festival Planner</title>
+  <title data-i18n-key="privacy_title">Datenschutz &ndash; Festival Planner</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -14,46 +14,113 @@
       <div class="logo">FP</div>
       <div class="brandText">
         <div class="title">Festival Planner</div>
-        <div class="subtitle">Datenschutz</div>
+        <div class="subtitle" data-i18n-key="privacy_subtitle">Datenschutz</div>
       </div>
     </div>
     <div class="controls">
-      <a class="btn" href="../">Zur&uuml;ck</a>
+      <a class="btn" href="../" data-i18n-key="privacy_back">Zur&uuml;ck</a>
+      <button class="btn" type="button" data-lang-toggle="de" aria-pressed="false" data-i18n-key="lang_de_label" data-i18n-attr="aria-label">DE</button>
+      <button class="btn" type="button" data-lang-toggle="en" aria-pressed="false" data-i18n-key="lang_en_label" data-i18n-attr="aria-label">EN</button>
     </div>
   </header>
 
   <!-- Privacy content -->
   <main class="legalLayout">
     <section class="legalPanel">
-      <h1>Datenschutz</h1>
+      <h1 data-i18n-key="privacy_h1">Datenschutz</h1>
 
-      <p>
+      <p data-i18n-key="privacy_p1" data-i18n-html>
         Festival Planner speichert Bewertungen und Favoriten ausschlie&szlig;lich lokal
         in deinem Browser (IndexedDB). Es findet keine serverseitige Speicherung
         personenbezogener Daten statt.
       </p>
 
-      <p>
-        Es werden keine Tracking-Tools, keine Analytics und keine Werbe-Cookies eingesetzt.
-      </p>
+      <p data-i18n-key="privacy_p2">Es werden keine Tracking-Tools, keine Analytics und keine Werbe-Cookies eingesetzt.</p>
 
-      <p>
-        Externe Links (z. B. Spotify, Apple Music, YouTube) werden erst ge&ouml;ffnet,
-        wenn du aktiv darauf klickst.
-      </p>
+      <p data-i18n-key="privacy_p3">Externe Links (z. B. Spotify, Apple Music, YouTube) werden erst ge&ouml;ffnet, wenn du aktiv darauf klickst.</p>
 
-      <p>
+      <p data-i18n-key="privacy_p4" data-i18n-html>
         Diese Website wird &uuml;ber GitHub Pages bereitgestellt. Dabei k&ouml;nnen durch
         den Hosting-Anbieter technische Server-Logs (z. B. IP-Adresse, Zeitpunkt
         des Zugriffs) erzeugt werden. Diese Daten werden vom Betreiber dieser
         Anwendung nicht ausgewertet.
       </p>
 
-      <p>
-        Du kannst alle lokal gespeicherten Daten jederzeit &uuml;ber die
-        Browser-Einstellungen l&ouml;schen.
-      </p>
+      <p data-i18n-key="privacy_p5">Du kannst alle lokal gespeicherten Daten jederzeit &uuml;ber die Browser-Einstellungen l&ouml;schen.</p>
     </section>
   </main>
+
+  <script>
+    (function () {
+      const I18N = {
+        de: {
+          lang_de_label: "Deutsch",
+          lang_en_label: "Englisch",
+          privacy_title: "Datenschutz \u2013 Festival Planner",
+          privacy_subtitle: "Datenschutz",
+          privacy_back: "Zur\u00fcck",
+          privacy_h1: "Datenschutz",
+          privacy_p1: "Festival Planner speichert Bewertungen und Favoriten ausschlie\u00dflich lokal in deinem Browser (IndexedDB). Es findet keine serverseitige Speicherung personenbezogener Daten statt.",
+          privacy_p2: "Es werden keine Tracking-Tools, keine Analytics und keine Werbe-Cookies eingesetzt.",
+          privacy_p3: "Externe Links (z. B. Spotify, Apple Music, YouTube) werden erst ge\u00f6ffnet, wenn du aktiv darauf klickst.",
+          privacy_p4: "Diese Website wird \u00fcber GitHub Pages bereitgestellt. Dabei k\u00f6nnen durch den Hosting-Anbieter technische Server-Logs (z. B. IP-Adresse, Zeitpunkt des Zugriffs) erzeugt werden. Diese Daten werden vom Betreiber dieser Anwendung nicht ausgewertet.",
+          privacy_p5: "Du kannst alle lokal gespeicherten Daten jederzeit \u00fcber die Browser-Einstellungen l\u00f6schen."
+        },
+        en: {
+          lang_de_label: "German",
+          lang_en_label: "English",
+          privacy_title: "Privacy \u2013 Festival Planner",
+          privacy_subtitle: "Privacy",
+          privacy_back: "Back",
+          privacy_h1: "Privacy",
+          privacy_p1: "Festival Planner stores ratings and favorites locally in your browser (IndexedDB). No personal data is stored server-side.",
+          privacy_p2: "No tracking tools, analytics, or advertising cookies are used.",
+          privacy_p3: "External links (e.g., Spotify, Apple Music, YouTube) open only when you actively click them.",
+          privacy_p4: "This website is hosted via GitHub Pages. The hosting provider may generate technical server logs (e.g., IP address, access time). These data are not evaluated by the operator of this application.",
+          privacy_p5: "You can delete all locally stored data at any time via your browser settings."
+        }
+      };
+
+      const params = new URLSearchParams(location.search);
+      const stored = localStorage.getItem("fp_lang");
+      let lang = (params.get("lang") || stored || document.documentElement.lang || "de").toLowerCase();
+      if (!I18N[lang]) lang = "de";
+
+      const apply = (next) => {
+        if (!I18N[next]) return;
+        lang = next;
+        document.documentElement.lang = next;
+        localStorage.setItem("fp_lang", next);
+
+        document.querySelectorAll("[data-i18n-key]").forEach((el) => {
+          const key = el.getAttribute("data-i18n-key");
+          const value = I18N[next][key];
+          if (value === undefined) return;
+          const attr = el.getAttribute("data-i18n-attr");
+          if (attr) {
+            el.setAttribute(attr, value);
+            return;
+          }
+          if (el.hasAttribute("data-i18n-html")) {
+            el.innerHTML = value;
+          } else {
+            el.textContent = value;
+          }
+        });
+
+        document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
+          const active = btn.getAttribute("data-lang-toggle") === next;
+          btn.classList.toggle("isActive", active);
+          btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+      };
+
+      document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
+        btn.addEventListener("click", () => apply(btn.getAttribute("data-lang-toggle")));
+      });
+
+      apply(lang);
+    })();
+  </script>
 </body>
 </html>
