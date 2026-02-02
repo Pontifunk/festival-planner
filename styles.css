@@ -898,6 +898,7 @@ button{
 }
 .footerLinks{display:flex;gap:12px;justify-content:flex-start;color:var(--muted);font-size:13px;flex-wrap:wrap}
 .privacyNote{margin-top:8px;font-size:12px;line-height:1.5}
+.buildStamp{margin-top:6px;font-size:11px;letter-spacing:.02em}
 
 /* Mobile menu overlay & sheet */
 .menuOverlay{

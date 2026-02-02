@@ -110,6 +110,7 @@
   "update_available": "Update available",
   "reload": "Reload",
   "reload_safe": "Reload (your ratings stay stored locally).",
+  "build_label": "Build",
   "donation_link_coming": "Donation link coming",
   "base_data_load_error": "Error loading base data.",
   "no_data_available": "No data available.",

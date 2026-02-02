@@ -265,6 +265,7 @@
         <a href="legal/imprint.html" data-i18n="imprint">Impressum</a>
       </div>
       <div class="privacyNote muted" id="privacy" data-i18n="privacy_note">Alle Bewertungen und Favoriten werden ausschlie&szlig;lich lokal in deinem Browser gespeichert. Kein Login, keine Cloud, kein Tracking.</div>
+      <div class="buildStamp muted" id="buildStamp"></div>
     </aside>
   </main>
 
@@ -322,7 +323,7 @@
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js")
+        navigator.serviceWorker.register("service-worker.js", { scope: "./" })
           .then((reg) => {
             if (typeof window.setupServiceWorkerUpdates === "function") {
               window.setupServiceWorkerUpdates(reg);

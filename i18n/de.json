@@ -116,6 +116,7 @@
   "update_available": "Update verf\u00fcgbar",
   "reload": "Neu laden",
   "reload_safe": "Neu laden (deine Ratings bleiben lokal gespeichert).",
+  "build_label": "Build",
   "donation_link_coming": "Spendenlink folgt",
   "base_data_load_error": "Fehler beim Laden der Grunddaten.",
   "no_data_available": "Keine Daten verf\u00fcgbar.",

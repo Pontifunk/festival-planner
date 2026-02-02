@@ -821,6 +821,13 @@ function renderStatusPills() {
   }
 }
 
+function renderBuildStamp() {
+  if (!buildStamp) return;
+  const label = t("build_label") || "Build";
+  buildStamp.textContent = `${label}: ${BUILD_ID}`;
+  buildStamp.hidden = !BUILD_ID;
+}
+
 // Rebuilds day/stage filter options from snapshot data.
 function updateFiltersUI(weekend) {
   const w = state.weekends[weekend];

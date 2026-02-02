@@ -1,6 +1,6 @@
 // Cache versioning to bust old assets when app changes.
-const CACHE_VERSION = "v19";
-const CACHE_NAME = `festival-planner-${CACHE_VERSION}`;
+const BUILD_ID = "86da35b+deployfix1";
+const CACHE_NAME = `fp-cache-${BUILD_ID}`;
 // Resolve the base path when hosted in a subfolder (e.g. GitHub Pages).
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
 const withBase = (path) => `${BASE_PATH}${path}`;
@@ -31,23 +31,29 @@ const CORE_ASSETS = [
 
 // Install: cache the core shell and activate immediately.
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)));
-  self.skipWaiting();
+  event.waitUntil(
+    Promise.all([
+      caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)),
+      self.skipWaiting()
+    ])
+  );
 });
 
 // Activate: clean up old caches and take control of open clients.
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    Promise.all([
+      caches.keys().then((keys) =>
+        Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+      ),
+      self.clients.claim()
+    ])
   );
-  self.clients.claim();
 });
 
 // Allow the page to trigger skipWaiting for updates.
 self.addEventListener("message", (event) => {
-  if (event.data?.type === "SKIP_WAITING") {
+  if (event.data?.type === "SKIP_WAITING" || event.data === "SKIP_WAITING") {
     self.skipWaiting();
   }
 });

@@ -3,6 +3,7 @@ init();
 
 // Bootstraps UI state, loads data, and renders the initial view.
 async function init() {
+  console.info("[festival-planner] build", BUILD_ID);
   if (DONATION_URL && !DONATION_URL.includes("DEINNAME")) {
     donateBtn.href = DONATION_URL;
   } else {
@@ -24,6 +25,7 @@ async function init() {
   ensureSelectVisible(ratingFilter);
 
   await applyTranslations(lang);
+  renderBuildStamp();
 
   if (!route.festival) route.festival = DEFAULT_FESTIVAL;
   if (!route.year) route.year = DEFAULT_YEAR;
@@ -87,7 +89,11 @@ function setupServiceWorkerUpdates(registration) {
   const onWaiting = (waiting) => {
     if (!waiting) return;
     show();
-    button.onclick = () => waiting.postMessage({ type: "SKIP_WAITING" });
+    button.onclick = () => {
+      reloading = true;
+      waiting.postMessage({ type: "SKIP_WAITING" });
+      window.location.reload();
+    };
   };
 
   if (registration.waiting) onWaiting(registration.waiting);
@@ -131,6 +137,7 @@ function bindUi() {
     localStorage.setItem("fp_lang", lang);
     await applyTranslations(lang);
     renderActiveWeekend();
+    renderBuildStamp();
   });
 
   snapshotSelectW1.addEventListener("change", async () => {
