@@ -206,6 +206,12 @@ button{
   align-items:center;
 }
 
+.pillLink{
+  color:inherit;
+  text-decoration:underline;
+  text-underline-offset:2px;
+}
+
 /* ===== LAYOUT ===== */
 .layout{
   display:grid;

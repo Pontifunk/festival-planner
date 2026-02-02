@@ -803,7 +803,12 @@ function renderStatusPills() {
     if (createdAt) {
       // Include the exact URL that was checked to make data provenance explicit.
       const checkedText = formatDateTime(createdAt);
-      lastCheckedPill.textContent = checkedUrl ? `${checkedText} \u00b7 ${checkedUrl}` : checkedText;
+      if (checkedUrl) {
+        const safeUrl = escapeAttr(checkedUrl);
+        lastCheckedPill.innerHTML = `${escapeHtml(checkedText)} \u00b7 <a class="pillLink" href="${safeUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(checkedUrl)}</a>`;
+      } else {
+        lastCheckedPill.textContent = checkedText;
+      }
       lastCheckedRow.hidden = false;
     } else {
       lastCheckedPill.textContent = "";

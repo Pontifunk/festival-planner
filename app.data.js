@@ -57,7 +57,7 @@ async function loadSnapshotForWeekend(weekend, file = null) {
       snap = await loadSnapshotFile(selectedFile);
     }
 
-    w.lastCheckedUrl = "https://belgium.tomorrowland.com/nl/line-up/";
+    w.lastCheckedUrl = "https://belgium.tomorrowland.com/en/line-up/";
     w.snapshot = snap;
     w.selectedFile = selectedFile;
     const sel = snapshotSelectForWeekend(weekend);
