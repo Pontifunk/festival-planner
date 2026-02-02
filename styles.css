@@ -707,6 +707,31 @@ button{
 }
 .playMoreBtn:hover{background:rgba(255,255,255,.10)}
 .playMoreIcon{font-size:18px;line-height:1}
+.playMenu{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  min-width:220px;
+  padding:10px;
+  border-radius:12px;
+  background:rgba(12,14,24,.96);
+  border:1px solid var(--border);
+  box-shadow:0 18px 40px rgba(0,0,0,.35);
+  margin-left:8px;
+}
+.playMenuTitle{font-size:12px;color:var(--muted);margin-bottom:4px}
+.playMenuLink,.playMenuDefault{
+  font-size:12px;
+  text-decoration:none;
+  color:var(--text);
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:6px 10px;
+  text-align:left;
+}
+.playMenuLink:hover,.playMenuDefault:hover{background:rgba(255,255,255,.08)}
 
 .ratingChip{
   min-height: var(--tap);

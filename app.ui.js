@@ -118,6 +118,7 @@ function renderSlot(slot, weekend) {
   const timeRange = start && end ? `${start}\u2013${end}` : (start || end || notAvailable());
 
   const r = ratings[artistId] || "unrated";
+  // Inline rating controls reuse the shared rating labels for a11y/tooltips.
   const ratingLabels = getRatingActionLabels();
   const badge = badgeFor(r);
   const resetLabel = t("rating_reset") || "Reset";
@@ -796,10 +797,13 @@ function renderStatusPills() {
   const w = state.weekends[state.activeWeekend];
   const createdAt = w.snapshot?.meta?.createdAt || "";
   const hasMeta = !!w.snapshot?.meta;
+  const checkedUrl = w.lastCheckedUrl || "";
 
   if (lastCheckedRow && lastCheckedPill) {
     if (createdAt) {
-      lastCheckedPill.textContent = formatDateTime(createdAt);
+      // Include the exact URL that was checked to make data provenance explicit.
+      const checkedText = formatDateTime(createdAt);
+      lastCheckedPill.textContent = checkedUrl ? `${checkedText} \u00b7 ${checkedUrl}` : checkedText;
       lastCheckedRow.hidden = false;
     } else {
       lastCheckedPill.textContent = "";
