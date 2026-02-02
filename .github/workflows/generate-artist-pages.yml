@@ -1,0 +1,52 @@
+name: Generate artist pages
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  generate-artist-pages:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: |
+          set -euxo pipefail
+          if [ -f scripts/package-lock.json ]; then
+            npm --prefix scripts ci
+          else
+            npm --prefix scripts install
+          fi
+
+      - name: Generate artist pages (static)
+        run: |
+          set -euxo pipefail
+          npm --prefix scripts run generate:artists
+
+      - name: Commit & push if changed
+        run: |
+          set -euxo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add tomorrowland/2026/w1/artists || true
+          git add tomorrowland/2026/w2/artists || true
+          git add sitemap.xml || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: regenerate artist pages"
+          git push
