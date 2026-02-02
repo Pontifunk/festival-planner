@@ -27,7 +27,7 @@ async function loadLatestSnapshotForWeekend(weekend) {
   }
 
   const options = state.weekends[weekend].options;
-  const fallback = options.length ? options[options.length - 1].file : null;
+  const fallback = options.length ? options[0].file : null;
   if (!fallback) return null;
 
   return { file: fallback, snapshot: await loadSnapshotFile(fallback) };
