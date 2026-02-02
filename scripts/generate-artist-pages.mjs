@@ -179,29 +179,29 @@ function renderArtistPage({ artist, weekend, slug }) {
         </div>
         <div class="ratingSegmented" id="artistRatingControls" data-artist-id="${escapeHtml(artist.id)}" role="group" aria-label="Rating">
           <button class="ratingSegBtn" data-rate="liked" type="button" aria-pressed="false" aria-label="Liked">
-            <span class="ratingEmoji" aria-hidden="true">??</span>
+            <span class="ratingEmoji" aria-hidden="true">&#x1F44D;</span>
             <span class="segLabel">Liked</span>
           </button>
           <button class="ratingSegBtn" data-rate="maybe" type="button" aria-pressed="false" aria-label="Maybe">
-            <span class="ratingEmoji" aria-hidden="true">??</span>
+            <span class="ratingEmoji" aria-hidden="true">&#x1F914;</span>
             <span class="segLabel">Maybe</span>
           </button>
           <button class="ratingSegBtn" data-rate="disliked" type="button" aria-pressed="false" aria-label="Disliked">
-            <span class="ratingEmoji" aria-hidden="true">??</span>
+            <span class="ratingEmoji" aria-hidden="true">&#x1F44E;</span>
             <span class="segLabel">Nope</span>
           </button>
           <button class="ratingSegBtn" data-rate="unrated" type="button" aria-pressed="false" aria-label="Reset">
-            <span class="ratingEmoji" aria-hidden="true">?</span>
+            <span class="ratingEmoji" aria-hidden="true">&#x21BA;</span>
             <span class="segLabel">Reset</span>
           </button>
         </div>
         <div class="playRow" style="margin-top:10px">
           <button class="playBtn" type="button" id="artistPlayBtn" aria-label="Play ${escapeHtml(artist.name)}">
-            <span class="playIcon" aria-hidden="true">?</span>
+            <span class="playIcon" aria-hidden="true">&#x25B6;</span>
             <span class="playText">Play</span>
           </button>
           <button class="playMoreBtn" type="button" id="artistPlayMoreBtn" aria-label="Choose platform for ${escapeHtml(artist.name)}">
-            <span class="playMoreIcon" aria-hidden="true">?</span>
+            <span class="playMoreIcon" aria-hidden="true">&#x22EF;</span>
           </button>
         </div>
         <div class="muted" style="margin-top:8px" id="ratingNote">Stored locally in your browser.</div>
@@ -220,21 +220,21 @@ function renderArtistPage({ artist, weekend, slug }) {
       var dict = {
         de: {
           subtitle: "Artist-Details (privacy-first, ohne Tracking)",
-          backToLineup: "Zurück zum Line-up",
+          backToLineup: "Zur\u00fcck zum Line-up",
           privacy: "Offline planen, ohne Account, ohne Tracking.",
           ratingTitle: "Deine Bewertung",
-          ratingLiked: "Gefällt",
+          ratingLiked: "Gef\u00e4llt",
           ratingMaybe: "Vielleicht",
           ratingDisliked: "Mag ich nicht",
           ratingUnrated: "Unbewertet",
           ratingReset: "Reset",
           ratingNote: "Lokal in deinem Browser gespeichert.",
           play: "Play",
-          playMore: "Plattform wählen",
+          playMore: "Plattform w\u00e4hlen",
           playDefault: "Standard",
           playSetDefault: "Als Standard setzen",
           title: artistName + " - Tomorrowland ${YEAR} (Wochenende ${weekendNum}) | Festival Planner",
-          desc: "Offline planen für Tomorrowland ${YEAR} Wochenende ${weekendNum}. Kein Account, kein Tracking."
+          desc: "Offline planen f\u00fcr Tomorrowland ${YEAR} Wochenende ${weekendNum}. Kein Account, kein Tracking."
         },
         en: {
           subtitle: "Artist details (privacy-first, no tracking)",
