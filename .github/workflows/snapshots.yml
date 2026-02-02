@@ -54,6 +54,11 @@ jobs:
           set -euxo pipefail
           npm run changes          
 
+      - name: Generate artist pages (static)
+        run: |
+          set -euxo pipefail
+          npm --prefix scripts run generate:artists
+
       - name: Commit & push if changed
         run: |
           set -euxo pipefail
@@ -62,6 +67,9 @@ jobs:
           git add data/tomorrowland/2026/snapshots
           git add data/tomorrowland/2026/changes || true
           git add data/tomorrowland/2026/artists || true
+          git add tomorrowland/2026/w1/artists || true
+          git add tomorrowland/2026/w2/artists || true
+          git add sitemap.xml || true
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
