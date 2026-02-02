@@ -122,6 +122,7 @@ const favoritesToggle = document.getElementById("favoritesToggle");
 const favoritesPlanNote = document.getElementById("favoritesPlanNote");
 const actionToast = document.getElementById("actionToast");
 const buildStamp = document.getElementById("buildStamp");
+const artistIndexLink = document.getElementById("artistIndexLink");
 const menuBtn = document.getElementById("menuBtn");
 const menuOverlay = document.getElementById("menuOverlay");
 const menuSheet = document.getElementById("menuSheet");

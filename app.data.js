@@ -204,6 +204,7 @@ function buildArtistSlugMap(slots) {
 
 function slugifyArtist(value) {
   const base = String(value || "")
+    .replace(/[ßẞ]/g, "ss")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()

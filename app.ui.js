@@ -179,7 +179,7 @@ function getArtistPageUrl(weekend, artistId) {
   const slug = w?.artistSlugMap?.get(artistId);
   if (!slug) return "";
   const wk = String(weekend || "").toLowerCase();
-  return `${BASE_PREFIX}/${state.festival}/${state.year}/${wk}/artist/${slug}/`;
+  return `${BASE_PREFIX}/${state.festival}/${state.year}/${wk}/artists/${slug}/`;
 }
 
 // Renders the favorites list and summary.
@@ -837,6 +837,14 @@ function renderBuildStamp() {
   buildStamp.hidden = !BUILD_ID;
 }
 
+function updateArtistIndexLink() {
+  if (!artistIndexLink) return;
+  const festival = route?.festival || DEFAULT_FESTIVAL;
+  const year = route?.year || DEFAULT_YEAR;
+  const weekend = String(state.activeWeekend || DEFAULT_WEEKEND).toLowerCase();
+  artistIndexLink.href = `${BASE_PREFIX}/${festival}/${year}/${weekend}/artists/`;
+}
+
 // Rebuilds day/stage filter options from snapshot data.
 function updateFiltersUI(weekend) {
   const w = state.weekends[weekend];
@@ -1223,6 +1231,7 @@ function setActiveWeekend(weekend, updateRoute = true) {
     applySeoFromRoute(route);
   }
 
+  updateArtistIndexLink();
   renderActiveWeekend();
 }
 
