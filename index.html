@@ -303,16 +303,26 @@
   <div id="actionToast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <!-- App logic + service worker registration -->
-  <script src="app.js"></script>
+  <script src="app.util.js" defer></script>
+  <script src="app.config.js" defer></script>
+  <script src="app.i18n.js" defer></script>
+  <script src="app.routing.js" defer></script>
+  <script src="app.state.js" defer></script>
+  <script src="app.store.js" defer></script>
+  <script src="app.data.js" defer></script>
+  <script src="app.ui.js" defer></script>
+  <script src="app.main.js" defer></script>
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then((reg) => {
-          if (typeof window.setupServiceWorkerUpdates === "function") {
-            window.setupServiceWorkerUpdates(reg);
-          }
-        })
-        .catch(console.error);
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+          .then((reg) => {
+            if (typeof window.setupServiceWorkerUpdates === "function") {
+              window.setupServiceWorkerUpdates(reg);
+            }
+          })
+          .catch(console.error);
+      });
     }
   </script>
 </body>

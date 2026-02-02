@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const CACHE_VERSION = "v18";
+const CACHE_VERSION = "v19";
 const CACHE_NAME = `festival-planner-${CACHE_VERSION}`;
 // Resolve the base path when hosted in a subfolder (e.g. GitHub Pages).
 const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
@@ -10,7 +10,15 @@ const CORE_ASSETS = [
   "/",
   "/index.html",
   "/styles.css",
-  "/app.js",
+  "/app.util.js",
+  "/app.config.js",
+  "/app.i18n.js",
+  "/app.routing.js",
+  "/app.state.js",
+  "/app.store.js",
+  "/app.data.js",
+  "/app.ui.js",
+  "/app.main.js",
   "/manifest.webmanifest",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
