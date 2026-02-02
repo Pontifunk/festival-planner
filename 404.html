@@ -7,12 +7,32 @@
   <script>
     // GitHub Pages SPA fallback:
     // Redirect /anything to /?path=/anything, then the app scripts can restore route.
+    // If the URL contains /festival/{year}/{weekend}/..., redirect to that base route
+    // to avoid mis-parsing deep artist URLs.
     (function () {
       var path = location.pathname;
       var search = location.search || "";
       var hash = location.hash || "";
-      var target = "/?path=" + encodeURIComponent(path + search + hash);
-      location.replace(target);
+      var parts = path.split("/").filter(Boolean);
+      var baseIndex = -1;
+
+      for (var i = 0; i < parts.length - 1; i++) {
+        if (/^\d{4}$/.test(parts[i]) && /^(w1|w2)$/i.test(parts[i + 1])) {
+          baseIndex = i - 1;
+        }
+      }
+
+      if (baseIndex >= 0) {
+        var baseParts = parts.slice(0, baseIndex + 3);
+        var basePath = "/" + baseParts.join("/");
+        var targetPath = basePath;
+        var target = basePath + "/?path=" + encodeURIComponent(targetPath);
+        location.replace(target);
+        return;
+      }
+
+      var fallback = "/?path=" + encodeURIComponent(path + search + hash);
+      location.replace(fallback);
     })();
   </script>
 </head>
