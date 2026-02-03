@@ -241,8 +241,8 @@
 
       <!-- Footer links -->
       <div class="footerLinks">
-        <a href="legal/privacy.html" data-i18n="privacy">Datenschutz</a>
-        <a href="legal/imprint.html" data-i18n="imprint">Impressum</a>
+        <a href="/legal/privacy.html" data-i18n="privacy">Datenschutz</a>
+        <a href="/legal/imprint.html" data-i18n="imprint">Impressum</a>
       </div>
       <div class="privacyNote muted" id="privacy" data-i18n="privacy_note">Alle Bewertungen und Favoriten werden ausschlie&szlig;lich lokal in deinem Browser gespeichert. Kein Login, keine Cloud, kein Tracking.</div>
       <div class="buildStamp muted" id="buildStamp"></div>
@@ -301,7 +301,7 @@
       fetch(swUrl, { cache: "no-store" })
         .then((res) => {
           if (!res || !res.ok) return null;
-          return navigator.serviceWorker.register(swUrl, { scope: "./" });
+          return navigator.serviceWorker.register(swUrl, { scope: "/" });
         })
         .then((reg) => {
           if (!reg) return;
