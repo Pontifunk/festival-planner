@@ -20,6 +20,7 @@
 
   --tap: 44px; /* minimum tap target-ish */
   --topbar-h: calc(72px + env(safe-area-inset-top));
+  --ctrl-min-h: calc(var(--tap) + 22px);
 }
 
 /* Global resets */
@@ -97,7 +98,7 @@ a{color:inherit;text-decoration:none}
   visibility:hidden;
 }
 
-.ctrl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);position:relative;min-width:0}
+.ctrl{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted);position:relative;min-width:0;min-height:var(--ctrl-min-h)}
 select,input{
   min-height: var(--tap);
   background:rgba(255,255,255,.06);
@@ -668,6 +669,14 @@ button{
   border-color:rgba(107,92,255,.45);
 }
 .inlineProgress{color:var(--muted);font-size:12px;font-weight:700}
+#ratingProgress{
+  min-height: 14px;
+  min-width: 140px;
+}
+#ratingProgress[hidden]{
+  display:inline-block;
+  visibility:hidden;
+}
 
 /* rating bar (explicit options instead of cycle click) */
 .ratingSelect{
@@ -864,6 +873,8 @@ button{
   font-weight:800;
   cursor:pointer;
   line-height:1.1;
+  min-width: 160px;
+  min-height: var(--tap);
 }
 .favCountPill.isActive{
   background:rgba(107,92,255,.25);
@@ -987,7 +998,8 @@ button{
 }
 .footerLinks{display:flex;gap:12px;justify-content:flex-start;color:var(--muted);font-size:13px;flex-wrap:wrap}
 .privacyNote{margin-top:8px;font-size:12px;line-height:1.5}
-.buildStamp{margin-top:6px;font-size:11px;letter-spacing:.02em}
+.buildStamp{margin-top:6px;font-size:11px;letter-spacing:.02em;min-height:14px}
+.buildStamp:empty{visibility:hidden}
 
 /* Mobile menu overlay & sheet */
 .menuOverlay{
