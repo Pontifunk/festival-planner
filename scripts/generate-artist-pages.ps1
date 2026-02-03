@@ -2,7 +2,7 @@ $ErrorActionPreference = "Stop"
 $root = Get-Location
 # NOTE: After snapshot updates, re-run this script to keep artist pages in sync.
 $siteOrigin = $env:SITE_ORIGIN
-if (-not $siteOrigin) { $siteOrigin = "https://festival-planner.tschann.me" }
+if (-not $siteOrigin) { $siteOrigin = "https://festival-planner.org" }
 $festival = $env:FESTIVAL
 if (-not $festival) { $festival = "tomorrowland" }
 $year = $env:YEAR

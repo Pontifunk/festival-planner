@@ -1,4 +1,4 @@
-﻿# Festival Planner
+# Festival Planner
 
 Privacy-first EDM festival lineup planner for Tomorrowland 2026 (Weekend 1 and 2).
 
@@ -123,7 +123,7 @@ After updating snapshots, re-run the generator so links and sitemap stay in sync
 - Node (repo scripts): `npm --prefix scripts run generate:artists`
 
 You can override defaults via environment variables:
-- `SITE_ORIGIN` (e.g. `https://festival-planner.tschann.me`)
+- `SITE_ORIGIN` (e.g. `https://festival-planner.org`)
 - `FESTIVAL` (e.g. `tomorrowland`)
 - `YEAR` (e.g. `2026`)
 

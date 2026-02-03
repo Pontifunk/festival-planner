@@ -1,4 +1,4 @@
-﻿// ====== CONFIG ======
+// ====== CONFIG ======
 const DEFAULT_FESTIVAL = "tomorrowland";
 const DEFAULT_YEAR = "2026";
 const DEFAULT_WEEKEND = "W1";
@@ -30,7 +30,7 @@ const BASE_PREFIX = getBasePrefix();
 const withBase = (path) => `${BASE_PREFIX}${path}`;
 const SITE_ORIGIN = (location.origin && location.origin !== "null")
   ? location.origin
-  : "https://festival-planner.tschann.me";
+  : "https://festival-planner.org";
 const OG_IMAGE_PATH = "/icons/og.png";
 
 const STAGE_ORDER = [

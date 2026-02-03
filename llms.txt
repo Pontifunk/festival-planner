@@ -3,16 +3,16 @@ No accounts. No tracking. All ratings and favorites are stored locally in the br
 Lineup data may be incomplete or change over time.
 
 Key URLs:
-- https://festival-planner.tschann.me/
-- https://festival-planner.tschann.me/privacy/
-- https://festival-planner.tschann.me/impressum/
+- https://festival-planner.org/
+- https://festival-planner.org/privacy/
+- https://festival-planner.org/impressum/
 - https://github.com/Pontifunk/festival-planner
 
 Primary URLs:
-- https://festival-planner.tschann.me/
-- https://festival-planner.tschann.me/tomorrowland/2026/w1/
-- https://festival-planner.tschann.me/tomorrowland/2026/w2/
-- https://festival-planner.tschann.me/about/
-- https://festival-planner.tschann.me/changelog/
-- https://festival-planner.tschann.me/privacy/
-- https://festival-planner.tschann.me/impressum/
+- https://festival-planner.org/
+- https://festival-planner.org/tomorrowland/2026/w1/
+- https://festival-planner.org/tomorrowland/2026/w2/
+- https://festival-planner.org/about/
+- https://festival-planner.org/changelog/
+- https://festival-planner.org/privacy/
+- https://festival-planner.org/impressum/

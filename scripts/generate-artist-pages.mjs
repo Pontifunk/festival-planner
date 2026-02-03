@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
 
-const SITE_ORIGIN = process.env.SITE_ORIGIN || "https://festival-planner.tschann.me";
+const SITE_ORIGIN = process.env.SITE_ORIGIN || "https://festival-planner.org";
 const FESTIVAL = process.env.FESTIVAL || "tomorrowland";
 const YEAR = process.env.YEAR || "2026";
 
@@ -58,7 +58,7 @@ for (const slot of slots) {
 
 function slugify(value) {
   const base = String(value || "")
-    .replace(/[ß?]/g, "ss")
+    .replace(/[ï¿½?]/g, "ss")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
