@@ -1,6 +1,63 @@
-﻿// ====== INIT ======
-if (typeof initClsDebug === "function") initClsDebug();
-init();
+// ====== INIT ======
+boot();
+
+async function boot() {
+  if (window.__FP_INIT__) return;
+
+  const depsReady = typeof window.getBasePrefix === "function"
+    && typeof window.loadSnapshotIndex === "function"
+    && typeof window.initCustomSelect === "function"
+    && typeof window.applyTranslations === "function";
+
+  if (!depsReady) {
+    await loadDeps();
+  }
+
+  if (shouldDebugCls()) {
+    await loadScript("/debug.cls.js");
+  }
+
+  if (window.__FP_INIT__) return;
+  window.__FP_INIT__ = true;
+
+  if (typeof initClsDebug === "function") initClsDebug();
+  init();
+}
+
+function shouldDebugCls() {
+  try {
+    return new URLSearchParams(window.location.search || "").get("debug") === "cls";
+  } catch {
+    return false;
+  }
+}
+
+function loadDeps() {
+  const deps = [
+    "/app.util.js",
+    "/app.config.js",
+    "/app.i18n.js",
+    "/app.routing.js",
+    "/app.state.js",
+    "/app.store.js",
+    "/app.data.js",
+    "/app.ui.js"
+  ];
+
+  return deps.reduce((p, src) => p.then(() => loadScript(src)), Promise.resolve());
+}
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector('script[src="' + src + '"]')) return resolve();
+    const s = document.createElement("script");
+    s.src = src;
+    s.defer = true;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error("Failed to load " + src));
+    document.head.appendChild(s);
+  });
+}
 
 // Bootstraps UI state, loads data, and renders the initial view.
 async function init() {
