@@ -1,8 +1,8 @@
 {
   "name": "Festival Planner",
   "short_name": "Planner",
-  "start_url": "./tomorrowland/2026/w1/",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#2c1a60",
   "theme_color": "#2c1a60",
