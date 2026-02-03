@@ -33,27 +33,13 @@
       "description": "Datenschutzfreundlicher Tomorrowland 2026 Wochenende 1 Line-up-Planer mit lokalen Bewertungen (IndexedDB)."
     }
   </script>
-
-  <!-- Base href for subfolder hosting (e.g. /festival/2026/w1/) -->
-  <script>
-    (function () {
-      var parts = location.pathname.split("/").filter(Boolean);
-      var baseParts = parts.length >= 3 ? parts.slice(0, parts.length - 3) : parts;
-      var basePath = "/" + baseParts.join("/");
-      if (!basePath.endsWith("/")) basePath += "/";
-      var baseEl = document.createElement("base");
-      baseEl.href = basePath;
-      document.head.appendChild(baseEl);
-    })();
-  </script>
-
-  <!-- PWA setup -->
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="favicon.ico">
+<!-- PWA setup -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.ico">
   <meta name="theme-color" content="#2c1a60">
 
   <!-- iOS / mobile PWA -->
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Festival Planner">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -62,7 +48,7 @@
   <meta name="robots" content="index, follow">
 
   <!-- App styles -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 
 <body>
@@ -308,30 +294,37 @@
   <script>
     window.__FP_BOOT = { event: "tomorrowland", year: 2026, weekend: "w1", lang: "de" };
   </script>
-  <script src="app.util.js" defer></script>
-  <script src="app.config.js" defer></script>
-  <script src="app.i18n.js" defer></script>
-  <script src="app.routing.js" defer></script>
-  <script src="app.state.js" defer></script>
-  <script src="app.store.js" defer></script>
-  <script src="app.data.js" defer></script>
-  <script src="app.ui.js" defer></script>
-  <script src="app.main.js" defer></script>
+  <script src="/app.util.js" defer></script>
+  <script src="/app.config.js" defer></script>
+  <script src="/app.i18n.js" defer></script>
+  <script src="/app.routing.js" defer></script>
+  <script src="/app.state.js" defer></script>
+  <script src="/app.store.js" defer></script>
+  <script src="/app.data.js" defer></script>
+  <script src="/app.ui.js" defer></script>
+  <script src="/app.main.js" defer></script>
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("service-worker.js", { scope: "./" })
-          .then((reg) => {
-            if (typeof window.setupServiceWorkerUpdates === "function") {
-              window.setupServiceWorkerUpdates(reg);
-            }
-          })
-          .catch(console.error);
+      window.addEventListener("load", () => {      var swUrl = "/service-worker.js";
+      fetch(swUrl, { cache: "no-store" })
+        .then((res) => {
+          if (!res || !res.ok) return null;
+          return navigator.serviceWorker.register(swUrl, { scope: "./" });
+        })
+        .then((reg) => {
+          if (!reg) return;
+          if (typeof window.setupServiceWorkerUpdates === "function") {
+            window.setupServiceWorkerUpdates(reg);
+          }
+        })
+        .catch(() => {});
       });
     }
   </script>
 </body>
 </html>
+
+
 
 
 
