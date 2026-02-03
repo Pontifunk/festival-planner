@@ -1541,6 +1541,10 @@ function initCustomSelect(selectEl) {
   trigger.setAttribute("role", "combobox");
   trigger.setAttribute("aria-haspopup", "listbox");
   trigger.setAttribute("aria-expanded", "false");
+  const ariaLabel = selectEl.getAttribute("aria-label");
+  const ariaLabelledby = selectEl.getAttribute("aria-labelledby");
+  if (ariaLabel) trigger.setAttribute("aria-label", ariaLabel);
+  if (ariaLabelledby) trigger.setAttribute("aria-labelledby", ariaLabelledby);
 
   const list = document.createElement("div");
   list.className = "selectList";
@@ -1664,6 +1668,18 @@ function syncCustomSelect(selectEl) {
   const active = options.find(opt => opt.classList.contains("isActive"));
   trigger.textContent = active ? active.textContent : selectEl.options[selectEl.selectedIndex]?.textContent || "";
   if (activeId) trigger.setAttribute("aria-activedescendant", activeId);
+  const ariaLabel = selectEl.getAttribute("aria-label");
+  const ariaLabelledby = selectEl.getAttribute("aria-labelledby");
+  if (ariaLabel) {
+    trigger.setAttribute("aria-label", ariaLabel);
+  } else {
+    trigger.removeAttribute("aria-label");
+  }
+  if (ariaLabelledby) {
+    trigger.setAttribute("aria-labelledby", ariaLabelledby);
+  } else {
+    trigger.removeAttribute("aria-labelledby");
+  }
 }
 
 // Rebuilds the custom select after options change.

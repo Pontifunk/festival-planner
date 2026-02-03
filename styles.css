@@ -6,7 +6,7 @@
   --panel:#111325;
   --card:#15183a;
   --text:#f3f4ff;
-  --muted:#b7b9d8;
+  --muted:#c4c6e4;
   --border:rgba(255,255,255,.10);
 
   --accent:#6b5cff;
@@ -108,6 +108,18 @@ select,input{
   outline:none;
 }
 select:focus,input:focus,button:focus,a:focus,.daySummary:focus,.stageSummary:focus{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(107,92,255,.25);
+  border-color:rgba(107,92,255,.55);
+}
+/* Accessibility: visible focus for keyboard users */
+select:focus-visible,
+input:focus-visible,
+button:focus-visible,
+a:focus-visible,
+.selectTrigger:focus-visible,
+.menuItem:focus-visible,
+.menuClose:focus-visible{
   outline:none;
   box-shadow:0 0 0 3px rgba(107,92,255,.25);
   border-color:rgba(107,92,255,.55);
