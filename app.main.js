@@ -1,4 +1,5 @@
 ﻿// ====== INIT ======
+if (typeof initClsDebug === "function") initClsDebug();
 init();
 
 // Bootstraps UI state, loads data, and renders the initial view.

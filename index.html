@@ -34,18 +34,8 @@
     }
   </script>
 
-  <!-- Base href for subfolder hosting (e.g. /festival/2026/w1/) -->
-  <script>
-    (function () {
-      var parts = location.pathname.split("/").filter(Boolean);
-      var baseParts = parts.length >= 3 ? parts.slice(0, parts.length - 3) : parts;
-      var basePath = "/" + baseParts.join("/");
-      if (!basePath.endsWith("/")) basePath += "/";
-      var baseEl = document.createElement("base");
-      baseEl.href = basePath;
-      document.head.appendChild(baseEl);
-    })();
-  </script>
+  <!-- Base href for subpath routing (e.g. /tomorrowland/2026/w1/) -->
+  <base href="/">
 
   <!-- PWA setup -->
   <link rel="manifest" href="manifest.webmanifest">
@@ -314,6 +304,7 @@
   <script src="app.store.js" defer></script>
   <script src="app.data.js" defer></script>
   <script src="app.ui.js" defer></script>
+  <script src="debug.cls.js" defer></script>
   <script src="app.main.js" defer></script>
   <script>
     if ("serviceWorker" in navigator) {
