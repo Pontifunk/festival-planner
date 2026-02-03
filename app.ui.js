@@ -19,17 +19,14 @@ function renderActiveWeekend() {
 function renderWeekend(weekend) {
   const w = state.weekends[weekend];
   const container = weekend === "W1" ? actsListW1 : actsListW2;
-  const metaEl = weekend === "W1" ? weekendMetaW1 : weekendMetaW2;
 
   if (w.error) {
     container.innerHTML = `<div class="muted">${escapeHtml(w.error)}</div>`;
-    metaEl.textContent = "";
     return;
   }
 
   if (!w.snapshot || !Array.isArray(w.snapshot.slots)) {
     container.innerHTML = `<div class="muted">${escapeHtml(t("no_data_available") || "No data available.")}</div>`;
-    metaEl.textContent = "";
     return;
   }
 
@@ -43,12 +40,6 @@ function renderWeekend(weekend) {
   w.artistSlugMap = buildArtistSlugMap(w.snapshot.slots);
   const dayList = Array.from(new Set(w.snapshot.slots.map(s => s.date || extractDate(s.start) || (t("unknown") || "Unknown")))).sort();
   updateMenuDayLinks(dayList);
-
-  const shownCount = countGroupedSlots(grouped);
-  metaEl.textContent =
-    `${t("snapshot_label")}: ${w.selectedFile || notAvailable()} \u00b7 ` +
-    `${t("slots") || "Slots"}: ${w.snapshot.slots.length} \u00b7 ` +
-    `${t("shown") || "Angezeigt"}: ${shownCount}`;
 
   container.innerHTML = grouped.map(group => renderDayGroup(group, weekend, openState)).join("");
 
@@ -821,7 +812,8 @@ function renderStatusPills() {
     const labelRaw = select ? getSelectLabel(select, w.selectedFile) : (w.selectedFile || "");
     const label = String(labelRaw || "").trim();
     if (label) {
-      const datePart = hasCreatedAt ? ` (${formatDateTime(createdAt)})` : "";
+      const createdLabel = hasCreatedAt ? formatDateTime(createdAt) : "";
+      const datePart = createdLabel && label !== createdLabel ? ` (${createdLabel})` : "";
       lastUpdatedPill.textContent = `${label}${datePart}`;
       lastUpdatedRow.hidden = false;
     } else {

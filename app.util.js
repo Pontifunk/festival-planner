@@ -80,7 +80,7 @@ function setSnapshotOptions(weekend) {
 
   select.innerHTML = opts.length
     ? opts.map(o => {
-        const label = `${formatDateTime(o.createdAt)} \u00b7 ${o.slotCount} Slots`;
+        const label = `${formatDateTime(o.createdAt)}`;
         return `<option value="${escapeAttr(o.file)}">${escapeHtml(label)}</option>`;
       }).join("")
     : `<option value="">${escapeHtml(t("no_snapshots") || "No snapshots")}</option>`;

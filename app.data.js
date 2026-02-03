@@ -64,7 +64,7 @@ async function loadSnapshotForWeekend(weekend, file = null) {
     if (sel) {
       if (!Array.from(sel.options).some(o => o.value === selectedFile)) {
         const label = snap?.meta?.createdAt
-          ? `${formatDateTime(snap.meta.createdAt)} \u00b7 ${snap?.slots?.length ?? 0} Slots`
+          ? `${formatDateTime(snap.meta.createdAt)}`
           : selectedFile;
         const opt = document.createElement("option");
         opt.value = selectedFile;
