@@ -1174,6 +1174,19 @@ function scrollToArtist(artistId) {
   setTimeout(() => el.classList.remove("isTarget"), 2500);
 }
 
+// Resolves an artistId from a slug or direct id for the active weekend.
+function resolveArtistId(param) {
+  const w = state.weekends[state.activeWeekend];
+  const raw = String(param || "").trim();
+  if (!raw || !w) return "";
+  if (w.artistFirstEl?.has(raw)) return raw;
+  const target = raw.toLowerCase();
+  for (const [id, slug] of w.artistSlugMap.entries()) {
+    if (String(slug || "").toLowerCase() === target) return id;
+  }
+  return "";
+}
+
 // Scrolls to a specific slot by slotId in the active weekend.
 function scrollToSlotId(slotId) {
   const weekend = state.activeWeekend;

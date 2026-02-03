@@ -66,6 +66,12 @@ async function init() {
   setDefaultSelectedChanges();
   renderWeekendChangesBox();
   setActiveWeekend(state.activeWeekend, false);
+
+  const artistParam = getQueryParam("artist");
+  if (artistParam) {
+    const id = resolveArtistId(artistParam);
+    if (id) setTimeout(() => scrollToArtist(id), 60);
+  }
 }
 
 // Wires the update banner and handles SW update flow.
