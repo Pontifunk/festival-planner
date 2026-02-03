@@ -602,7 +602,7 @@ async function resolveChangesSnapshot(weekend, file) {
   if (!file) return null;
   const w = state.weekends?.[weekend];
   if (w?.selectedFile === file && w?.snapshot) return w.snapshot;
-  const url = withBase(`/data/${state.festival}/${state.year}/snapshots/${file}`);
+  const url = withRoot(`/data/${state.festival}/${state.year}/snapshots/${file}`);
   return await tryFetchJson(url, { cache: "no-store" });
 }
 

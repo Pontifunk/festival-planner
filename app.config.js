@@ -28,6 +28,7 @@ const RATING_CHIP_FALLBACKS = {
 };
 const BASE_PREFIX = getBasePrefix();
 const withBase = (path) => `${BASE_PREFIX}${path}`;
+const withRoot = (path) => path;
 const SITE_ORIGIN = (location.origin && location.origin !== "null")
   ? location.origin
   : "https://festival-planner.org";

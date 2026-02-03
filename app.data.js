@@ -1,6 +1,6 @@
 ﻿// ====== LOADING ======
 async function loadSnapshotIndex() {
-  const url = withBase(`/data/${state.festival}/${state.year}/snapshots/index.json`);
+  const url = withRoot(`/data/${state.festival}/${state.year}/snapshots/index.json`);
   const index = await fetchJson(url, { cache: "no-store" });
   state.snapshotIndex = index;
 
@@ -16,7 +16,7 @@ async function loadSnapshotIndex() {
 
 // Resolves the newest snapshot for the given weekend.
 async function loadLatestSnapshotForWeekend(weekend) {
-  const latestUrl = withBase(`/data/${state.festival}/${state.year}/snapshots/latest.json`);
+  const latestUrl = withRoot(`/data/${state.festival}/${state.year}/snapshots/latest.json`);
   const latest = await tryFetchJson(latestUrl, { cache: "no-store" });
   if (latest && normalizeWeekend(latest.meta?.weekend) === weekend) {
     const match = state.weekends[weekend].options.find(o => o.createdAt === latest.meta?.createdAt);
@@ -35,7 +35,7 @@ async function loadLatestSnapshotForWeekend(weekend) {
 
 // Fetches a snapshot JSON file by name.
 async function loadSnapshotFile(file) {
-  const url = withBase(`/data/${state.festival}/${state.year}/snapshots/${file}`);
+  const url = withRoot(`/data/${state.festival}/${state.year}/snapshots/${file}`);
   return await fetchJson(url, { cache: "default" });
 }
 
@@ -82,7 +82,7 @@ async function loadSnapshotForWeekend(weekend, file = null) {
 
 // Loads the latest artist metadata index.
 async function loadArtistsLatest() {
-  const base = withBase(`/data/${state.festival}/${state.year}/artists`);
+  const base = withRoot(`/data/${state.festival}/${state.year}/artists`);
   const latest = await tryFetchJson(`${base}/latest.json`, { cache: "no-store" });
   let data = latest;
 
@@ -101,13 +101,13 @@ async function loadArtistsLatest() {
 
 // Loads the changes index for diff history.
 async function loadChangesIndex() {
-  const url = withBase(`/data/${state.festival}/${state.year}/changes/index.json`);
+  const url = withRoot(`/data/${state.festival}/${state.year}/changes/index.json`);
   state.changesIndex = await tryFetchJson(url, { cache: "no-store" });
 }
 
 // Loads the latest change summaries for both weekends.
 async function loadWeekendChanges() {
-  const base = withBase(`/data/${state.festival}/${state.year}/changes`);
+  const base = withRoot(`/data/${state.festival}/${state.year}/changes`);
   const [w1, w2] = await Promise.all([
     tryFetchJson(`${base}/latest_W1.json`, { cache: "no-store" }),
     tryFetchJson(`${base}/latest_W2.json`, { cache: "no-store" })

@@ -287,7 +287,7 @@ function bindUi() {
       const weekend = btn.getAttribute("data-weekend") || state.activeWeekend;
       if (!file || !weekend) return;
       const uid = ++changesSelectionUid;
-      const url = withBase(`/data/${state.festival}/${state.year}/changes/${file}`);
+      const url = withRoot(`/data/${state.festival}/${state.year}/changes/${file}`);
       const data = await tryFetchJson(url, { cache: "no-store" });
       if (uid !== changesSelectionUid) return;
       if (!data) return;

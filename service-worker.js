@@ -1,9 +1,8 @@
 // Cache versioning to bust old assets when app changes.
 const BUILD_ID = "86da35b+deployfix1";
 const CACHE_NAME = `fp-cache-${BUILD_ID}`;
-// Resolve the base path when hosted in a subfolder (e.g. GitHub Pages).
-const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, "");
-const withBase = (path) => `${BASE_PATH}${path}`;
+// Assets are served from the site root.
+const withBase = (path) => path;
 
 // Core shell assets that should be available offline.
 const CORE_ASSETS = [
@@ -27,7 +26,7 @@ const CORE_ASSETS = [
   "/legal/imprint.html",
   "/i18n/de.json",
   "/i18n/en.json",
-].map(withBase);
+];
 
 // Install: cache the core shell and activate immediately.
 self.addEventListener("install", (event) => {
@@ -101,7 +100,7 @@ async function networkFirst(request, fallbackToIndex = false) {
     const cached = await cache.match(request);
     if (cached) return cached;
     if (fallbackToIndex) {
-      const shell = await cache.match(withBase("/index.html"));
+      const shell = await cache.match("/index.html");
       if (shell) return shell;
     }
     return new Response("Offline", { status: 503, statusText: "Offline" });
