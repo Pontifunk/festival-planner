@@ -19,6 +19,7 @@
   --shadow: 0 10px 30px rgba(0,0,0,.30);
 
   --tap: 44px; /* minimum tap target-ish */
+  --topbar-h: calc(72px + env(safe-area-inset-top));
 }
 
 /* Global resets */
