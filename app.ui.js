@@ -796,11 +796,11 @@ async function importRatings(e) {
 function renderStatusPills() {
   const w = state.weekends[state.activeWeekend];
   const createdAt = w.snapshot?.meta?.createdAt || "";
-  const hasMeta = !!w.snapshot?.meta;
+  const hasCreatedAt = Number.isFinite(Date.parse(createdAt));
   const checkedUrl = w.lastCheckedUrl || "";
 
   if (lastCheckedRow && lastCheckedPill) {
-    if (createdAt) {
+    if (hasCreatedAt) {
       // Include the exact URL that was checked to make data provenance explicit.
       const checkedText = formatDateTime(createdAt);
       if (checkedUrl) {
@@ -818,9 +818,10 @@ function renderStatusPills() {
 
   if (lastUpdatedRow && lastUpdatedPill) {
     const select = snapshotSelectForWeekend(state.activeWeekend);
-    const label = select ? getSelectLabel(select, w.selectedFile) : (w.selectedFile || "");
-    if (hasMeta && label) {
-      const datePart = createdAt ? ` (${formatDateTime(createdAt)})` : "";
+    const labelRaw = select ? getSelectLabel(select, w.selectedFile) : (w.selectedFile || "");
+    const label = String(labelRaw || "").trim();
+    if (label) {
+      const datePart = hasCreatedAt ? ` (${formatDateTime(createdAt)})` : "";
       lastUpdatedPill.textContent = `${label}${datePart}`;
       lastUpdatedRow.hidden = false;
     } else {

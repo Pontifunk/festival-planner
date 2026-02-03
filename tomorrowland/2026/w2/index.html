@@ -82,7 +82,7 @@
   </header>
 
   <!-- Service worker update banner -->
-  <div id="updateBanner" class="updateBanner" hidden>
+  <div id="updateBanner" class="updateBanner" hidden aria-hidden="true">
     <div id="updateBannerText" class="updateBannerText" data-i18n="update_available">Update verf\u00fcgbar</div>
     <button id="updateReloadBtn" class="btn primary" type="button" data-i18n="reload">Neu laden</button>
   </div>
@@ -195,12 +195,12 @@
             </select>
           </div>
 
-          <div class="ctrl" id="lastCheckedRow">
+          <div class="ctrl" id="lastCheckedRow" hidden>
             <span data-i18n="last_checked">Zuletzt gepr&uuml;ft</span>
             <div class="pill" id="lastCheckedPill"></div>
           </div>
 
-          <div class="ctrl" id="lastUpdatedRow">
+          <div class="ctrl" id="lastUpdatedRow" hidden>
             <span data-i18n="lineup_status">Line-up-Stand</span>
             <div class="pill" id="lastUpdatedPill"></div>
           </div>

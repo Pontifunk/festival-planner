@@ -74,6 +74,9 @@ function setupServiceWorkerUpdates(registration) {
   const textEl = document.getElementById("updateBannerText");
   const button = document.getElementById("updateReloadBtn");
   if (!registration || !banner || !textEl || !button) return;
+  banner.hidden = true;
+  banner.setAttribute("aria-hidden", "true");
+  banner.classList.remove("isVisible");
 
   const setLabels = () => {
     textEl.textContent = t("update_available") || "Update available";
@@ -83,6 +86,7 @@ function setupServiceWorkerUpdates(registration) {
   const show = () => {
     setLabels();
     banner.hidden = false;
+    banner.setAttribute("aria-hidden", "false");
     banner.classList.add("isVisible");
   };
 
