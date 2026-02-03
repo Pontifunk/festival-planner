@@ -209,3 +209,12 @@ async function tryFetchJson(url, { cache = "default" } = {}) {
   }
 }
 
+// Runs a callback when the main thread is idle (with a safe timeout fallback).
+function runIdle(cb, { timeout = 200 } = {}) {
+  if (typeof cb !== "function") return;
+  if (typeof requestIdleCallback === "function") {
+    return requestIdleCallback(cb, { timeout });
+  }
+  return setTimeout(() => cb({ didTimeout: true, timeRemaining: () => 0 }), 0);
+}
+

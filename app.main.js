@@ -119,11 +119,19 @@ async function init() {
 
   ratings = await dbGetAll(makeDbKeyPrefix(state));
 
-  await Promise.all(WEEKENDS.map((w) => loadSnapshotForWeekend(w)));
+  await loadSnapshotForWeekend(state.activeWeekend);
 
   setDefaultSelectedChanges();
   renderWeekendChangesBox();
   setActiveWeekend(state.activeWeekend, false);
+
+  runIdle(() => {
+    const otherWeekend = WEEKENDS.find((w) => w !== state.activeWeekend);
+    if (!otherWeekend) return;
+    loadSnapshotForWeekend(otherWeekend).then(() => {
+      if (state.activeWeekend === otherWeekend) renderActiveWeekend();
+    });
+  }, { timeout: 1000 });
 
   const artistParam = getQueryParam("artist");
   if (artistParam) {
@@ -235,6 +243,14 @@ function bindUi() {
       }
     }
   });
+  if (searchResults) {
+    searchResults.addEventListener("click", (e) => {
+      const item = e.target.closest(".searchItem");
+      if (!item) return;
+      const id = item.getAttribute("data-artist-id");
+      if (id) scrollToArtist(id);
+    });
+  }
 
   bindSelectChange(ratingFilter, () => {
     if (favoritesOnly && ratingFilter.value !== "liked") {

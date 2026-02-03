@@ -15,18 +15,24 @@ function renderActiveWeekend() {
   renderWeekendChangesBox();
 }
 
+const renderTokens = { W1: 0, W2: 0 };
+const renderPending = { W1: false, W2: false };
+
 // Builds the day/stage list for a weekend and injects HTML.
 function renderWeekend(weekend) {
   const w = state.weekends[weekend];
   const container = weekend === "W1" ? actsListW1 : actsListW2;
+  if (!container) return;
 
   if (w.error) {
     container.innerHTML = `<div class="muted">${escapeHtml(w.error)}</div>`;
+    renderPending[weekend] = false;
     return;
   }
 
   if (!w.snapshot || !Array.isArray(w.snapshot.slots)) {
     container.innerHTML = `<div class="muted">${escapeHtml(t("no_data_available") || "No data available.")}</div>`;
+    renderPending[weekend] = false;
     return;
   }
 
@@ -40,11 +46,34 @@ function renderWeekend(weekend) {
   w.artistSlugMap = buildArtistSlugMap(w.snapshot.slots);
   const dayList = Array.from(new Set(w.snapshot.slots.map(s => s.date || extractDate(s.start) || (t("unknown") || "Unknown")))).sort();
   updateMenuDayLinks(dayList);
-
-  container.innerHTML = grouped.map(group => renderDayGroup(group, weekend, openState)).join("");
+  w.artistFirstEl = new Map();
+  renderPending[weekend] = true;
+  const token = ++renderTokens[weekend];
+  const chunkSize = grouped.length > 6 ? 2 : (grouped.length > 3 ? 2 : grouped.length);
 
   bindSlotInteractions(container, weekend);
-  indexArtistElements(container, weekend);
+
+  const renderChunk = (start) => {
+    if (renderTokens[weekend] !== token) return;
+    const slice = grouped.slice(start, start + chunkSize);
+    if (!slice.length) {
+      renderPending[weekend] = false;
+      runIdle(() => {
+        if (renderTokens[weekend] !== token) return;
+        indexArtistElements(container, weekend);
+      });
+      return;
+    }
+    const html = slice.map(group => renderDayGroup(group, weekend, openState)).join("");
+    if (start === 0) {
+      container.innerHTML = html;
+    } else {
+      container.insertAdjacentHTML("beforeend", html);
+    }
+    runIdle(() => renderChunk(start + chunkSize));
+  };
+
+  renderChunk(0);
 }
 
 // Renders a day group with stage accordions.
@@ -1135,21 +1164,18 @@ function updateSearchResults() {
     `;
   }).join("") || `<div class="muted" style="padding:8px 10px">${escapeHtml(t("no_results") || "No results.")}</div>`;
 
-  Array.from(searchResults.querySelectorAll(".searchItem")).forEach(item => {
-    item.addEventListener("click", () => {
-      const id = item.getAttribute("data-artist-id");
-      if (id) scrollToArtist(id);
-    });
-  });
-
   searchResults.hidden = false;
 }
 
 // Scrolls to an artist in the active list.
-function scrollToArtist(artistId) {
+function scrollToArtist(artistId, attempt = 0) {
   const w = state.weekends[state.activeWeekend];
   const el = w.artistFirstEl.get(artistId);
   if (!el) {
+    if (renderPending[state.activeWeekend] && attempt < 10) {
+      runIdle(() => scrollToArtist(artistId, attempt + 1));
+      return;
+    }
     showError("Artist im aktuellen Weekend nicht gefunden.");
     return;
   }
