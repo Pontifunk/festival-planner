@@ -1,6 +1,6 @@
 // Cache versioning to bust old assets when app changes.
 const BUILD_ID = "86da35b+deployfix1";
-const CACHE_NAME = `fp-cache-${BUILD_ID}`;
+const CACHE_NAME = `fp-cache-${BUILD_ID || "dev"}`;
 // Assets are served from the site root.
 const withBase = (path) => path;
 
