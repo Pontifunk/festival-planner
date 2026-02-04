@@ -291,10 +291,10 @@ button{
   border:1px solid var(--border);
   background:linear-gradient(180deg, rgba(107,92,255,.10), rgba(255,255,255,.02));
   margin-bottom:12px;
-  min-height: 150px;
+  min-height: 190px;
 }
 .introContent{
-  min-height: 120px;
+  min-height: 150px;
 }
 #mobileControlsAnchor,
 #mobileExportAnchor{
@@ -1397,11 +1397,11 @@ body.menuOpen{
   .toolbar{min-height: calc((var(--ctrl-min-h) * 4) + 36px);}
   #mobileControlsAnchor{min-height: 240px;}
   #mobileExportAnchor{min-height: 300px;}
-  .introCard{min-height: 170px;}
-  .introContent{min-height: 160px;}
-  .introTitle{min-height: 26px;}
-  .introSubtitle{min-height: 52px;}
-  .introOnboarding{min-height: 36px;}
+  .introCard{min-height: 220px;}
+  .introContent{min-height: 190px;}
+  .introTitle{min-height: 28px;}
+  .introSubtitle{min-height: 72px;}
+  .introOnboarding{min-height: 40px;}
   :root{--act-min-h: 140px;}
 
   .topbar{align-items:flex-start}
