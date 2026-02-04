@@ -3,7 +3,7 @@
 <head>
   <!-- Basic metadata and SEO -->
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <title>Tomorrowland 2026 Wochenende 1 Line-up-Planer | Festival Planner</title>
   <meta name="description" content="Datenschutzfreundlicher Tomorrowland 2026 Wochenende 1 Line-up-Planer: DJs bewerten, Favoriten lokal speichern und den Tagesplan erstellen &mdash; ohne Account, ohne Tracking.">
@@ -49,7 +49,7 @@
 
   <!-- Critical CSS (minimal) -->
   <style>
-    :root{color-scheme:dark;--topbar-h:96px}
+    :root{color-scheme:dark;--topbar-h:calc(96px + env(safe-area-inset-top))}
     *{box-sizing:border-box}
     html,body{height:100%}
     body{margin:0;background:#0b0c12;color:#f3f4ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
@@ -59,8 +59,8 @@
     .menuOverlay{position:fixed;inset:0;display:none}
     .menuOverlay[hidden]{display:none}
     .menuSheet{position:fixed;left:0;right:0;bottom:0;transform:translateY(100%)}
-    @media (max-width: 980px){:root{--topbar-h:112px}}
-    @media (max-width: 720px){:root{--topbar-h:128px}}
+    @media (max-width: 980px){:root{--topbar-h:calc(112px + env(safe-area-inset-top))}}
+    @media (max-width: 720px){:root{--topbar-h:calc(128px + env(safe-area-inset-top))}}
   </style>
 
   <!-- App styles (non-blocking) -->
