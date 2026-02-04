@@ -248,6 +248,11 @@ button{
   text-align:left;
   display:flex;
   align-items:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
 .pillLink{
@@ -524,6 +529,9 @@ button{
   color:var(--muted);
   cursor:pointer;
   min-height: var(--tap);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .tabBtn.isActive{
   background:rgba(107,92,255,.20);
@@ -795,10 +803,19 @@ button{
   background:rgba(107,92,255,.25);
   border-color:rgba(107,92,255,.45);
 }
-.inlineProgress{color:var(--muted);font-size:12px;font-weight:700}
+.inlineProgress{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
 #ratingProgress{
   min-height: 14px;
   min-width: 140px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 #ratingProgress[hidden]{
   display:inline-block;
@@ -1004,6 +1021,9 @@ button{
   line-height:1.1;
   min-width: 160px;
   min-height: var(--tap);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .favCountPill.isActive{
   background:rgba(107,92,255,.25);
