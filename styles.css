@@ -1455,7 +1455,15 @@ body.menuOpen{
 
   .ratingSegmented{justify-content:flex-start}
 
-  .pill{max-width: 100%;}
+  .pill{
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .pillLink{
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
   .panel.side{min-height: 780px;}
   #changesBox{min-height: 240px;}
   #favoritesList{min-height: 320px;}
