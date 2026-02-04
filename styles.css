@@ -183,6 +183,9 @@ button{
   align-items:center;
   justify-content:space-between;
   width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .selectTrigger::after{
@@ -259,6 +262,7 @@ button{
   color:inherit;
   text-decoration:underline;
   text-underline-offset:2px;
+  white-space:nowrap;
 }
 
 /* ===== LAYOUT ===== */
