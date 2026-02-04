@@ -474,8 +474,10 @@ function setupMobileExportPlacement() {
           anchorParent.appendChild(plannerExportBox);
         }
       }
+      mobileExportAnchor.style.minHeight = "0px";
       return;
     }
+    mobileExportAnchor.style.minHeight = "";
     if (plannerExportBox.parentNode !== originalParent) {
       if (originalNext && originalNext.parentNode === originalParent) {
         originalParent.insertBefore(plannerExportBox, originalNext);

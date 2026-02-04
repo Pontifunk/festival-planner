@@ -1563,8 +1563,10 @@ function setupMobileControlsPlacement() {
           anchorParent.appendChild(controlsCard);
         }
       }
+      mobileControlsAnchor.style.minHeight = "0px";
       return;
     }
+    mobileControlsAnchor.style.minHeight = "";
     if (controlsCard.parentNode !== originalParent) {
       if (originalNext && originalNext.parentNode === originalParent) {
         originalParent.insertBefore(controlsCard, originalNext);
