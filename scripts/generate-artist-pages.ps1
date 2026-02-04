@@ -147,11 +147,7 @@ foreach ($weekendKey in $weekends.Keys) {
       "@context" = "https://schema.org"
       "@type" = "MusicGroup"
       "name" = $artist.name
-      "performerIn" = @{
-        "@type" = "Event"
-        "name" = "Tomorrowland $year Weekend $weekendNum"
-        "startDate" = ($sortedSlots | Select-Object -First 1).start
-      }
+      "url" = $canonical
     } | ConvertTo-Json -Depth 5 -Compress
 
     $html = @"

@@ -42,13 +42,15 @@ for (const slot of slots) {
     const normalized = String(slot.artistNormalized || "");
     const meta = artistMeta.get(artistId) || {};
     const genres = Array.isArray(meta.genres) ? meta.genres.map(g => String(g || "")).filter(Boolean) : [];
+    const links = extractSameAs(meta);
     artists.set(artistId, {
       id: artistId,
       name,
       normalized,
       slots: [],
       stages: new Set(),
-      genres
+      genres,
+      links
     });
   }
   const entry = artists.get(artistId);
@@ -78,6 +80,50 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+function extractSameAs(meta) {
+  const candidates = [];
+  const add = (value) => {
+    if (!value) return;
+    if (Array.isArray(value)) {
+      value.forEach(add);
+      return;
+    }
+    if (typeof value === "object") {
+      if (value.url) return add(value.url);
+      if (value.href) return add(value.href);
+      return;
+    }
+    if (typeof value === "string") candidates.push(value);
+  };
+
+  add(meta.links);
+  add(meta.socials);
+  for (const key of [
+    "spotify",
+    "spotifyUrl",
+    "spotifyLink",
+    "soundcloud",
+    "soundcloudUrl",
+    "soundcloudLink",
+    "youtube",
+    "youtubeUrl",
+    "youtubeLink",
+    "appleMusic",
+    "appleMusicUrl",
+    "appleMusicLink",
+    "applemusic",
+    "applemusicUrl",
+    "applemusicLink"
+  ]) {
+    add(meta[key]);
+  }
+
+  const clean = candidates
+    .map((value) => String(value || "").trim())
+    .filter((value) => /^https?:\/\//i.test(value));
+  return Array.from(new Set(clean));
+}
+
 function buildArtistSlugMap(artists) {
   const baseById = new Map();
   const counts = new Map();
@@ -103,6 +149,16 @@ function renderArtistPage({ artist, weekend, slug }) {
   const stages = Array.from(artist.stages).sort();
   const genres = Array.isArray(artist.genres) ? artist.genres : [];
   const plannerUrl = `/${FESTIVAL}/${YEAR}/${weekendLower}/?artist=${encodeURIComponent(slug)}`;
+  const sameAs = Array.isArray(artist.links)
+    ? artist.links.map(link => String(link || "")).filter(Boolean)
+    : [];
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": artist.name,
+    "url": canonical
+  };
+  if (sameAs.length) jsonLd.sameAs = sameAs;
 
   return `<!doctype html>
 <html lang="de">
@@ -136,16 +192,7 @@ function renderArtistPage({ artist, weekend, slug }) {
   </script>
   <link rel="stylesheet" href="styles.css">
   <script type="application/ld+json">
-    ${JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "MusicGroup",
-      "name": artist.name,
-      "performerIn": {
-        "@type": "Event",
-        "name": `Tomorrowland ${YEAR} Weekend ${weekendNum}`,
-        "startDate": artist.slots[0]?.start || artist.slots[0]?.date || ""
-      }
-    })}
+    ${JSON.stringify(jsonLd)}
   </script>
 </head>
 <body>
