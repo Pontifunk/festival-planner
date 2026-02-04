@@ -148,6 +148,7 @@ function setupServiceWorkerUpdates(registration) {
   if (!registration || !banner || !textEl || !button) return;
   banner.hidden = true;
   banner.setAttribute("aria-hidden", "true");
+  banner.setAttribute("inert", "");
   banner.classList.remove("isVisible");
 
   const setLabels = () => {
@@ -159,6 +160,7 @@ function setupServiceWorkerUpdates(registration) {
     setLabels();
     banner.hidden = false;
     banner.setAttribute("aria-hidden", "false");
+    banner.removeAttribute("inert");
     banner.classList.add("isVisible");
   };
 

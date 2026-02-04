@@ -306,8 +306,7 @@ function updateFavoritesSummary(count) {
   if (!favoritesToggle) return;
   const label = t("favorites_count") || "\u2764\ufe0f Deine Favoriten: {count} DJs";
   favoritesToggle.textContent = label.replace("{count}", String(count));
-  const toggleLabel = t("favorites_toggle") || "Nur Favoriten anzeigen";
-  favoritesToggle.setAttribute("aria-label", toggleLabel);
+  favoritesToggle.setAttribute("aria-label", favoritesToggle.textContent);
   updateFavoritesToggleUI();
 }
 
@@ -385,6 +384,7 @@ function openMenu() {
   menuOverlay.hidden = false;
   menuBtn.setAttribute("aria-expanded", "true");
   menuSheet.setAttribute("aria-hidden", "false");
+  menuSheet.removeAttribute("inert");
   document.body.classList.add("menuOpen");
   document.body.style.top = `-${menuScrollY}px`;
 }
@@ -397,6 +397,7 @@ function closeMenu() {
   menuOverlay.hidden = true;
   menuBtn.setAttribute("aria-expanded", "false");
   menuSheet.setAttribute("aria-hidden", "true");
+  menuSheet.setAttribute("inert", "");
   document.body.classList.remove("menuOpen");
   document.body.style.top = "";
   if (menuScrollY) window.scrollTo(0, menuScrollY);
@@ -1565,7 +1566,18 @@ function updatePlayDefaultUI() {
 
 // ====== CUSTOM SELECT ======
 function initCustomSelect(selectEl) {
-  if (!selectEl || selectEl.dataset.customReady) return;
+  if (!selectEl) return;
+  const isMobile = window.matchMedia("(max-width: 980px)").matches;
+  if (isMobile) {
+    const wrapper = selectEl.parentNode?.querySelector(".selectWrap");
+    if (wrapper) wrapper.remove();
+    selectEl.dataset.customReady = "native";
+    selectEl.classList.remove("isHidden");
+    selectEl.removeAttribute("aria-hidden");
+    selectEl.tabIndex = 0;
+    return;
+  }
+  if (selectEl.dataset.customReady === "true") return;
   selectEl.dataset.customReady = "true";
   selectEl.classList.add("isHidden");
   selectEl.tabIndex = -1;
@@ -1724,6 +1736,11 @@ function syncCustomSelect(selectEl) {
 
 // Rebuilds the custom select after options change.
 function rebuildCustomSelect(selectEl) {
+  if (!selectEl) return;
+  if (selectEl.dataset.customReady === "native") {
+    initCustomSelect(selectEl);
+    return;
+  }
   const wrapper = selectEl?.parentNode?.querySelector(".selectWrap");
   if (!wrapper) {
     selectEl.dataset.customReady = "";
@@ -1755,6 +1772,7 @@ function rebuildCustomSelect(selectEl) {
 // Falls back to the native select if needed.
 function ensureSelectVisible(selectEl) {
   if (!selectEl) return;
+  if (selectEl.dataset.customReady === "native") return;
   const bound = customSelectMap.get(selectEl);
   const wrapper = bound?.wrapper || selectEl.parentNode?.querySelector(".selectWrap");
   if (wrapper && wrapper.querySelector(".selectTrigger")) return;

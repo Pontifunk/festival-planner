@@ -568,7 +568,11 @@ button{
   align-items:center;
   gap:10px;
 }
-.dayLink{font-size:12px;color:var(--accent)}
+.dayLink{
+  font-size:12px;
+  color:#a8b3ff;
+  font-weight:600;
+}
 .dayChevron{
   width:10px;height:10px;
   border-right:2px solid var(--muted);
@@ -703,7 +707,13 @@ button{
 
 .act:hover{background:rgba(255,255,255,.06)}
 .actName{font-weight:900;font-size:18px}
-.actNameLink{color:var(--text);text-decoration:none}
+.actNameLink{
+  color:var(--text);
+  text-decoration:none;
+  display:inline-block;
+  padding:4px 0;
+  min-height:24px;
+}
 .actNameLink:hover{text-decoration:underline}
 .actNameLink:focus-visible{outline:2px solid rgba(107,92,255,.7);outline-offset:2px;border-radius:4px}
 .actMeta{color:var(--muted);font-size:12px;margin-top:4px}
