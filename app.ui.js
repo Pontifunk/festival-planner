@@ -1725,9 +1725,31 @@ function syncCustomSelect(selectEl) {
 // Rebuilds the custom select after options change.
 function rebuildCustomSelect(selectEl) {
   const wrapper = selectEl?.parentNode?.querySelector(".selectWrap");
-  if (wrapper) wrapper.remove();
-  selectEl.dataset.customReady = "";
-  initCustomSelect(selectEl);
+  if (!wrapper) {
+    selectEl.dataset.customReady = "";
+    initCustomSelect(selectEl);
+    return;
+  }
+  const bound = customSelectMap.get(selectEl);
+  const list = bound?.list || wrapper.querySelector(".selectList");
+  if (!list) {
+    selectEl.dataset.customReady = "";
+    initCustomSelect(selectEl);
+    return;
+  }
+  list.innerHTML = "";
+  const opts = Array.from(selectEl.options);
+  opts.forEach((opt) => {
+    const item = document.createElement("div");
+    item.className = "selectOption";
+    item.id = `select-opt-${selectUid++}`;
+    item.setAttribute("role", "option");
+    item.setAttribute("data-value", opt.value);
+    item.textContent = opt.textContent;
+    item.tabIndex = -1;
+    list.appendChild(item);
+  });
+  syncCustomSelect(selectEl);
 }
 
 // Falls back to the native select if needed.
