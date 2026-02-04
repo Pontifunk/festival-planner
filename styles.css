@@ -1306,6 +1306,8 @@ body.menuOpen{
 @media (max-width: 980px){
   .layout{grid-template-columns: 1fr}
   .subtitle{max-width: unset}
+  /* CLS stabilization: 4 stacked controls on mobile */
+  .toolbar{min-height: calc((var(--ctrl-min-h) * 4) + 36px);}
   :root{--act-min-h: 140px;}
 
   .topbar{align-items:flex-start}
@@ -1348,7 +1350,6 @@ body.menuOpen{
   .topbar{padding:calc(12px + env(safe-area-inset-top)) 12px 12px;gap:10px}
   .controls{width:100%;grid-template-columns:1fr;justify-content:flex-start}
   .controls .ctrl{width:100%}
-  .toolbar{min-height: 220px;}
   .layout{padding:calc(10px + var(--topbar-h, 72px)) calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}
   .panel{padding:12px}
   .weekendHeader{flex-direction:column;align-items:flex-start}
