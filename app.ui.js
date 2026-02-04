@@ -1258,10 +1258,36 @@ function resolveArtistId(param) {
   const raw = String(param || "").trim();
   if (!raw || !w) return "";
   if (w.artistFirstEl?.has(raw)) return raw;
+
   const target = raw.toLowerCase();
+  const stripSuffix = (value) => String(value || "").replace(/-[a-f0-9]{6}$/i, "");
+  const targetBase = stripSuffix(target);
+
   for (const [id, slug] of w.artistSlugMap.entries()) {
-    if (String(slug || "").toLowerCase() === target) return id;
+    const normalized = String(slug || "").toLowerCase();
+    if (normalized === target) return id;
   }
+
+  if (targetBase && targetBase !== target) {
+    let match = "";
+    for (const [id, slug] of w.artistSlugMap.entries()) {
+      if (stripSuffix(String(slug || "").toLowerCase()) === targetBase) {
+        if (match) return "";
+        match = id;
+      }
+    }
+    if (match) return match;
+  }
+
+  for (const [id, slots] of w.artistSlots.entries()) {
+    const slot = slots[0] || {};
+    const nameSlug = slugifyArtist(getArtistName(id, slot));
+    if (String(nameSlug || "").toLowerCase() === target) return id;
+    if (targetBase && String(nameSlug || "").toLowerCase() === targetBase) return id;
+    const normalizedSlug = slugifyArtist(slot.artistNormalized || slot.artist || "");
+    if (String(normalizedSlug || "").toLowerCase() === target) return id;
+  }
+
   return "";
 }
 

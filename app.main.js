@@ -134,8 +134,15 @@ async function init() {
 
   const artistParam = getQueryParam("artist");
   if (artistParam) {
-    const id = resolveArtistId(artistParam);
-    if (id) setTimeout(() => scrollToArtist(id), 60);
+    const tryScroll = (attempt = 0) => {
+      const id = resolveArtistId(artistParam);
+      if (id) {
+        setTimeout(() => scrollToArtist(id), 60);
+        return;
+      }
+      if (attempt < 10) runIdle(() => tryScroll(attempt + 1), { timeout: 400 });
+    };
+    tryScroll();
   }
 }
 
