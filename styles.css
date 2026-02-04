@@ -377,7 +377,7 @@ button{
 .changesBox{margin:10px 0 14px}
 /* CLS stabilization */
 #changesBox{
-  min-height: 140px;
+  min-height: 260px;
 }
 #changesBox[hidden]{
   display:block;
@@ -997,6 +997,9 @@ button{
 .favEmptyPreviewTitle{color:var(--text);font-weight:700}
 .favEmptyPreviewDay{color:var(--muted);font-weight:600}
 .favEmptyPreviewList{display:flex;flex-direction:column;gap:4px}
+#favoritesList{
+  min-height: 260px;
+}
 
 .btn{
   display:inline-flex;
@@ -1344,6 +1347,8 @@ body.menuOpen{
   .ratingSegmented{justify-content:flex-start}
 
   .pill{max-width: 100%;}
+  #changesBox{min-height: 220px;}
+  #favoritesList{min-height: 220px;}
 }
 
 @media (max-width: 720px){
