@@ -168,6 +168,7 @@ Use these quick checks after changes (especially Service Worker updates):
 1) Online load
    - App loads without console errors.
    - Snapshot dropdown populates.
+   - `/dist/app.bundle.min.js` and `/dist/styles.min.css` return 200.
 
 2) Offline fallback
    - Open the app once, then go offline and refresh.
