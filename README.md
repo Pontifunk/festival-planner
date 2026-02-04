@@ -109,7 +109,23 @@ The app is designed for static hosting and works out of the box on:
 - GitHub Pages
 - Any static web server
 
-No build step required.
+## Build (optional, recommended for production)
+
+This repo includes a minimal esbuild pipeline for production assets.
+
+- Install deps: `npm install`
+- Build: `npm run build`
+
+Outputs:
+- `dist/app.bundle.min.js`
+- `dist/styles.min.css`
+
+The HTML entry points reference the `/dist` assets in production.
+
+## GitHub Pages
+
+Deployment is handled via GitHub Actions (Pages). The workflow builds and
+publishes the full site bundle (including `/dist`) on each push to `main`.
 
 ---
 
