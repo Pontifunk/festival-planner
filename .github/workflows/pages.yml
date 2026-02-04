@@ -32,6 +32,17 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Prepare site bundle
+        run: |
+          set -euxo pipefail
+          rm -rf dist-site
+          mkdir -p dist-site
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude 'dist-site' \
+            ./ dist-site/
+
       - name: Prepare artifact
         run: |
           rm -rf node_modules
@@ -39,7 +50,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist-site
 
   deploy:
     needs: build
