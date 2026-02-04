@@ -286,13 +286,17 @@ button{
   border:1px solid var(--border);
   background:linear-gradient(180deg, rgba(107,92,255,.10), rgba(255,255,255,.02));
   margin-bottom:12px;
+  min-height: 150px;
+}
+.introContent{
+  min-height: 120px;
 }
 #mobileControlsAnchor,
 #mobileExportAnchor{
   min-height: 0;
 }
 #controlsCard{
-  min-height: 180px;
+  min-height: 220px;
 }
 #plannerExportBox{
   min-height: 220px;
@@ -1360,8 +1364,10 @@ body.menuOpen{
   .subtitle{max-width: unset}
   /* CLS stabilization: 4 stacked controls on mobile */
   .toolbar{min-height: calc((var(--ctrl-min-h) * 4) + 36px);}
-  #mobileControlsAnchor{min-height: 200px;}
-  #mobileExportAnchor{min-height: 260px;}
+  #mobileControlsAnchor{min-height: 240px;}
+  #mobileExportAnchor{min-height: 300px;}
+  .introCard{min-height: 170px;}
+  .introContent{min-height: 140px;}
   :root{--act-min-h: 140px;}
 
   .topbar{align-items:flex-start}
