@@ -1567,6 +1567,7 @@ function updatePlayDefaultUI() {
 function initCustomSelect(selectEl) {
   if (!selectEl || selectEl.dataset.customReady) return;
   selectEl.dataset.customReady = "true";
+  selectEl.classList.add("isHidden");
   selectEl.tabIndex = -1;
   selectEl.setAttribute("aria-hidden", "true");
 

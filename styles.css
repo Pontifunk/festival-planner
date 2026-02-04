@@ -133,6 +133,14 @@ button{
 
 /* custom select (premium, cross-OS) */
 .selectNative{
+  /* keep native selects visible until JS swaps in custom UI */
+  position:relative;
+  width:100%;
+  height:auto;
+  opacity:1;
+  pointer-events:auto;
+}
+.selectNative.isHidden{
   position:absolute;
   width:1px;
   height:1px;
