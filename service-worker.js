@@ -8,16 +8,8 @@ const withBase = (path) => path;
 const CORE_ASSETS = [
   "/",
   "/index.html",
-  "/styles.css",
-  "/app.util.js",
-  "/app.config.js",
-  "/app.i18n.js",
-  "/app.routing.js",
-  "/app.state.js",
-  "/app.store.js",
-  "/app.data.js",
-  "/app.ui.js",
-  "/app.main.js",
+  "/dist/styles.min.css",
+  "/dist/app.bundle.min.js",
   "/manifest.webmanifest",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
@@ -121,32 +113,21 @@ async function staleWhileRevalidate(request) {
   return cached || network || new Response("", { status: 504, statusText: "Offline" });
 }
 
-// Route requests through the chosen caching strategy.
 self.addEventListener("fetch", (event) => {
-  const req = event.request;
-  const url = new URL(req.url);
+  const { request } = event;
+  const url = new URL(request.url);
 
-  if (url.origin !== self.location.origin) return;
-  if (req.method !== "GET") return;
-
-  if (isHtmlRequest(req)) {
-    event.respondWith(networkFirst(req, true));
+  if (isHtmlRequest(request)) {
+    event.respondWith(networkFirst(request, true));
     return;
   }
 
   if (isJsonRequest(url)) {
-    event.respondWith(networkFirst(req));
+    event.respondWith(networkFirst(request));
     return;
   }
 
-  if (isStaticAssetRequest(req, url)) {
-    event.respondWith(staleWhileRevalidate(req));
-    return;
+  if (isStaticAssetRequest(request, url)) {
+    event.respondWith(staleWhileRevalidate(request));
   }
-
-  event.respondWith(staleWhileRevalidate(req));
 });
-
-
-
-

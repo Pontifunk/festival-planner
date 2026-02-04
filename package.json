@@ -1,0 +1,12 @@
+{
+  "name": "festival-planner",
+  "private": true,
+  "version": "0.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.2"
+  }
+}
