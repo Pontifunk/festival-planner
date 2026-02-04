@@ -261,6 +261,9 @@ button{
 }
 
 .side{display:flex;flex-direction:column;gap:12px}
+.panel.side{
+  min-height: 980px;
+}
 .side .card{padding:12px}
 .side .cardTitle{margin-bottom:8px}
 .introCard{
@@ -385,7 +388,7 @@ button{
 .changesBox{margin:10px 0 14px}
 /* CLS stabilization */
 #changesBox{
-  min-height: 260px;
+  min-height: 300px;
 }
 #changesBox[hidden]{
   display:block;
@@ -505,6 +508,9 @@ button{
   justify-content:space-between;
   gap:12px;
   margin:8px 0 10px;
+}
+.weekendHeader .ctrl{
+  min-height: var(--ctrl-min-h);
 }
 .weekendTitle{font-weight:900;font-size:18px}
 .weekendMeta{color:var(--muted);font-size:12px;margin-bottom:8px}
@@ -1006,7 +1012,11 @@ button{
 .favEmptyPreviewDay{color:var(--muted);font-weight:600}
 .favEmptyPreviewList{display:flex;flex-direction:column;gap:4px}
 #favoritesList{
-  min-height: 260px;
+  min-height: 420px;
+}
+#favoritesPlanNote[hidden]{
+  display:block;
+  visibility:hidden;
 }
 
 .btn{
@@ -1355,8 +1365,9 @@ body.menuOpen{
   .ratingSegmented{justify-content:flex-start}
 
   .pill{max-width: 100%;}
-  #changesBox{min-height: 220px;}
-  #favoritesList{min-height: 220px;}
+  .panel.side{min-height: 780px;}
+  #changesBox{min-height: 240px;}
+  #favoritesList{min-height: 320px;}
 }
 
 @media (max-width: 720px){
