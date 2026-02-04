@@ -179,18 +179,7 @@ function renderArtistPage({ artist, weekend, slug }) {
   <meta name="twitter:title" content="${escapeHtml(title)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
   <meta name="twitter:image" content="${SITE_ORIGIN}/icons/og.png">
-  <script>
-    (function () {
-      var parts = location.pathname.split("/").filter(Boolean);
-      var baseParts = parts.length >= 5 ? parts.slice(0, parts.length - 5) : parts;
-      var basePath = "/" + baseParts.join("/");
-      if (!basePath.endsWith("/")) basePath += "/";
-      var baseEl = document.createElement("base");
-      baseEl.href = basePath;
-      document.head.appendChild(baseEl);
-    })();
-  </script>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <script type="application/ld+json">
     ${JSON.stringify(jsonLd)}
   </script>
@@ -260,7 +249,7 @@ function renderArtistPage({ artist, weekend, slug }) {
     window.state = { festival: "${escapeHtml(FESTIVAL)}", year: "${escapeHtml(YEAR)}" };
     window.ratings = {};
   </script>
-  <script src="app.store.js"></script>
+  <script src="/app.store.js"></script>
   <script>
     (function () {
       var artistName = ${JSON.stringify(String(artist.name || ""))};
