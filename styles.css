@@ -291,6 +291,12 @@ button{
 #mobileExportAnchor{
   min-height: 0;
 }
+#controlsCard{
+  min-height: 180px;
+}
+#plannerExportBox{
+  min-height: 220px;
+}
 
 /* Mobile menu trigger */
 .menuBtn{
@@ -1354,8 +1360,8 @@ body.menuOpen{
   .subtitle{max-width: unset}
   /* CLS stabilization: 4 stacked controls on mobile */
   .toolbar{min-height: calc((var(--ctrl-min-h) * 4) + 36px);}
-  #mobileControlsAnchor{min-height: 150px;}
-  #mobileExportAnchor{min-height: 220px;}
+  #mobileControlsAnchor{min-height: 200px;}
+  #mobileExportAnchor{min-height: 260px;}
   :root{--act-min-h: 140px;}
 
   .topbar{align-items:flex-start}
