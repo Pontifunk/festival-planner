@@ -74,16 +74,62 @@ function renderWeekend(weekend) {
 
   bindSlotInteractions(container, weekend);
 
-  const html = grouped.map(group => renderDayGroup(group, weekend, openState)).join("");
-  if (renderTokens[weekend] !== token) return;
-  container.setAttribute("aria-busy", "false");
-  container.classList.remove("isSkeleton");
-  container.innerHTML = html;
-  renderPending[weekend] = false;
-  runIdle(() => {
+  const isMobile = window.matchMedia("(max-width: 720px)").matches;
+  const targetSlotsPerFrame = isMobile ? 40 : 80;
+  let index = 0;
+  let cleared = false;
+
+  const reserveSkeletonHeight = () => {
+    if (!container.classList.contains("isSkeleton")) return;
+    const h = Math.ceil(container.getBoundingClientRect().height);
+    if (h) container.style.minHeight = `${h}px`;
+  };
+
+  const clearForRender = () => {
+    if (cleared) return;
+    reserveSkeletonHeight();
+    container.classList.remove("isSkeleton");
+    container.innerHTML = "";
+    container.setAttribute("aria-busy", "true");
+    cleared = true;
+  };
+
+  const renderChunk = () => {
     if (renderTokens[weekend] !== token) return;
-    indexArtistElements(container, weekend);
-  });
+    clearForRender();
+    if (index >= grouped.length) {
+      container.setAttribute("aria-busy", "false");
+      container.style.minHeight = "";
+      renderPending[weekend] = false;
+      runIdle(() => {
+        if (renderTokens[weekend] !== token) return;
+        indexArtistElements(container, weekend);
+      });
+      return;
+    }
+
+    let slotsCount = 0;
+    const start = index;
+    while (index < grouped.length) {
+      const group = grouped[index];
+      const groupSlots = group.stages.reduce((sum, stage) => sum + stage.slots.length, 0);
+      if (index > start && slotsCount + groupSlots > targetSlotsPerFrame) break;
+      slotsCount += groupSlots;
+      index += 1;
+      if (slotsCount >= targetSlotsPerFrame) break;
+    }
+
+    const slice = grouped.slice(start, index);
+    const html = slice.map(group => renderDayGroup(group, weekend, openState)).join("");
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+    const frag = document.createDocumentFragment();
+    while (temp.firstChild) frag.appendChild(temp.firstChild);
+    container.appendChild(frag);
+    requestAnimationFrame(renderChunk);
+  };
+
+  requestAnimationFrame(renderChunk);
 }
 
 // Renders a day group with stage accordions.
