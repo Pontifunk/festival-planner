@@ -346,8 +346,19 @@ button{
 }
 .introContent{display:flex;flex-direction:column;gap:6px;max-width:900px}
 .introTitle{font-size:16px;font-weight:900;letter-spacing:.2px}
-.introSubtitle{color:var(--text);font-size:13px;line-height:1.5}
-.introOnboarding{font-size:12px}
+.introTitle{
+  min-height: 22px;
+}
+.introSubtitle{
+  color:var(--text);
+  font-size:13px;
+  line-height:1.5;
+  min-height: 40px;
+}
+.introOnboarding{
+  font-size:12px;
+  min-height: 28px;
+}
 
 .toolbar{display:flex;gap:10px;align-items:flex-end;margin:10px 0 14px;flex-wrap:wrap}
 .toolbar{
@@ -1367,7 +1378,10 @@ body.menuOpen{
   #mobileControlsAnchor{min-height: 240px;}
   #mobileExportAnchor{min-height: 300px;}
   .introCard{min-height: 170px;}
-  .introContent{min-height: 140px;}
+  .introContent{min-height: 160px;}
+  .introTitle{min-height: 26px;}
+  .introSubtitle{min-height: 52px;}
+  .introOnboarding{min-height: 36px;}
   :root{--act-min-h: 140px;}
 
   .topbar{align-items:flex-start}
