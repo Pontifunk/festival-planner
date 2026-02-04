@@ -102,7 +102,6 @@ async function init() {
   ensureCanonicalUrl();
 
   bindUi();
-  setupTopbarHeight();
   setupMobileControlsPlacement();
   setupMobileExportPlacement();
 

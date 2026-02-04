@@ -1514,20 +1514,6 @@ function positionPlayOverlay(trigger) {
   }
 }
 
-// Syncs a CSS var with the current topbar height (for fixed layout padding).
-function setupTopbarHeight() {
-  if (!topbar) return;
-  const update = () => {
-    const h = Math.ceil(topbar.getBoundingClientRect().height);
-    document.documentElement.style.setProperty("--topbar-h", `${h}px`);
-  };
-  update();
-  window.addEventListener("resize", update);
-  if (document.fonts && typeof document.fonts.addEventListener === "function") {
-    document.fonts.addEventListener("loadingdone", update);
-  }
-}
-
 // Moves the controls card for mobile layout changes.
 function setupMobileControlsPlacement() {
   if (!controlsCard || !mobileControlsAnchor) return;
