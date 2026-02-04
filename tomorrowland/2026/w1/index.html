@@ -63,8 +63,9 @@
     @media (max-width: 720px){:root{--topbar-h:calc(128px + env(safe-area-inset-top))}}
   </style>
 
-  <!-- App styles (non-blocking) -->
-  <link rel="preload" as="style" href="/dist/styles.min.css" onload="this.onload=null;this.rel='stylesheet'">
+  <!-- App styles (preload + guaranteed apply on bfcache restores) -->
+  <link rel="preload" as="style" href="/dist/styles.min.css">
+  <link rel="stylesheet" href="/dist/styles.min.css">
   <noscript><link rel="stylesheet" href="/dist/styles.min.css"></noscript>
 </head>
 
