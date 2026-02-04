@@ -1,6 +1,6 @@
 // Cache versioning to bust old assets when app changes.
 const BUILD_ID = "86da35b+deployfix1";
-const CACHE_NAME = `fp-cache-${BUILD_ID || "dev"}`;
+const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 // Assets are served from the site root.
 const withBase = (path) => path;
 
@@ -57,8 +57,13 @@ function isHtmlRequest(req) {
 }
 
 // Detect JSON data requests (lineup snapshots, i18n).
-function isJsonRequest(url) {
-  return url.pathname.endsWith(".json");
+function isDataJsonRequest(url) {
+  return url.pathname.startsWith("/data/") && url.pathname.endsWith(".json");
+}
+
+// Detect static assets for cache-first shell.
+function isAppShellRequest(url) {
+  return CORE_ASSETS.includes(url.pathname) || CORE_ASSETS.includes(url.pathname + "/");
 }
 
 // Detect static assets for stale-while-revalidate.
@@ -81,16 +86,16 @@ async function cacheResponse(cache, request, response) {
   await cache.put(request, response);
 }
 
-// Network-first strategy for HTML/JSON; fall back to cache and shell.
-async function networkFirst(request, fallbackToIndex = false) {
+// Cache-first strategy with network fallback.
+async function cacheFirst(request, fallbackToIndex = false) {
   const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
+  if (cached) return cached;
   try {
     const response = await fetch(request);
     await cacheResponse(cache, request, response.clone());
     return response;
   } catch {
-    const cached = await cache.match(request);
-    if (cached) return cached;
     if (fallbackToIndex) {
       const shell = await cache.match("/index.html");
       if (shell) return shell;
@@ -99,7 +104,7 @@ async function networkFirst(request, fallbackToIndex = false) {
   }
 }
 
-// Stale-while-revalidate for static assets.
+// Stale-while-revalidate for data and static assets.
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
@@ -118,12 +123,17 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
 
   if (isHtmlRequest(request)) {
-    event.respondWith(networkFirst(request, true));
+    event.respondWith(cacheFirst(request, true));
     return;
   }
 
-  if (isJsonRequest(url)) {
-    event.respondWith(networkFirst(request));
+  if (isDataJsonRequest(url)) {
+    event.respondWith(staleWhileRevalidate(request));
+    return;
+  }
+
+  if (isAppShellRequest(url)) {
+    event.respondWith(cacheFirst(request));
     return;
   }
 
