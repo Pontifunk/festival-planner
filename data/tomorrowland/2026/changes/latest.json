@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-02-03T07:11:38.298Z",
+    "createdAt": "2026-02-04T07:11:34.405Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260202_071746Z_W1.json",
-        "to": "20260203_071102Z_W1.json",
-        "createdAt": "2026-02-03T07:11:38.298Z",
+        "from": "20260203_071102Z_W1.json",
+        "to": "20260204_071103Z_W1.json",
+        "createdAt": "2026-02-04T07:11:34.405Z",
         "version": 1
       },
       "summary": {
@@ -25,37 +25,19 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260202_071746Z_W2.json",
-        "to": "20260203_071102Z_W2.json",
-        "createdAt": "2026-02-03T07:11:38.298Z",
+        "from": "20260203_071102Z_W2.json",
+        "to": "20260204_071103Z_W2.json",
+        "createdAt": "2026-02-04T07:11:34.405Z",
         "version": 1
       },
       "summary": {
-        "added": 1,
-        "removed": 1,
-        "replaced": 1
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "f65e38feb37b1b35"
-      ],
-      "removed": [
-        "0c2224a9853b5846"
-      ],
-      "replaced": [
-        {
-          "positionId": "defd885c9f86bfdd",
-          "from": {
-            "slotId": "0c2224a9853b5846",
-            "artistId": "69214bf7bdd274f9",
-            "artist": "Bou"
-          },
-          "to": {
-            "slotId": "f65e38feb37b1b35",
-            "artistId": "170a0a9e533f3f42",
-            "artist": "BOU + B LIVE 247"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     }
   }
 }

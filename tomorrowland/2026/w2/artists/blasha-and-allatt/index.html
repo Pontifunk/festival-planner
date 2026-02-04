@@ -17,7 +17,18 @@
   <meta name="twitter:title" content="Blasha &amp; Allatt - Tomorrowland 2026 (Weekend 2) | Festival Planner">
   <meta name="twitter:description" content="Offline planning for Tomorrowland 2026 Weekend 2. No account, no tracking.">
   <meta name="twitter:image" content="https://festival-planner.org/icons/og.png">
-<link rel="stylesheet" href="/styles.css">
+  <script>
+    (function () {
+      var parts = location.pathname.split("/").filter(Boolean);
+      var baseParts = parts.length >= 5 ? parts.slice(0, parts.length - 5) : parts;
+      var basePath = "/" + baseParts.join("/");
+      if (!basePath.endsWith("/")) basePath += "/";
+      var baseEl = document.createElement("base");
+      baseEl.href = basePath;
+      document.head.appendChild(baseEl);
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css">
   <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"MusicGroup","name":"Blasha & Allatt","performerIn":{"@type":"Event","name":"Tomorrowland 2026 Weekend 2","startDate":"2026-07-26 12:00:00+02:00"}}
   </script>
@@ -87,7 +98,7 @@
     window.state = { festival: "tomorrowland", year: "2026" };
     window.ratings = {};
   </script>
-  <script src="/app.store.js"></script>
+  <script src="app.store.js"></script>
   <script>
     (function () {
       var artistName = "Blasha & Allatt";
