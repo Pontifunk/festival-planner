@@ -21,6 +21,7 @@
   --tap: 44px; /* minimum tap target-ish */
   --topbar-h: calc(72px + env(safe-area-inset-top));
   --ctrl-min-h: calc(var(--tap) + 22px);
+  --act-min-h: 96px;
 }
 
 /* Global resets */
@@ -313,6 +314,10 @@ button{
 .introOnboarding{font-size:12px}
 
 .toolbar{display:flex;gap:10px;align-items:flex-end;margin:10px 0 14px;flex-wrap:wrap}
+.toolbar{
+  /* CLS stabilization: reserve room for the control row */
+  min-height: calc(var(--ctrl-min-h) + 18px);
+}
 .toolbar .ctrl{min-width:140px}
 .toolbar .searchCtrl{flex:1 1 260px}
 .toolbar .searchCtrl input{width:100%}
@@ -480,7 +485,11 @@ button{
 }
 
 .weekendPanel{display:none}
-.weekendPanel.isActive{display:block}
+.weekendPanel.isActive{
+  display:block;
+  content-visibility:auto;
+  contain-intrinsic-size: 1200px 800px;
+}
 
 .weekendHeader{
   display:flex;
@@ -518,7 +527,13 @@ button{
   gap:10px;
 }
 .dayTitle{font-weight:900;font-size:15px}
-.dayCount{font-size:12px;color:var(--muted)}
+.dayCount{
+  font-size:12px;
+  color:var(--muted);
+  min-width:42px;
+  text-align:right;
+  display:inline-block;
+}
 .daySummaryMeta{
   display:flex;
   align-items:center;
@@ -576,7 +591,13 @@ button{
   padding:2px 8px;
   background:rgba(255,255,255,.04);
 }
-.stageCount{font-size:12px;color:var(--muted)}
+.stageCount{
+  font-size:12px;
+  color:var(--muted);
+  min-width:36px;
+  text-align:right;
+  display:inline-block;
+}
 .stageChevron{
   width:8px;height:8px;
   border-right:2px solid var(--muted);
@@ -595,7 +616,17 @@ button{
 }
 
 /* ===== LIST / ACT ===== */
-.list{display:flex;flex-direction:column;gap:10px}
+.list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  content-visibility:auto;
+  contain-intrinsic-size: 1200px 800px;
+}
+
+.list.isSkeleton{
+  gap:12px;
+}
 
 .act{
   display:flex;
@@ -606,6 +637,39 @@ button{
   border-radius:14px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.04);
+  min-height: var(--act-min-h);
+}
+
+.act.skeleton{
+  background:rgba(255,255,255,.03);
+}
+
+.skeletonMain{
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:4px 0;
+}
+
+.skeletonLine{
+  height:12px;
+  border-radius:8px;
+  background:rgba(255,255,255,.10);
+}
+
+.skeletonTitle{width:60%}
+.skeletonMeta{width:40%}
+
+.skeletonBadges{
+  min-width: 160px;
+}
+
+.skeletonPill{
+  height:22px;
+  width:88px;
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
 }
 
 .act:hover{background:rgba(255,255,255,.06)}
@@ -633,6 +697,8 @@ button{
   color:var(--muted);
   font-weight:900;
   white-space:nowrap;
+  min-width:84px;
+  text-align:center;
 }
 .badge.ok{border-color:rgba(86,210,155,.35);color:var(--ok);background:rgba(86,210,155,.10)}
 .badge.warn{border-color:rgba(242,201,76,.35);color:var(--warn);background:rgba(242,201,76,.10)}
@@ -649,6 +715,7 @@ button{
   border:1px solid var(--border);
   border-radius:12px;
   background:rgba(255,255,255,.04);
+  min-height: 56px;
 }
 .inlineToggle{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .inlineToggleBtn{
@@ -857,6 +924,8 @@ button{
   border:1px solid var(--border);
   border-radius:var(--radius);
   padding:14px;
+  content-visibility:auto;
+  contain-intrinsic-size: 260px 180px;
 }
 .cardTitle{font-weight:900;margin-bottom:10px}
 .muted{color:var(--muted);font-size:13px;line-height:1.4}
@@ -1237,6 +1306,7 @@ body.menuOpen{
 @media (max-width: 980px){
   .layout{grid-template-columns: 1fr}
   .subtitle{max-width: unset}
+  :root{--act-min-h: 140px;}
 
   .topbar{align-items:flex-start}
   .brand{min-width: unset}
@@ -1252,6 +1322,12 @@ body.menuOpen{
     align-items:flex-start;
     min-width: unset;
     width: 100%;
+  }
+  .skeletonBadges{
+    width:100%;
+  }
+  .skeletonPill{
+    width:110px;
   }
 
   .inlineFavoritesBar{
@@ -1272,6 +1348,7 @@ body.menuOpen{
   .topbar{padding:calc(12px + env(safe-area-inset-top)) 12px 12px;gap:10px}
   .controls{width:100%;grid-template-columns:1fr;justify-content:flex-start}
   .controls .ctrl{width:100%}
+  .toolbar{min-height: 220px;}
   .layout{padding:calc(10px + var(--topbar-h, 72px)) calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left))}
   .panel{padding:12px}
   .weekendHeader{flex-direction:column;align-items:flex-start}

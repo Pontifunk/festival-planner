@@ -406,19 +406,19 @@ function bindUi() {
       openPlayOverlay(btn.getAttribute("data-artist") || "", btn);
     }, 550);
     playPressState.set(btn, state);
-  });
+  }, { passive: true });
 
   document.addEventListener("pointerup", (e) => {
     const btn = e.target.closest(".playBtn");
     if (!btn) return;
     clearPlayPress(btn);
-  });
+  }, { passive: true });
 
   document.addEventListener("pointercancel", (e) => {
     const btn = e.target.closest(".playBtn");
     if (!btn) return;
     clearPlayPress(btn);
-  });
+  }, { passive: true });
 
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".playBtn");

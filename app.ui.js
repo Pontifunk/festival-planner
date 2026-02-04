@@ -18,6 +18,24 @@ function renderActiveWeekend() {
 const renderTokens = { W1: 0, W2: 0 };
 const renderPending = { W1: false, W2: false };
 
+const SKELETON_ROWS = 8;
+
+function renderSkeletonList(count = SKELETON_ROWS) {
+  const rows = Array.from({ length: count }, () => `
+    <div class="act skeleton" aria-hidden="true">
+      <div class="skeletonMain">
+        <div class="skeletonLine skeletonTitle"></div>
+        <div class="skeletonLine skeletonMeta"></div>
+      </div>
+      <div class="badges skeletonBadges">
+        <div class="skeletonPill"></div>
+        <div class="skeletonPill"></div>
+      </div>
+    </div>
+  `).join("");
+  return rows;
+}
+
 // Builds the day/stage list for a weekend and injects HTML.
 function renderWeekend(weekend) {
   const w = state.weekends[weekend];
@@ -26,12 +44,16 @@ function renderWeekend(weekend) {
 
   if (w.error) {
     container.innerHTML = `<div class="muted">${escapeHtml(w.error)}</div>`;
+    container.classList.remove("isSkeleton");
+    container.setAttribute("aria-busy", "false");
     renderPending[weekend] = false;
     return;
   }
 
   if (!w.snapshot || !Array.isArray(w.snapshot.slots)) {
-    container.innerHTML = `<div class="muted">${escapeHtml(t("no_data_available") || "No data available.")}</div>`;
+    container.setAttribute("aria-busy", "true");
+    container.classList.add("isSkeleton");
+    container.innerHTML = renderSkeletonList();
     renderPending[weekend] = false;
     return;
   }
@@ -49,31 +71,19 @@ function renderWeekend(weekend) {
   w.artistFirstEl = new Map();
   renderPending[weekend] = true;
   const token = ++renderTokens[weekend];
-  const chunkSize = grouped.length > 6 ? 2 : (grouped.length > 3 ? 2 : grouped.length);
 
   bindSlotInteractions(container, weekend);
 
-  const renderChunk = (start) => {
+  const html = grouped.map(group => renderDayGroup(group, weekend, openState)).join("");
+  if (renderTokens[weekend] !== token) return;
+  container.setAttribute("aria-busy", "false");
+  container.classList.remove("isSkeleton");
+  container.innerHTML = html;
+  renderPending[weekend] = false;
+  runIdle(() => {
     if (renderTokens[weekend] !== token) return;
-    const slice = grouped.slice(start, start + chunkSize);
-    if (!slice.length) {
-      renderPending[weekend] = false;
-      runIdle(() => {
-        if (renderTokens[weekend] !== token) return;
-        indexArtistElements(container, weekend);
-      });
-      return;
-    }
-    const html = slice.map(group => renderDayGroup(group, weekend, openState)).join("");
-    if (start === 0) {
-      container.innerHTML = html;
-    } else {
-      container.insertAdjacentHTML("beforeend", html);
-    }
-    runIdle(() => renderChunk(start + chunkSize));
-  };
-
-  renderChunk(0);
+    indexArtistElements(container, weekend);
+  });
 }
 
 // Renders a day group with stage accordions.
