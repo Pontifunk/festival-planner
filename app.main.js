@@ -101,10 +101,15 @@ async function init() {
   normalizeUrlIfNeeded();
   ensureCanonicalUrl();
 
+  const perfDebug = shouldDebugCls();
+  const logPerf = (...args) => {
+    if (!perfDebug) return;
+    console.info("[perf]", ...args);
+  };
+
   bindUi();
   setupMobileControlsPlacement();
   setupMobileExportPlacement();
-  if (document?.body) document.body.classList.add("jsReady");
 
   try {
     await Promise.all([
@@ -113,6 +118,7 @@ async function init() {
       loadChangesIndex(),
       loadWeekendChanges()
     ]);
+    logPerf("base-data-ready");
   } catch (e) {
     showError(t("base_data_load_error") || "Error loading base data.");
   }
@@ -120,6 +126,7 @@ async function init() {
   ratings = await dbGetAll(makeDbKeyPrefix(state));
 
   await loadSnapshotForWeekend(state.activeWeekend);
+  logPerf("active-weekend-snapshot-ready", state.activeWeekend);
 
   setDefaultSelectedChanges();
   renderWeekendChangesBox();
