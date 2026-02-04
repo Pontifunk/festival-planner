@@ -1520,9 +1520,14 @@ function setupMobileControlsPlacement() {
   const originalParent = controlsCard.parentNode;
   const originalNext = controlsCard.nextSibling;
   const mq = window.matchMedia("(max-width: 980px)");
+  const getViewportWidth = () => {
+    const vv = window.visualViewport?.width;
+    const w = typeof vv === "number" ? vv : window.innerWidth;
+    return typeof w === "number" ? w : 0;
+  };
 
   const applyPlacement = () => {
-    if (mq.matches) {
+    if (getViewportWidth() <= 980) {
       const anchorParent = mobileControlsAnchor.parentNode;
       if (controlsCard.parentNode !== anchorParent) {
         const next = mobileControlsAnchor.nextSibling;
@@ -1544,10 +1549,15 @@ function setupMobileControlsPlacement() {
   };
 
   applyPlacement();
+  const onResize = () => applyPlacement();
   if (typeof mq.addEventListener === "function") {
     mq.addEventListener("change", applyPlacement);
   } else if (typeof mq.addListener === "function") {
     mq.addListener(applyPlacement);
+  }
+  window.addEventListener("resize", onResize, { passive: true });
+  if (window.visualViewport?.addEventListener) {
+    window.visualViewport.addEventListener("resize", onResize, { passive: true });
   }
 }
 
