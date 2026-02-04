@@ -403,6 +403,9 @@ button{
   min-height: var(--tap);
 }
 .activeFilters[hidden]{
+  display:none;
+}
+body:not(.jsReady) .activeFilters[hidden]{
   /* CLS stabilization: keep space when empty on first paint */
   display:flex;
   visibility:hidden;
@@ -443,10 +446,10 @@ button{
 /* ===== CHANGES / SEARCH ===== */
 .changesBox{margin:10px 0 14px}
 /* CLS stabilization */
-#changesBox{
+body:not(.jsReady) #changesBox{
   min-height: 300px;
 }
-#changesBox[hidden]{
+body:not(.jsReady) #changesBox[hidden]{
   display:block;
   visibility:hidden;
 }
@@ -1410,8 +1413,8 @@ body.menuOpen{
   .subtitle{max-width: unset}
   /* CLS stabilization: 4 stacked controls on mobile */
   .toolbar{min-height: calc((var(--ctrl-min-h) * 4) + 36px);}
-  #mobileControlsAnchor{min-height: 240px;}
-  #mobileExportAnchor{min-height: 300px;}
+  body:not(.jsReady) #mobileControlsAnchor{min-height: 240px;}
+  body:not(.jsReady) #mobileExportAnchor{min-height: 300px;}
   .introCard{min-height: 220px;}
   .introContent{min-height: 190px;}
   .introTitle{min-height: 28px;}

@@ -104,6 +104,7 @@ async function init() {
   bindUi();
   setupMobileControlsPlacement();
   setupMobileExportPlacement();
+  if (document?.body) document.body.classList.add("jsReady");
 
   try {
     await Promise.all([
