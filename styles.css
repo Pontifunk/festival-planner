@@ -287,6 +287,10 @@ button{
   background:linear-gradient(180deg, rgba(107,92,255,.10), rgba(255,255,255,.02));
   margin-bottom:12px;
 }
+#mobileControlsAnchor,
+#mobileExportAnchor{
+  min-height: 0;
+}
 
 /* Mobile menu trigger */
 .menuBtn{
@@ -1340,6 +1344,8 @@ body.menuOpen{
   .subtitle{max-width: unset}
   /* CLS stabilization: 4 stacked controls on mobile */
   .toolbar{min-height: calc((var(--ctrl-min-h) * 4) + 36px);}
+  #mobileControlsAnchor{min-height: 150px;}
+  #mobileExportAnchor{min-height: 220px;}
   :root{--act-min-h: 140px;}
 
   .topbar{align-items:flex-start}
