@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "commonjs",
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "dev": "node build.js --watch"
   },
   "devDependencies": {
     "esbuild": "^0.20.2"

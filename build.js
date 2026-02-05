@@ -40,7 +40,48 @@ async function build() {
   fs.writeFileSync(path.join(dist, "styles.min.css"), cssResult.code);
 }
 
-build().catch((err) => {
+const watchMode = process.argv.includes("--watch");
+const watchFiles = [...jsFiles, "styles.css"];
+
+let building = false;
+let pending = false;
+let debounceTimer = null;
+
+async function runBuild() {
+  if (building) {
+    pending = true;
+    return;
+  }
+  building = true;
+  try {
+    await build();
+    if (watchMode) {
+      console.info(`[build] ok ${new Date().toLocaleTimeString()}`);
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    building = false;
+    if (pending) {
+      pending = false;
+      runBuild();
+    }
+  }
+}
+
+function scheduleBuild() {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(runBuild, 100);
+}
+
+runBuild().then(() => {
+  if (!watchMode) return;
+  console.info("[watch] waiting for changes...");
+  watchFiles.forEach((file) => {
+    const abs = path.join(root, file);
+    fs.watch(abs, { persistent: true }, scheduleBuild);
+  });
+}).catch((err) => {
   console.error(err);
   process.exit(1);
 });

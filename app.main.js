@@ -402,6 +402,30 @@ function bindUi() {
     });
   }
 
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest(".daySummary .dayLink");
+    if (!link) return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(link.href, "_blank", "noopener,noreferrer");
+  });
+
+  document.addEventListener("pointerdown", (e) => {
+    const link = e.target.closest(".daySummary .dayLink");
+    if (!link) return;
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const link = e.target.closest(".daySummary .dayLink");
+    if (!link) return;
+    e.preventDefault();
+    e.stopPropagation();
+    window.open(link.href, "_blank", "noopener,noreferrer");
+  });
+
   const playPressState = new WeakMap();
 
   const clearPlayPress = (btn) => {
