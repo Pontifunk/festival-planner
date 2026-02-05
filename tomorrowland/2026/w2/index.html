@@ -56,7 +56,7 @@
     .topbar{position:fixed;top:0;left:0;right:0;background:#0b0c12;z-index:100;height:var(--topbar-h);box-sizing:border-box}
     .layout{padding:calc(14px + var(--topbar-h,72px)) 14px}
     .panel{background:#111325;border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:14px}
-    .menuOverlay{position:fixed;inset:0;display:none}
+    .menuOverlay{position:fixed;inset:0}
     .menuOverlay[hidden]{display:none}
     .menuSheet{position:fixed;left:0;right:0;bottom:0;transform:translateY(100%)}
     @media (max-width: 980px){:root{--topbar-h:calc(112px + env(safe-area-inset-top))}}
@@ -268,7 +268,7 @@
       <div class="buildStamp muted" id="buildStamp"></div>
     </aside>
 
-    <section class="seoBlock" aria-labelledby="seoTitleW2">
+    <section class="seoBlock" id="seoBlock" aria-labelledby="seoTitleW2">
       <h2 class="seoTitle" id="seoTitleW2" data-i18n="seo_festival_title">Tomorrowland 2026</h2>
       <h3 class="seoSubtitle" data-i18n="seo_weekend_w2">Wochenende 2</h3>
       <h3 class="seoSubtitle" data-i18n="seo_how_title">So funktioniert's</h3>
@@ -311,6 +311,7 @@
     <div class="menuGroup">
       <div class="menuGroupTitle" data-i18n="menu_info">Info</div>
       <button class="menuItem" data-target="#privacy" type="button" data-i18n="privacy">Datenschutz</button>
+      <button class="menuItem" data-target="#seoBlock" type="button" data-i18n="seo_how_title">So funktioniert's</button>
     </div>
   </aside>
 

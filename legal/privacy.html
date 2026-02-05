@@ -19,8 +19,6 @@
     </div>
     <div class="controls">
       <a class="btn" href="../" data-i18n-key="privacy_back">Zur&uuml;ck</a>
-      <button class="btn" type="button" data-lang-toggle="de" aria-pressed="false" data-i18n-key="lang_de_label" data-i18n-attr="aria-label">DE</button>
-      <button class="btn" type="button" data-lang-toggle="en" aria-pressed="false" data-i18n-key="lang_en_label" data-i18n-attr="aria-label">EN</button>
     </div>
   </header>
 
@@ -54,8 +52,6 @@
     (function () {
       const I18N = {
         de: {
-          lang_de_label: "Deutsch",
-          lang_en_label: "Englisch",
           privacy_title: "Datenschutz \u2013 Festival Planner",
           privacy_subtitle: "Datenschutz",
           privacy_back: "Zur\u00fcck",
@@ -67,8 +63,6 @@
           privacy_p5: "Du kannst alle lokal gespeicherten Daten jederzeit \u00fcber die Browser-Einstellungen l\u00f6schen."
         },
         en: {
-          lang_de_label: "German",
-          lang_en_label: "English",
           privacy_title: "Privacy \u2013 Festival Planner",
           privacy_subtitle: "Privacy",
           privacy_back: "Back",
@@ -86,40 +80,23 @@
       let lang = (params.get("lang") || stored || document.documentElement.lang || "de").toLowerCase();
       if (!I18N[lang]) lang = "de";
 
-      const apply = (next) => {
-        if (!I18N[next]) return;
-        lang = next;
-        document.documentElement.lang = next;
-        localStorage.setItem("fp_lang", next);
-
-        document.querySelectorAll("[data-i18n-key]").forEach((el) => {
-          const key = el.getAttribute("data-i18n-key");
-          const value = I18N[next][key];
-          if (value === undefined) return;
-          const attr = el.getAttribute("data-i18n-attr");
-          if (attr) {
-            el.setAttribute(attr, value);
-            return;
-          }
-          if (el.hasAttribute("data-i18n-html")) {
-            el.innerHTML = value;
-          } else {
-            el.textContent = value;
-          }
-        });
-
-        document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
-          const active = btn.getAttribute("data-lang-toggle") === next;
-          btn.classList.toggle("isActive", active);
-          btn.setAttribute("aria-pressed", active ? "true" : "false");
-        });
-      };
-
-      document.querySelectorAll("[data-lang-toggle]").forEach((btn) => {
-        btn.addEventListener("click", () => apply(btn.getAttribute("data-lang-toggle")));
+      document.documentElement.lang = lang;
+      localStorage.setItem("fp_lang", lang);
+      document.querySelectorAll("[data-i18n-key]").forEach((el) => {
+        const key = el.getAttribute("data-i18n-key");
+        const value = I18N[lang][key];
+        if (value === undefined) return;
+        const attr = el.getAttribute("data-i18n-attr");
+        if (attr) {
+          el.setAttribute(attr, value);
+          return;
+        }
+        if (el.hasAttribute("data-i18n-html")) {
+          el.innerHTML = value;
+        } else {
+          el.textContent = value;
+        }
       });
-
-      apply(lang);
     })();
   </script>
 </body>

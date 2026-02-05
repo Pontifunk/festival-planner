@@ -267,6 +267,13 @@ function tryScrollToArtistFromQuery() {
   if (!artistParam) return;
   resetFiltersForArtistDeepLink();
 
+  const clearArtistParam = () => {
+    const result = stripQueryParam(location.search, "artist");
+    if (result.value === null) return;
+    const nextUrl = `${location.pathname}${result.rest || ""}${location.hash || ""}`;
+    history.replaceState({}, "", nextUrl);
+  };
+
   const tryScroll = (attempt = 0) => {
     const id = resolveArtistId(artistParam);
     const w = state.weekends[state.activeWeekend];
@@ -274,6 +281,7 @@ function tryScrollToArtistFromQuery() {
 
     if (id && hasEl) {
       setTimeout(() => scrollToArtist(id, 0, { suppressError: true }), 60);
+      clearArtistParam();
       return;
     }
 
@@ -284,6 +292,7 @@ function tryScrollToArtistFromQuery() {
 
     if (id) {
       scrollToArtist(id, 0, { suppressError: false });
+      clearArtistParam();
     } else {
       showError(t("artist_not_found") || "Artist im aktuellen Weekend nicht gefunden.");
     }

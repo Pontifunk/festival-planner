@@ -1145,7 +1145,8 @@ button{
   padding:14px;
   border:1px solid var(--border);
   border-radius:14px;
-  background:rgba(255,255,255,.03);
+  background:var(--panel);
+  grid-column:1 / -1;
 }
 .seoTitle{
   margin:0 0 4px;

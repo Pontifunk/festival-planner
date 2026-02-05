@@ -199,7 +199,7 @@ function renderArtistPage({ artist, weekend, slug }) {
     <section class="panel">
       <div class="card">
         <div class="cardTitle">${escapeHtml(artist.name)}</div>
-        <div class="muted" id="artistMeta">Tomorrowland ${YEAR} - Wochenende ${weekendNum}</div>
+        <div class="muted" id="artistMeta" data-i18n="artist_meta">Tomorrowland ${YEAR} - Wochenende ${weekendNum}</div>
         <div style="margin-top:12px">
           <a class="btn" id="backToLineup" href="${escapeHtml(plannerUrl)}" data-i18n="artist_back_to_lineup">Back to line-up</a>
         </div>
@@ -322,18 +322,36 @@ function renderArtistPage({ artist, weekend, slug }) {
         });
       }
 
+      var festivalName = "${FESTIVAL}".replace(/^./, function (m) { return m.toUpperCase(); });
+      var vars = { name: artistName, festival: festivalName, year: "${YEAR}", weekend: "${weekendNum}" };
+
       function applyTranslations(dict) {
         Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
           var key = el.getAttribute("data-i18n");
-          if (key && dict[key]) el.textContent = dict[key];
+          if (!key || !dict[key]) return;
+          var value = dict[key];
+          if (value && value.indexOf("{") !== -1) {
+            value = formatTemplate(value, vars);
+          }
+          el.textContent = value;
         });
         Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-aria-label]"), function (el) {
           var key = el.getAttribute("data-i18n-aria-label");
-          if (key && dict[key]) el.setAttribute("aria-label", dict[key]);
+          if (!key || !dict[key]) return;
+          var value = dict[key];
+          if (value && value.indexOf("{") !== -1) {
+            value = formatTemplate(value, vars);
+          }
+          el.setAttribute("aria-label", value);
         });
         Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-title]"), function (el) {
           var key = el.getAttribute("data-i18n-title");
-          if (key && dict[key]) el.setAttribute("title", dict[key]);
+          if (!key || !dict[key]) return;
+          var value = dict[key];
+          if (value && value.indexOf("{") !== -1) {
+            value = formatTemplate(value, vars);
+          }
+          el.setAttribute("title", value);
         });
       }
 
@@ -347,8 +365,6 @@ function renderArtistPage({ artist, weekend, slug }) {
       loadDict().then(function (dict) {
         applyTranslations(dict);
 
-        var festivalName = "${FESTIVAL}".replace(/^./, function (m) { return m.toUpperCase(); });
-        var vars = { name: artistName, festival: festivalName, year: "${YEAR}", weekend: "${weekendNum}" };
         var titleText = formatTemplate(dict.artist_title || fallback.en.artist_title, vars);
         var descText = formatTemplate(dict.artist_desc || fallback.en.artist_desc, vars);
 
