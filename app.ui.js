@@ -268,11 +268,11 @@ function renderSlot(slot, weekend) {
         </div>
 
         <div class="playRow">
-          <button class="playBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Open play links for ${name}`)}">
+          <button class="playBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(formatTemplate(t("play_open_links") || "Open play links for {name}", { name }))}">
             <span class="playIcon" aria-hidden="true">▶</span>
-            <span class="playText">Play</span>
+            <span class="playText">${escapeHtml(t("play") || "Play")}</span>
           </button>
-          <button class="playMoreBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Choose platform for ${name}`)}">
+          <button class="playMoreBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(formatTemplate(t("play_choose_platform") || "Choose platform for {name}", { name }))}">
             <span class="playMoreIcon" aria-hidden="true">⋯</span>
           </button>
         </div>
@@ -328,11 +328,11 @@ function renderFavorites() {
           <button class="favRemoveBtn" type="button" data-action="removeFavorite" data-artist-id="${escapeAttr(id)}" aria-label="${escapeAttr(removeLabel)}">${escapeHtml(removeLabel)}</button>
         </div>
         <div class="playRow" style="margin-top:8px">
-          <button class="playBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Open play links for ${name}`)}">
+          <button class="playBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(formatTemplate(t("play_open_links") || "Open play links for {name}", { name }))}">
             <span class="playIcon" aria-hidden="true">▶</span>
-            <span class="playText">Play</span>
+            <span class="playText">${escapeHtml(t("play") || "Play")}</span>
           </button>
-          <button class="playMoreBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(`Choose platform for ${name}`)}">
+          <button class="playMoreBtn" type="button" data-artist="${escapeAttr(name)}" aria-label="${escapeAttr(formatTemplate(t("play_choose_platform") || "Choose platform for {name}", { name }))}">
             <span class="playMoreIcon" aria-hidden="true">⋯</span>
           </button>
         </div>
@@ -1316,7 +1316,7 @@ function scrollToArtist(artistId, attempt = 0, opts = {}) {
       return;
     }
     if (!opts.suppressError) {
-      showError("Artist im aktuellen Weekend nicht gefunden.");
+      showError(t("artist_not_found") || "Artist im aktuellen Weekend nicht gefunden.");
     }
     return;
   }
@@ -1380,7 +1380,7 @@ function scrollToSlotId(slotId) {
   const slots = w?.snapshot?.slots || [];
   const slot = slots.find(s => s.slotId === slotId);
   if (!slot) {
-    showError("Slot im aktuellen Weekend nicht gefunden.");
+    showError(t("slot_not_found") || "Slot im aktuellen Weekend nicht gefunden.");
     return;
   }
   clearError();
@@ -1388,7 +1388,7 @@ function scrollToSlotId(slotId) {
   openDetailsForSlot(container, slot);
   const el = document.getElementById(`slot-${weekend}-${slotId}`);
   if (!el) {
-    showError("Act im aktuellen Weekend nicht gefunden.");
+    showError(t("act_not_found") || "Act im aktuellen Weekend nicht gefunden.");
     return;
   }
   el.classList.remove("isTarget");

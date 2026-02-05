@@ -285,7 +285,7 @@ function tryScrollToArtistFromQuery() {
     if (id) {
       scrollToArtist(id, 0, { suppressError: false });
     } else {
-      showError("Artist im aktuellen Weekend nicht gefunden.");
+      showError(t("artist_not_found") || "Artist im aktuellen Weekend nicht gefunden.");
     }
   };
 
