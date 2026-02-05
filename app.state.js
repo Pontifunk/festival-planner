@@ -1,8 +1,10 @@
 ﻿// ====== STATE ======
 const BOOT_CONTEXT = getBootContext();
 const storedLang = localStorage.getItem("fp_lang");
-let lang = storedLang || BOOT_CONTEXT?.lang || "de";
-if (!storedLang && BOOT_CONTEXT?.lang) localStorage.setItem("fp_lang", BOOT_CONTEXT.lang);
+const bootLang = BOOT_CONTEXT?.lang || "";
+const autoLang = (!storedLang && !bootLang) ? detectPreferredLang() : "";
+let lang = storedLang || bootLang || autoLang || "de";
+if (!storedLang && lang) localStorage.setItem("fp_lang", lang);
 let route = ensureRouteDefaults(resolveInitialRoute(location.pathname, BOOT_CONTEXT));
 applySeoFromRoute(route);
 let selectUid = 0;

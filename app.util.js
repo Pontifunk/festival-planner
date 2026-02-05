@@ -68,6 +68,19 @@ function normalizeWeekend(value) {
   return "";
 }
 
+// Detects preferred language: German wins, otherwise English.
+function detectPreferredLang() {
+  if (typeof navigator === "undefined") return "";
+  const list = Array.isArray(navigator.languages) && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language || ""];
+  for (const entry of list) {
+    const base = String(entry || "").toLowerCase().split("-")[0];
+    if (base === "de") return "de";
+  }
+  return "en";
+}
+
 // Returns the snapshot select for a weekend.
 function snapshotSelectForWeekend(weekend) {
   return weekend === "W1" ? snapshotSelectW1 : snapshotSelectW2;
