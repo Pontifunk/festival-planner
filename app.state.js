@@ -29,6 +29,7 @@ const state = {
   changesIndex: null,
   weekendChanges: { W1: null, W2: null },
   selectedChanges: { W1: null, W2: null },
-  ratings: {}
+  ratings: {},
+  ratingsByWeekend: { W1: {}, W2: {} }
 };
 

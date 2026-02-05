@@ -796,32 +796,31 @@ function renderReplacedChangeItem(item) {
 function exportRatings() {
   const createdAt = new Date().toISOString();
   const playProvider = getPlayProvider();
-  const artistWeekends = {};
+  const artists = {};
   WEEKENDS.forEach((wk) => {
-    const slots = state.weekends?.[wk]?.snapshot?.slots;
-    if (!Array.isArray(slots)) return;
-    slots.forEach((slot) => {
-      const artistId = slot?.artistId || "";
-      if (!artistId) return;
-      if (!artistWeekends[artistId]) artistWeekends[artistId] = new Set();
-      artistWeekends[artistId].add(wk);
+    const wkRatings = state.ratingsByWeekend?.[wk] || {};
+    Object.keys(wkRatings).forEach((artistId) => {
+      const rate = String(wkRatings[artistId] || "").toLowerCase();
+      if (!VALID_RATINGS.has(rate) || rate === "unrated") return;
+      if (!artists[artistId]) {
+        const name = state.artists.byId.get(artistId)?.name || "";
+        artists[artistId] = {
+          name,
+          ratings: {},
+          tags: [],
+          updatedAt: createdAt
+        };
+      }
+      artists[artistId].ratings[wk] = rate;
     });
   });
-  const artists = {};
-  Object.keys(ratings).forEach((artistId) => {
-    const name = state.artists.byId.get(artistId)?.name || "";
-    artists[artistId] = {
-      name,
-      rating: ratings[artistId],
-      tags: [],
-      weekends: artistWeekends[artistId] ? Array.from(artistWeekends[artistId]) : [],
-      updatedAt: createdAt
-    };
+  Object.keys(artists).forEach((artistId) => {
+    artists[artistId].weekends = Object.keys(artists[artistId].ratings || {});
   });
 
   const payload = {
     app: "festival-planner",
-    exportVersion: 3,
+    exportVersion: 4,
     createdAt,
     event: { festival: state.festival, year: state.year },
     weekends: Array.from(WEEKENDS),
@@ -859,50 +858,71 @@ async function importRatings(e) {
     const data = JSON.parse(text);
     let incoming = null;
 
-    if ((data?.exportVersion === 2 || data?.exportVersion === 3) && data?.artists && typeof data.artists === "object") {
-      incoming = {};
+    const incomingByWeekend = {};
+    WEEKENDS.forEach((wk) => { incomingByWeekend[wk] = {}; });
+
+    if (data?.artists && typeof data.artists === "object") {
       Object.keys(data.artists).forEach((artistId) => {
-        const entry = data.artists[artistId];
+        const entry = data.artists[artistId] || {};
+        const ratingsMap = entry?.ratings && typeof entry.ratings === "object" ? entry.ratings : null;
+        if (ratingsMap) {
+          Object.keys(ratingsMap).forEach((wk) => {
+            const normalized = normalizeWeekend(wk);
+            if (!normalized) return;
+            const rate = String(ratingsMap[wk] || "").toLowerCase();
+            if (VALID_RATINGS.has(rate)) incomingByWeekend[normalized][artistId] = rate;
+          });
+          return;
+        }
         const rate = entry?.rating ? String(entry.rating).toLowerCase() : "";
-        if (VALID_RATINGS.has(rate)) incoming[artistId] = rate;
+        if (!VALID_RATINGS.has(rate)) return;
+        const wkList = Array.isArray(entry?.weekends) ? entry.weekends : WEEKENDS;
+        wkList.forEach((wk) => {
+          const normalized = normalizeWeekend(wk);
+          if (!normalized) return;
+          incomingByWeekend[normalized][artistId] = rate;
+        });
       });
       const provider = data?.settings?.playProvider;
       if (provider && ["sp", "am", "yt", "sc"].includes(provider)) {
         setPlayProvider(provider);
       }
+      incoming = incomingByWeekend;
     } else if (data?.ratings && typeof data.ratings === "object") {
-      incoming = data.ratings;
+      WEEKENDS.forEach((wk) => { incomingByWeekend[wk] = data.ratings; });
+      incoming = incomingByWeekend;
     }
 
     if (!incoming || typeof incoming !== "object") {
       throw new Error("Invalid ratings file");
     }
 
-    const filtered = {};
-    Object.keys(incoming).forEach((id) => {
-      const rate = String(incoming[id] || "").toLowerCase();
-      if (VALID_RATINGS.has(rate)) filtered[id] = rate;
-    });
+    if (!state.ratingsByWeekend) state.ratingsByWeekend = {};
+    const persistOps = [];
+    WEEKENDS.forEach((wk) => {
+      const wkIncoming = incoming?.[wk];
+      if (!wkIncoming || typeof wkIncoming !== "object") return;
+      const filtered = {};
+      Object.keys(wkIncoming).forEach((id) => {
+        const rate = String(wkIncoming[id] || "").toLowerCase();
+        if (VALID_RATINGS.has(rate)) filtered[id] = rate;
+      });
 
-    const merged = { ...ratings };
-    Object.keys(filtered).forEach((id) => {
-      const rate = filtered[id];
-      if (rate === "unrated") {
-        delete merged[id];
-      } else {
-        merged[id] = rate;
-      }
-    });
-    ratings = merged;
+      const existing = state.ratingsByWeekend[wk] || {};
+      const merged = { ...existing };
+      Object.keys(filtered).forEach((id) => {
+        const rate = filtered[id];
+        merged[id] = rate || "unrated";
+      });
+      state.ratingsByWeekend[wk] = merged;
+      if (state.activeWeekend === wk) ratings = merged;
 
-    const prefix = makeDbKeyPrefix(state);
-    await Promise.all(Object.keys(filtered).map((id) => {
-      const rate = filtered[id];
-      if (rate === "unrated" || rate === null || typeof rate === "undefined") {
-        return dbDelete(prefix + id);
-      }
-      return dbPut(prefix + id, rate);
-    }));
+      Object.keys(filtered).forEach((id) => {
+        const rate = filtered[id] || "unrated";
+        persistOps.push(dbPut(makeDbKey(state, wk, id), rate));
+      });
+    });
+    if (persistOps.length) await Promise.all(persistOps);
 
     if (importStatus) {
       importStatus.textContent = t("import_done") || "Import abgeschlossen.";
@@ -1379,6 +1399,9 @@ function openDetailsForSlot(container, slot) {
 function setActiveWeekend(weekend, updateRoute = true) {
   const normalized = normalizeWeekend(weekend) || "W1";
   state.activeWeekend = normalized;
+  if (!state.ratingsByWeekend) state.ratingsByWeekend = {};
+  if (!state.ratingsByWeekend[normalized]) state.ratingsByWeekend[normalized] = {};
+  ratings = state.ratingsByWeekend[normalized];
 
   weekendTabs.forEach(btn => {
     const isActive = btn.getAttribute("data-weekend") === normalized;

@@ -123,7 +123,14 @@ async function init() {
     showError(t("base_data_load_error") || "Error loading base data.");
   }
 
-  ratings = await dbGetAll(makeDbKeyPrefix(state));
+  const legacyRatings = await dbGetAll(makeLegacyDbKeyPrefix(state));
+  const ratingsByWeekend = {};
+  await Promise.all(WEEKENDS.map(async (wk) => {
+    const wkRatings = await dbGetAll(makeDbKeyPrefix(state, wk));
+    ratingsByWeekend[wk] = { ...legacyRatings, ...wkRatings };
+  }));
+  state.ratingsByWeekend = ratingsByWeekend;
+  ratings = ratingsByWeekend[state.activeWeekend] || {};
 
   await loadSnapshotForWeekend(state.activeWeekend);
   logPerf("active-weekend-snapshot-ready", state.activeWeekend);

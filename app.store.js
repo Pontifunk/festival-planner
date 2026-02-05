@@ -9,13 +9,14 @@ function badgeFor(r) {
 // Updates rating state and persists to IndexedDB.
 async function setRating(artistId, rate) {
   if (!artistId) return;
-  if (rate === "unrated") {
-    delete ratings[artistId];
-    await dbDelete(makeDbKey(state, artistId));
-  } else {
-    ratings[artistId] = rate;
-    await dbPut(makeDbKey(state, artistId), rate);
-  }
+  const weekend = state.activeWeekend || DEFAULT_WEEKEND;
+  if (!state.ratingsByWeekend) state.ratingsByWeekend = {};
+  if (!state.ratingsByWeekend[weekend]) state.ratingsByWeekend[weekend] = {};
+  ratings = state.ratingsByWeekend[weekend];
+
+  const value = rate || "unrated";
+  ratings[artistId] = value;
+  await dbPut(makeDbKey(state, weekend, artistId), value);
 }
 
 // ====== INDEXEDDB (minimal) ======
@@ -23,10 +24,12 @@ const DB_NAME = "festival_planner";
 const DB_STORE = "ratings";
 const DB_VERSION = 1;
 
-// Creates the key prefix for a festival/year.
-function makeDbKeyPrefix(r){ return `${r.festival}::${r.year}::`; }
+// Creates the key prefix for a festival/year/weekend.
+function makeDbKeyPrefix(r, weekend){ return `${r.festival}::${r.year}::${weekend}::`; }
 // Creates the full key for an artist rating.
-function makeDbKey(r, artistId){ return `${makeDbKeyPrefix(r)}${artistId}`; }
+function makeDbKey(r, weekend, artistId){ return `${makeDbKeyPrefix(r, weekend)}${artistId}`; }
+// Legacy (pre-weekend) key prefix.
+function makeLegacyDbKeyPrefix(r){ return `${r.festival}::${r.year}::`; }
 
 // Opens the IndexedDB database.
 function db(){
