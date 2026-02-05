@@ -202,11 +202,11 @@ function renderDayGroup(group, weekend, openState) {
       <summary class="daySummary">
         <div class="daySummaryMain">
           <span class="dayTitle">${escapeHtml(dateLabel)}</span>
-          <span class="dayCount">(${dayCount})</span>
           <span class="dayLinkPseudo" role="link" tabindex="0" data-url="${escapeAttr(dayUrl)}">${escapeHtml(t("lineup"))}</span>
         </div>
         <div class="daySummaryMeta">
           ${renderRatingBreakdown(dayCounts)}
+          <span class="dayCount">(${dayCount})</span>
           <span class="dayChevron" aria-hidden="true"></span>
         </div>
       </summary>
