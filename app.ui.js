@@ -1259,7 +1259,7 @@ function updateSearchResults() {
 }
 
 // Scrolls to an artist in the active list.
-function scrollToArtist(artistId, attempt = 0) {
+function scrollToArtist(artistId, attempt = 0, opts = {}) {
   const w = state.weekends[state.activeWeekend];
   const el = w.artistFirstEl.get(artistId);
   if (!el) {
@@ -1267,7 +1267,9 @@ function scrollToArtist(artistId, attempt = 0) {
       runIdle(() => scrollToArtist(artistId, attempt + 1));
       return;
     }
-    showError("Artist im aktuellen Weekend nicht gefunden.");
+    if (!opts.suppressError) {
+      showError("Artist im aktuellen Weekend nicht gefunden.");
+    }
     return;
   }
 

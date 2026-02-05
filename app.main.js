@@ -140,19 +140,77 @@ async function init() {
     });
   }, { timeout: 1000 });
 
-  const artistParam = getQueryParam("artist");
-  if (artistParam) {
-    const tryScroll = (attempt = 0) => {
-      const id = resolveArtistId(artistParam);
-      if (id) {
-        setTimeout(() => scrollToArtist(id), 60);
-        return;
-      }
-      if (attempt < 10) runIdle(() => tryScroll(attempt + 1), { timeout: 400 });
-    };
-    tryScroll();
-  }
+  tryScrollToArtistFromQuery();
 }
+
+function resetFiltersForArtistDeepLink() {
+  let changed = false;
+  if (favoritesOnly) {
+    favoritesOnly = false;
+    updateFavoritesToggleUI();
+    changed = true;
+  }
+  if (ratingFilter && ratingFilter.value !== "all") {
+    ratingFilter.value = "all";
+    syncCustomSelect(ratingFilter);
+    changed = true;
+  }
+  const w = state.weekends[state.activeWeekend];
+  if (w?.filters) {
+    if (w.filters.day !== "all") {
+      w.filters.day = "all";
+      if (dayFilter) {
+        dayFilter.value = "all";
+        syncCustomSelect(dayFilter);
+      }
+      changed = true;
+    }
+    if (w.filters.stage !== "all") {
+      w.filters.stage = "all";
+      if (stageFilter) {
+        stageFilter.value = "all";
+        syncCustomSelect(stageFilter);
+      }
+      changed = true;
+    }
+  }
+  if (changed) renderActiveWeekend();
+}
+
+function tryScrollToArtistFromQuery() {
+  const artistParam = getQueryParam("artist");
+  if (!artistParam) return;
+  resetFiltersForArtistDeepLink();
+
+  const tryScroll = (attempt = 0) => {
+    const id = resolveArtistId(artistParam);
+    const w = state.weekends[state.activeWeekend];
+    const hasEl = id && w?.artistFirstEl?.has(id);
+
+    if (id && hasEl) {
+      setTimeout(() => scrollToArtist(id, 0, { suppressError: true }), 60);
+      return;
+    }
+
+    if (attempt < 12) {
+      runIdle(() => tryScroll(attempt + 1), { timeout: 400 });
+      return;
+    }
+
+    if (id) {
+      scrollToArtist(id, 0, { suppressError: false });
+    } else {
+      showError("Artist im aktuellen Weekend nicht gefunden.");
+    }
+  };
+
+  tryScroll();
+}
+
+window.addEventListener("pageshow", () => {
+  if (!window.__FP_INIT__) return;
+  tryScrollToArtistFromQuery();
+});
 
 // Wires the update banner and handles SW update flow.
 function setupServiceWorkerUpdates(registration) {

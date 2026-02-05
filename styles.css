@@ -579,8 +579,7 @@ button{
   border:1px solid var(--border);
   border-radius:16px;
   background:rgba(255,255,255,.03);
-  display:grid;
-  grid-template-rows:auto 1fr;
+  position:relative;
 }
 .dayGroup + .dayGroup{margin-top:10px}
 .dayGroup summary{list-style:none}
@@ -622,10 +621,9 @@ button{
   font-weight:600;
 }
 .dayLinkFloating{
-  grid-row:1;
-  justify-self:end;
-  align-self:center;
-  margin-right:36px;
+  position:absolute;
+  top:12px;
+  right:44px;
   z-index:2;
 }
 .ratingBreakdown{
@@ -674,7 +672,6 @@ button{
 }
 .dayGroup[open] .dayChevron{transform:rotate(-135deg)}
 .dayBody{
-  grid-row:2;
   padding:12px 12px 14px;
   display:grid;
   gap:10px;
