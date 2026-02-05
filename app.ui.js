@@ -20,6 +20,36 @@ const renderPending = { W1: false, W2: false };
 
 const SKELETON_ROWS = 8;
 
+function countRatings(slots) {
+  const counts = { liked: 0, maybe: 0, disliked: 0, unrated: 0, total: 0 };
+  if (!Array.isArray(slots)) return counts;
+  slots.forEach((slot) => {
+    const id = slot?.artistId || "";
+    const rating = ratings[id] || "unrated";
+    if (rating === "liked" || rating === "maybe" || rating === "disliked" || rating === "unrated") {
+      counts[rating] += 1;
+    } else {
+      counts.unrated += 1;
+    }
+    counts.total += 1;
+  });
+  return counts;
+}
+
+function renderRatingBreakdown(counts) {
+  if (!counts || !counts.total) return "";
+  const labels = getRatingActionLabels();
+  const title = `${labels.liked}: ${counts.liked} · ${labels.maybe}: ${counts.maybe} · ${labels.disliked}: ${counts.disliked} · ${labels.unrated}: ${counts.unrated}`;
+  return `
+    <span class="ratingBreakdown" title="${escapeAttr(title)}">
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.liked)}"><span class="ratingBreakdownIcon" aria-hidden="true">👍</span><span class="ratingBreakdownCount">${counts.liked}</span></span>
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.maybe)}"><span class="ratingBreakdownIcon" aria-hidden="true">🤔</span><span class="ratingBreakdownCount">${counts.maybe}</span></span>
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.disliked)}"><span class="ratingBreakdownIcon" aria-hidden="true">👎</span><span class="ratingBreakdownCount">${counts.disliked}</span></span>
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.unrated)}"><span class="ratingBreakdownIcon" aria-hidden="true">↺</span><span class="ratingBreakdownCount">${counts.unrated}</span></span>
+    </span>
+  `;
+}
+
 function renderSkeletonList(count = SKELETON_ROWS) {
   const rows = Array.from({ length: count }, () => `
     <div class="act skeleton" aria-hidden="true">
@@ -138,12 +168,14 @@ function renderDayGroup(group, weekend, openState) {
   const dayUrl = `https://belgium.tomorrowland.com/nl/line-up/?day=${group.date}`;
   const dayCount = group.stages.reduce((sum, stage) => sum + stage.slots.length, 0);
   const dayOpen = openState?.openDays?.has(group.date);
+  const dayCounts = countRatings(group.stages.flatMap(stage => stage.slots));
 
   const stagesHtml = group.stages.map(stageGroup => {
     const stageCount = stageGroup.slots.length;
     const stageKey = stageGroup.stage;
     const stageOpen = openState?.openStages?.get(group.date)?.has(stageKey);
     const genre = getStageGenre(stageGroup.stage);
+    const stageCounts = countRatings(stageGroup.slots);
     const slotsHtml = stageGroup.slots.map(slot => renderSlot(slot, weekend)).join("");
     return `
       <details class="stageGroup" data-day="${escapeAttr(group.date)}" data-stage="${escapeAttr(stageKey)}" ${stageOpen ? "open" : ""}>
@@ -153,6 +185,7 @@ function renderDayGroup(group, weekend, openState) {
             ${genre ? `<span class="stageGenre">${escapeHtml(genre)}</span>` : ""}
           </div>
           <div class="daySummaryMeta">
+            ${renderRatingBreakdown(stageCounts)}
             <span class="stageCount">(${stageCount})</span>
             <span class="stageChevron" aria-hidden="true"></span>
           </div>
@@ -172,6 +205,7 @@ function renderDayGroup(group, weekend, openState) {
           <span class="dayCount">(${dayCount})</span>
         </div>
         <div class="daySummaryMeta">
+          ${renderRatingBreakdown(dayCounts)}
           <a class="dayLink" href="${dayUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("lineup"))}</a>
           <span class="dayChevron" aria-hidden="true"></span>
         </div>
