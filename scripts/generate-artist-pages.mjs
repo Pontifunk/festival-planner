@@ -294,8 +294,18 @@ function renderArtistPage({ artist, weekend, slug }) {
         }
       };
 
-      var lang = (localStorage.getItem("fp_lang") || "de").toLowerCase();
-      if (lang !== "de" && lang !== "en") lang = "de";
+      var storedLang = localStorage.getItem("fp_lang");
+      var lang = (storedLang || "").toLowerCase();
+      if (lang !== "de" && lang !== "en") {
+        var list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ""];
+        var foundDe = false;
+        for (var i = 0; i < list.length; i++) {
+          var base = String(list[i] || "").toLowerCase().split("-")[0];
+          if (base === "de") { foundDe = true; break; }
+        }
+        lang = foundDe ? "de" : "en";
+      }
+      if (!storedLang && lang) localStorage.setItem("fp_lang", lang);
       document.documentElement.lang = lang;
       var t = dict[lang];
 
@@ -656,8 +666,18 @@ ${list}
         }
       };
 
-      var lang = (localStorage.getItem("fp_lang") || "de").toLowerCase();
-      if (lang !== "de" && lang !== "en") lang = "de";
+      var storedLang = localStorage.getItem("fp_lang");
+      var lang = (storedLang || "").toLowerCase();
+      if (lang !== "de" && lang !== "en") {
+        var list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ""];
+        var foundDe = false;
+        for (var i = 0; i < list.length; i++) {
+          var base = String(list[i] || "").toLowerCase().split("-")[0];
+          if (base === "de") { foundDe = true; break; }
+        }
+        lang = foundDe ? "de" : "en";
+      }
+      if (!storedLang && lang) localStorage.setItem("fp_lang", lang);
       document.documentElement.lang = lang;
       var t = dict[lang];
 
@@ -730,3 +750,7 @@ const sitemapXml = `<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"
 await fs.writeFile(path.join(ROOT, "sitemap.xml"), sitemapXml, "utf-8");
 
 console.log(`Generated artist pages for ${weekends.size} weekends.`);
+
+
+
+
