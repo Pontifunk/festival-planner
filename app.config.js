@@ -13,19 +13,17 @@ const RATING_STATES = ["liked", "maybe", "disliked", "unrated"];
 const RATING_CYCLE = ["unrated", "liked", "maybe", "disliked"];
 const VALID_RATINGS = new Set(RATING_STATES);
 
-const RATING_ACTION_LABELS = {
-  liked: { actionKey: "rating_action_liked", fallbackKey: "liked", fallback: "Liked" },
-  maybe: { actionKey: "rating_action_maybe", fallbackKey: "maybe", fallback: "Maybe" },
-  disliked: { actionKey: "rating_action_disliked", fallbackKey: "disliked", fallback: "Disliked" },
-  unrated: { actionKey: "rating_action_unrated", fallbackKey: "reset", fallback: "Unrated" }
+const RATING_META = {
+  liked: { icon: "\uD83D\uDC4D", label: { de: "Gef\u00e4llt mir", en: "Like" } },
+  maybe: { icon: "\uD83E\uDD14", label: { de: "Vielleicht", en: "Maybe" } },
+  disliked: { icon: "\uD83D\uDC4E", label: { de: "Mag ich nicht", en: "Dislike" } },
+  unrated: {
+    icon: "\u21BA",
+    label: { de: "Reset", en: "Reset" },
+    status: { de: "Unbewertet", en: "Not rated" }
+  }
 };
-
-const RATING_CHIP_FALLBACKS = {
-  liked: "❤︎",
-  maybe: "🤔",
-  disliked: "👎",
-  unrated: "○"
-};
+const RATING_NONE = { label: { de: "Unbewertet", en: "Not rated" } };
 const BASE_PREFIX = getBasePrefix();
 const withBase = (path) => `${BASE_PREFIX}${path}`;
 const withRoot = (path) => path;
@@ -90,6 +88,9 @@ const inlineFavoritesBar = document.getElementById("inlineFavoritesBar");
 const favoritesToggleAll = document.getElementById("favoritesToggleAll");
 const favoritesToggleOnly = document.getElementById("favoritesToggleOnly");
 const ratingProgress = document.getElementById("ratingProgress");
+const onboardingHint = document.getElementById("onboardingHint");
+const onboardingHintText = document.getElementById("onboardingHintText");
+const onboardingHintDismiss = document.getElementById("onboardingHintDismiss");
 const ratingFilter = document.getElementById("ratingFilter");
 const dayFilter = document.getElementById("dayFilter");
 const stageFilter = document.getElementById("stageFilter");

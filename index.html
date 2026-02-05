@@ -96,6 +96,10 @@
   <main class="layout">
     <!-- Main planner panel -->
     <section class="panel">
+      <div id="onboardingHint" class="onboardingHint" role="note" hidden>
+        <div class="onboardingHintText" id="onboardingHintText"></div>
+        <button class="onboardingHintDismiss" id="onboardingHintDismiss" type="button" data-i18n="onboarding_dismiss">Verstanden</button>
+      </div>
       <!-- Hero / onboarding -->
       <div class="introCard">
         <div class="introIcon">&#9733;</div>
@@ -248,6 +252,7 @@
           <div class="cardTitle" data-i18n="favorites">Favoriten</div>
           <button class="favCountPill" id="favoritesToggle" type="button" aria-label="Favoriten anzeigen" data-i18n-aria-label="favorites_toggle" aria-pressed="false"></button>
         </div>
+        <div class="favHelper muted" data-i18n="favorites_helper">&#127919; Deine Favoriten &ndash; so entsteht dein pers&ouml;nlicher Festivalplan</div>
         <div class="favPlanNote muted" id="favoritesPlanNote" data-i18n="plan_note">&#128197; Deine Vorbereitung l&auml;uft &ndash; Tagesplanung kommt bald</div>
         <div id="favoritesList" class="favList"></div>
       </div>

@@ -59,6 +59,69 @@ function loadScript(src) {
   });
 }
 
+const ONBOARDING_HINT_KEY = "fp_onboarding_seen";
+
+function getOnboardingEls() {
+  const hint = onboardingHint || document.getElementById("onboardingHint");
+  const text = onboardingHintText || document.getElementById("onboardingHintText");
+  const dismiss = onboardingHintDismiss || document.getElementById("onboardingHintDismiss");
+  return { hint, text, dismiss };
+}
+
+function buildOnboardingHintText() {
+  const like = `${getRatingIcon("liked")} ${getRatingLabel("liked")}`;
+  const maybe = `${getRatingIcon("maybe")} ${getRatingLabel("maybe")}`;
+  const dislike = `${getRatingIcon("disliked")} ${getRatingLabel("disliked")}`;
+  if (getActiveLang() === "de") {
+    return `\uD83D\uDCA1 Bewerte Acts mit ${like}, ${maybe} oder ${dislike}. Deine Auswahl bleibt nur auf diesem Ger\u00e4t gespeichert.`;
+  }
+  return `\uD83D\uDCA1 Rate acts using ${like}, ${maybe} or ${dislike}. Your selections are stored only on this device.`;
+}
+
+function updateOnboardingHintText() {
+  const { text } = getOnboardingEls();
+  if (!text) return;
+  text.textContent = buildOnboardingHintText();
+}
+
+function shouldShowOnboardingHint() {
+  try {
+    return localStorage.getItem(ONBOARDING_HINT_KEY) !== "1";
+  } catch {
+    return true;
+  }
+}
+
+function markOnboardingSeen() {
+  try {
+    localStorage.setItem(ONBOARDING_HINT_KEY, "1");
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function dismissOnboardingHint() {
+  const { hint } = getOnboardingEls();
+  if (!hint) return;
+  markOnboardingSeen();
+  hint.hidden = true;
+}
+
+function initOnboardingHint() {
+  const { hint, dismiss } = getOnboardingEls();
+  if (!hint) return;
+  if (!shouldShowOnboardingHint()) {
+    hint.hidden = true;
+  } else {
+    updateOnboardingHintText();
+    hint.hidden = false;
+  }
+  if (dismiss && dismiss.dataset.bound !== "true") {
+    dismiss.dataset.bound = "true";
+    dismiss.addEventListener("click", dismissOnboardingHint);
+  }
+}
+
 // Bootstraps UI state, loads data, and renders the initial view.
 async function init() {
   console.info("[festival-planner] build", BUILD_ID);
@@ -83,6 +146,7 @@ async function init() {
   ensureSelectVisible(ratingFilter);
 
   await applyTranslations(lang);
+  initOnboardingHint();
   renderBuildStamp();
 
   if (!route.festival) route.festival = DEFAULT_FESTIVAL;
@@ -293,6 +357,7 @@ function bindUi() {
     lang = langSelect.value;
     localStorage.setItem("fp_lang", lang);
     await applyTranslations(lang);
+    updateOnboardingHintText();
     renderActiveWeekend();
     renderBuildStamp();
   });

@@ -38,14 +38,14 @@ function countRatings(slots) {
 
 function renderRatingBreakdown(counts) {
   if (!counts || !counts.total) return "";
-  const labels = getRatingActionLabels();
+  const labels = getRatingStateLabels();
   const title = `${labels.liked}: ${counts.liked} · ${labels.maybe}: ${counts.maybe} · ${labels.disliked}: ${counts.disliked} · ${labels.unrated}: ${counts.unrated}`;
   return `
     <span class="ratingBreakdown" title="${escapeAttr(title)}">
-      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.liked)}"><span class="ratingBreakdownIcon" aria-hidden="true">👍</span><span class="ratingBreakdownCount">${counts.liked}</span></span>
-      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.maybe)}"><span class="ratingBreakdownIcon" aria-hidden="true">🤔</span><span class="ratingBreakdownCount">${counts.maybe}</span></span>
-      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.disliked)}"><span class="ratingBreakdownIcon" aria-hidden="true">👎</span><span class="ratingBreakdownCount">${counts.disliked}</span></span>
-      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.unrated)}"><span class="ratingBreakdownIcon" aria-hidden="true">↺</span><span class="ratingBreakdownCount">${counts.unrated}</span></span>
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.liked)}"><span class="ratingBreakdownIcon" aria-hidden="true">${getRatingIcon("liked")}</span><span class="ratingBreakdownCount">${counts.liked}</span></span>
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.maybe)}"><span class="ratingBreakdownIcon" aria-hidden="true">${getRatingIcon("maybe")}</span><span class="ratingBreakdownCount">${counts.maybe}</span></span>
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.disliked)}"><span class="ratingBreakdownIcon" aria-hidden="true">${getRatingIcon("disliked")}</span><span class="ratingBreakdownCount">${counts.disliked}</span></span>
+      <span class="ratingBreakdownItem" aria-label="${escapeAttr(labels.unrated)}"><span class="ratingBreakdownIcon" aria-hidden="true">${getRatingIcon("unrated")}</span><span class="ratingBreakdownCount">${counts.unrated}</span></span>
     </span>
   `;
 }
@@ -231,7 +231,7 @@ function renderSlot(slot, weekend) {
   // Inline rating controls reuse the shared rating labels for a11y/tooltips.
   const ratingLabels = getRatingActionLabels();
   const badge = badgeFor(r);
-  const resetLabel = t("rating_reset") || "Reset";
+  const resetLabel = ratingLabels.unrated;
 
   const slotId = slot.slotId ? `slot-${weekend}-${slot.slotId}` : `slot-${weekend}-${hashMini(name + stage + timeRange)}`;
 
@@ -250,19 +250,19 @@ function renderSlot(slot, weekend) {
         <div class="badge ${escapeAttr(badge.cls)}">${escapeHtml(badge.text)}</div>
         <div class="ratingSegmented" data-id="${escapeAttr(artistId)}" role="group" aria-label="${escapeAttr(t("rating_label") || "Rating")}">
           <button class="ratingSegBtn ${r === "liked" ? "isActive" : ""}" data-rate="liked" type="button" aria-pressed="${r === "liked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.liked)}" aria-label="${escapeAttr(ratingLabels.liked)}">
-            <span class="ratingEmoji" aria-hidden="true">👍</span>
-            <span class="segLabel">${escapeHtml(t("liked"))}</span>
+            <span class="ratingEmoji" aria-hidden="true">${getRatingIcon("liked")}</span>
+            <span class="segLabel">${escapeHtml(ratingLabels.liked)}</span>
           </button>
           <button class="ratingSegBtn ${r === "maybe" ? "isActive" : ""}" data-rate="maybe" type="button" aria-pressed="${r === "maybe" ? "true" : "false"}" title="${escapeAttr(ratingLabels.maybe)}" aria-label="${escapeAttr(ratingLabels.maybe)}">
-            <span class="ratingEmoji" aria-hidden="true">🤔</span>
-            <span class="segLabel">${escapeHtml(t("maybe"))}</span>
+            <span class="ratingEmoji" aria-hidden="true">${getRatingIcon("maybe")}</span>
+            <span class="segLabel">${escapeHtml(ratingLabels.maybe)}</span>
           </button>
           <button class="ratingSegBtn ${r === "disliked" ? "isActive" : ""}" data-rate="disliked" type="button" aria-pressed="${r === "disliked" ? "true" : "false"}" title="${escapeAttr(ratingLabels.disliked)}" aria-label="${escapeAttr(ratingLabels.disliked)}">
-            <span class="ratingEmoji" aria-hidden="true">👎</span>
-            <span class="segLabel">${escapeHtml(t("disliked"))}</span>
+            <span class="ratingEmoji" aria-hidden="true">${getRatingIcon("disliked")}</span>
+            <span class="segLabel">${escapeHtml(ratingLabels.disliked)}</span>
           </button>
           <button class="ratingSegBtn ${r === "unrated" ? "isActive" : ""}" data-rate="unrated" type="button" aria-pressed="${r === "unrated" ? "true" : "false"}" title="${escapeAttr(ratingLabels.unrated)}" aria-label="${escapeAttr(ratingLabels.unrated)}">
-            <span class="ratingEmoji" aria-hidden="true">↺</span>
+            <span class="ratingEmoji" aria-hidden="true">${getRatingIcon("unrated")}</span>
             <span class="segLabel">${escapeHtml(resetLabel)}</span>
           </button>
         </div>
@@ -1175,33 +1175,46 @@ function getSelectLabel(selectEl, value) {
 
 // Returns the label for a rating filter chip.
 function ratingChipLabel(value) {
-  if (value === "liked") return translateOr("rating_chip_liked", "❤︎");
-  if (value === "maybe") return translateOr("rating_chip_maybe", "🤔");
-  if (value === "disliked") return translateOr("rating_chip_disliked", "👎");
-  if (value === "unrated") return translateOr("rating_chip_unrated", translateOr("unrated", "Unrated"));
-  return value;
+  const icon = getRatingIcon(value);
+  const label = getRatingLabel(value, { kind: value === "unrated" ? "status" : "action" });
+  if (icon && label) return `${icon} ${label}`;
+  return label || icon || value;
 }
 
 // Builds i18n labels for rating actions.
 function getRatingActionLabels() {
   const labels = {};
   RATING_STATES.forEach((key) => {
-    const meta = RATING_ACTION_LABELS[key];
-    labels[key] = translateOr(meta.actionKey, translateOr(meta.fallbackKey, meta.fallback));
+    labels[key] = getRatingLabel(key, { kind: "action" });
   });
   return labels;
 }
 
-// Resolves the icon for a rating state.
-function getRatingChipIcon(key) {
-  const lookupKey = `rating_chip_${key}`;
-  return translateOr(lookupKey, RATING_CHIP_FALLBACKS[key] || "");
+// Builds labels for rating state summaries (uses status label for unrated).
+function getRatingStateLabels() {
+  const labels = {};
+  RATING_STATES.forEach((key) => {
+    labels[key] = getRatingLabel(key, { kind: key === "unrated" ? "status" : "action" });
+  });
+  return labels;
 }
 
 // Looks up a translation with fallback.
 function translateOr(key, fallback) {
   if (key && Object.prototype.hasOwnProperty.call(dict, key)) return dict[key];
   return fallback;
+}
+
+// Adds subtle haptic feedback on supported mobile devices.
+function triggerRatingHaptic() {
+  try {
+    if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia && !window.matchMedia("(pointer: coarse)").matches) return;
+    navigator.vibrate(10);
+  } catch {
+    // Fail silently.
+  }
 }
 // ====== INTERACTIONS ======
 function bindSlotInteractions(container, weekend) {
@@ -1224,6 +1237,7 @@ function bindRatingMenus(container, weekend) {
       const id = sel?.getAttribute("data-id");
       const rate = chip.getAttribute("data-rate");
       if (id && rate) {
+        triggerRatingHaptic();
         await setRating(id, rate);
         if (state.activeWeekend === weekend) renderActiveWeekend();
         showToast(t("saved") || "Gespeichert \u2713");
@@ -1325,6 +1339,7 @@ function resolveArtistId(param) {
   const raw = String(param || "").trim();
   if (!raw || !w) return "";
   if (w.artistFirstEl?.has(raw)) return raw;
+  if (!w.artistSlugMap || !w.artistSlots) return "";
 
   const target = raw.toLowerCase();
   const stripSuffix = (value) => String(value || "").replace(/-[a-f0-9]{6}$/i, "");

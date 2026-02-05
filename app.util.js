@@ -81,6 +81,35 @@ function detectPreferredLang() {
   return "en";
 }
 
+// Resolves the active language (de/en) for UI labels.
+function getActiveLang() {
+  const current = (typeof lang === "string" && lang) ? lang : (document?.documentElement?.lang || "");
+  const base = String(current || "").toLowerCase().split("-")[0];
+  if (base === "de" || base === "en") return base;
+  return detectPreferredLang() || "de";
+}
+
+// Resolves a translated value from a {de,en} map or string.
+function resolveLangValue(value) {
+  if (!value) return "";
+  if (typeof value === "string") return value;
+  const active = getActiveLang();
+  return value[active] || value.en || value.de || "";
+}
+
+// Returns the localized rating label for a state.
+function getRatingLabel(key, { kind = "action" } = {}) {
+  const meta = RATING_META?.[key];
+  if (!meta) return key;
+  const text = (kind === "status" && meta.status) ? meta.status : meta.label;
+  return resolveLangValue(text);
+}
+
+// Returns the emoji icon for a rating state.
+function getRatingIcon(key) {
+  return RATING_META?.[key]?.icon || "";
+}
+
 // Returns the snapshot select for a weekend.
 function snapshotSelectForWeekend(weekend) {
   return weekend === "W1" ? snapshotSelectW1 : snapshotSelectW2;
