@@ -1140,6 +1140,49 @@ button{
 .cardTitle{font-weight:900;margin-bottom:10px}
 .muted{color:var(--muted);font-size:13px;line-height:1.4}
 
+.seoBlock{
+  margin-top:16px;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:rgba(255,255,255,.03);
+}
+.seoTitle{
+  margin:0 0 4px;
+  font-size:14px;
+  font-weight:800;
+  color:var(--text);
+}
+.seoSubtitle{
+  margin:0 0 8px;
+  font-size:12px;
+  font-weight:700;
+  color:var(--muted);
+}
+.seoIntro{
+  margin:0 0 10px;
+  font-size:13px;
+  color:var(--text);
+}
+.seoLinks{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-bottom:10px;
+}
+.seoLinks a{
+  color:var(--text);
+  font-size:13px;
+  text-decoration:none;
+}
+.seoLinks a:hover{color:var(--accent);text-decoration:underline}
+.seoCopy{
+  margin:0;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
 .favHeader{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
 .favHeader .cardTitle{margin-bottom:0}
 .favHelper{margin-bottom:6px}
