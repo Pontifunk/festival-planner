@@ -796,6 +796,17 @@ function renderReplacedChangeItem(item) {
 function exportRatings() {
   const createdAt = new Date().toISOString();
   const playProvider = getPlayProvider();
+  const artistWeekends = {};
+  WEEKENDS.forEach((wk) => {
+    const slots = state.weekends?.[wk]?.snapshot?.slots;
+    if (!Array.isArray(slots)) return;
+    slots.forEach((slot) => {
+      const artistId = slot?.artistId || "";
+      if (!artistId) return;
+      if (!artistWeekends[artistId]) artistWeekends[artistId] = new Set();
+      artistWeekends[artistId].add(wk);
+    });
+  });
   const artists = {};
   Object.keys(ratings).forEach((artistId) => {
     const name = state.artists.byId.get(artistId)?.name || "";
@@ -803,14 +814,17 @@ function exportRatings() {
       name,
       rating: ratings[artistId],
       tags: [],
+      weekends: artistWeekends[artistId] ? Array.from(artistWeekends[artistId]) : [],
       updatedAt: createdAt
     };
   });
 
   const payload = {
     app: "festival-planner",
-    exportVersion: 2,
+    exportVersion: 3,
     createdAt,
+    event: { festival: state.festival, year: state.year },
+    weekends: Array.from(WEEKENDS),
     settings: {
       playProvider
     },
@@ -845,7 +859,7 @@ async function importRatings(e) {
     const data = JSON.parse(text);
     let incoming = null;
 
-    if (data?.exportVersion === 2 && data?.artists && typeof data.artists === "object") {
+    if ((data?.exportVersion === 2 || data?.exportVersion === 3) && data?.artists && typeof data.artists === "object") {
       incoming = {};
       Object.keys(data.artists).forEach((artistId) => {
         const entry = data.artists[artistId];
