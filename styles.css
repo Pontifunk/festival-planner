@@ -620,13 +620,15 @@ button{
   color:#a8b3ff;
   font-weight:600;
 }
-.dayLinkRow{
-  display:flex;
-  justify-content:flex-end;
-  padding:6px 14px 0;
+.dayLinkPseudo{
+  font-size:12px;
+  color:#a8b3ff;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:none;
 }
-.dayLinkFloating{
-  position:static;
+.dayLinkPseudo:hover{
+  text-decoration:underline;
 }
 .ratingBreakdown{
   display:inline-grid;

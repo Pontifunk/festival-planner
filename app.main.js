@@ -461,10 +461,22 @@ function bindUi() {
   }
 
   document.addEventListener("click", (e) => {
-    const link = e.target.closest(".dayLinkFloating");
+    const link = e.target.closest(".dayLinkPseudo");
     if (!link) return;
     e.preventDefault();
-    window.open(link.href, "_blank", "noopener,noreferrer");
+    e.stopPropagation();
+    const url = link.getAttribute("data-url");
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const link = e.target.closest(".dayLinkPseudo");
+    if (!link) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const url = link.getAttribute("data-url");
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
   });
 
   const playPressState = new WeakMap();
