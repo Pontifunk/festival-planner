@@ -14,11 +14,11 @@ const RATING_CYCLE = ["unrated", "liked", "maybe", "disliked"];
 const VALID_RATINGS = new Set(RATING_STATES);
 
 const RATING_META = {
-  liked: { icon: "\uD83D\uDC4D", label: { de: "Gef\u00e4llt mir", en: "Like" } },
+  liked: { icon: "\uD83D\uDC4D\uFE0F", label: { de: "Gef\u00e4llt mir", en: "Like" } },
   maybe: { icon: "\uD83E\uDD14", label: { de: "Vielleicht", en: "Maybe" } },
-  disliked: { icon: "\uD83D\uDC4E", label: { de: "Mag ich nicht", en: "Dislike" } },
+  disliked: { icon: "\uD83D\uDC4E\uFE0F", label: { de: "Mag ich nicht", en: "Dislike" } },
   unrated: {
-    icon: "\u21BA",
+    icon: "\u21BA\uFE0F",
     label: { de: "Reset", en: "Reset" },
     status: { de: "Unbewertet", en: "Not rated" }
   }
