@@ -209,7 +209,9 @@ function renderDayGroup(group, weekend, openState) {
           <span class="dayChevron" aria-hidden="true"></span>
         </div>
       </summary>
-      <a class="dayLink dayLinkFloating" href="${dayUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("lineup"))}</a>
+      <div class="dayLinkRow">
+        <a class="dayLink dayLinkFloating" href="${dayUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("lineup"))}</a>
+      </div>
       <div class="dayBody">
         ${stagesHtml}
       </div>
