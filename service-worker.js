@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const BUILD_ID = "86da35b+deployfix1";
+const BUILD_ID = "86da35b+datafresh1";
 const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 // Assets are served from the site root.
 const withBase = (path) => path;
@@ -118,6 +118,19 @@ async function staleWhileRevalidate(request) {
   return cached || network || new Response("", { status: 504, statusText: "Offline" });
 }
 
+// Network-first for fresh JSON data with cache fallback.
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request, { cache: "no-store" });
+    await cacheResponse(cache, request, response.clone());
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    return cached || new Response("", { status: 504, statusText: "Offline" });
+  }
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -128,7 +141,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (isDataJsonRequest(url)) {
-    event.respondWith(staleWhileRevalidate(request));
+    event.respondWith(networkFirst(request));
     return;
   }
 
