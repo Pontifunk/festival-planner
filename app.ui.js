@@ -1358,7 +1358,10 @@ function makeSpotifySearchUrl(name){ return `https://open.spotify.com/search/${e
 // Builds an Apple Music search URL for an artist.
 function makeAppleMusicSearchUrl(name){ return `https://music.apple.com/search?term=${encodeURIComponent(name)}`; }
 // Builds a YouTube search URL for an artist.
-function makeYouTubeSearchUrl(name){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(name)}`; }
+function makeYouTubeSearchUrl(name){
+  const query = `${name || ""} Tomorrowland set`.trim();
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+}
 // Builds a SoundCloud search URL for an artist.
 function makeSoundCloudSearchUrl(name){ return `https://soundcloud.com/search?q=${encodeURIComponent(name)}`; }
 // Opens a link in a new tab safely.

@@ -224,7 +224,7 @@
       var PLAY_PROVIDER_KEY = "fp_play_provider";
       function makeSpotifySearchUrl(name){ return "https://open.spotify.com/search/" + encodeURIComponent(name); }
       function makeAppleMusicSearchUrl(name){ return "https://music.apple.com/search?term=" + encodeURIComponent(name); }
-      function makeYouTubeSearchUrl(name){ return "https://www.youtube.com/results?search_query=" + encodeURIComponent(name); }
+      function makeYouTubeSearchUrl(name){ var query = ((name || "") + " Tomorrowland set").trim(); return "https://www.youtube.com/results?search_query=" + encodeURIComponent(query); }
       function makeSoundCloudSearchUrl(name){ return "https://soundcloud.com/search?q=" + encodeURIComponent(name); }
       function getPlayProvider() { return localStorage.getItem(PLAY_PROVIDER_KEY) || "sp"; }
       function setPlayProvider(value) { if (value) localStorage.setItem(PLAY_PROVIDER_KEY, value); }
