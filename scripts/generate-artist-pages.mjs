@@ -264,6 +264,7 @@ function renderArtistPage({ artist, weekend, slug }) {
           ratingDisliked: "Mag ich nicht",
           ratingUnrated: "Unbewertet",
           ratingReset: "Reset",
+          saved: "Gespeichert \u2713",
           ratingNote: "Lokal in deinem Browser gespeichert.",
           play: "Play",
           playMore: "Plattform w\u00e4hlen",
@@ -283,6 +284,7 @@ function renderArtistPage({ artist, weekend, slug }) {
           ratingDisliked: "Nope",
           ratingUnrated: "Unrated",
           ratingReset: "Reset",
+          saved: "Saved \u2713",
           ratingNote: "Stored locally in your browser.",
           play: "Play",
           playMore: "Choose platform",
@@ -355,6 +357,26 @@ function renderArtistPage({ artist, weekend, slug }) {
         unrated: t.ratingUnrated
       };
 
+      var toast = null;
+      var toastTimer = null;
+      function showToast(text) {
+        if (!text) return;
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.className = "toast";
+          toast.setAttribute("role", "status");
+          toast.setAttribute("aria-live", "polite");
+          toast.setAttribute("aria-atomic", "true");
+          document.body.appendChild(toast);
+        }
+        toast.textContent = text;
+        toast.classList.add("isVisible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toast.classList.remove("isVisible");
+        }, 1400);
+      }
+
       function applyState(rate) {
         var value = rate || "unrated";
         if (badge) badge.textContent = labels[value] || labels.unrated;
@@ -387,10 +409,12 @@ function renderArtistPage({ artist, weekend, slug }) {
           var artistId = ratingControls.getAttribute("data-artist-id") || "";
           if (typeof setRating !== "function") {
             applyState(rate);
+            showToast(t.saved);
             return;
           }
           Promise.resolve(setRating(artistId, rate)).then(function () {
             applyState(rate);
+            showToast(t.saved);
           });
         });
       });

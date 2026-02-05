@@ -248,6 +248,20 @@ function resetFiltersForArtistDeepLink() {
   if (changed) renderActiveWeekend();
 }
 
+async function refreshRatingsFromDb() {
+  try {
+    const wk = state.activeWeekend || DEFAULT_WEEKEND;
+    const legacyRatings = await dbGetAll(makeLegacyDbKeyPrefix(state));
+    const wkRatings = await dbGetAll(makeDbKeyPrefix(state, wk));
+    if (!state.ratingsByWeekend) state.ratingsByWeekend = {};
+    state.ratingsByWeekend[wk] = { ...legacyRatings, ...wkRatings };
+    ratings = state.ratingsByWeekend[wk] || {};
+    renderActiveWeekend();
+  } catch {
+    // Ignore refresh failures.
+  }
+}
+
 function tryScrollToArtistFromQuery() {
   const artistParam = getQueryParam("artist");
   if (!artistParam) return;
@@ -278,8 +292,12 @@ function tryScrollToArtistFromQuery() {
   tryScroll();
 }
 
-window.addEventListener("pageshow", () => {
+window.addEventListener("pageshow", (e) => {
   if (!window.__FP_INIT__) return;
+  if (e && e.persisted) {
+    refreshRatingsFromDb().then(() => tryScrollToArtistFromQuery());
+    return;
+  }
   tryScrollToArtistFromQuery();
 });
 
