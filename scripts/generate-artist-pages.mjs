@@ -190,7 +190,7 @@ function renderArtistPage({ artist, weekend, slug }) {
       <div class="logo">FP</div>
       <div class="brandText">
         <div class="title">Festival Planner</div>
-        <div class="subtitle" id="artistSubtitle">Artist details (privacy-first, no tracking)</div>
+        <div class="subtitle" id="artistSubtitle" data-i18n="artist_subtitle">Artist details (privacy-first, no tracking)</div>
       </div>
     </div>
   </header>
@@ -201,46 +201,46 @@ function renderArtistPage({ artist, weekend, slug }) {
         <div class="cardTitle">${escapeHtml(artist.name)}</div>
         <div class="muted" id="artistMeta">Tomorrowland ${YEAR} - Wochenende ${weekendNum}</div>
         <div style="margin-top:12px">
-          <a class="btn" id="backToLineup" href="${escapeHtml(plannerUrl)}">Back to line-up</a>
+          <a class="btn" id="backToLineup" href="${escapeHtml(plannerUrl)}" data-i18n="artist_back_to_lineup">Back to line-up</a>
         </div>
-        ${stages.length ? `<div class="muted" style="margin-top:12px">Stages: ${escapeHtml(stages.join(", "))}</div>` : ""}
-        ${genres.length ? `<div class="muted" style="margin-top:6px">Tags: ${escapeHtml(genres.join(", "))}</div>` : ""}
-        <div class="muted" style="margin-top:8px" id="artistPrivacy">Offline planning, no account, no tracking.</div>
+        ${stages.length ? `<div class="muted" style="margin-top:12px" data-i18n="artist_stages_label">Stages</div><div class="muted" style="margin-top:4px">${escapeHtml(stages.join(", "))}</div>` : ""}
+        ${genres.length ? `<div class="muted" style="margin-top:6px" data-i18n="artist_tags_label">Tags</div><div class="muted" style="margin-top:4px">${escapeHtml(genres.join(", "))}</div>` : ""}
+        <div class="muted" style="margin-top:8px" id="artistPrivacy" data-i18n="artist_privacy">Offline planning, no account, no tracking.</div>
       </div>
 
       <div class="card" style="margin-top:12px">
-        <div class="cardTitle" id="ratingTitle">Your rating</div>
+        <div class="cardTitle" id="ratingTitle" data-i18n="artist_rating_title">Your rating</div>
         <div class="badges" style="margin-top:8px">
-          <div class="badge" id="artistRatingBadge">Unrated</div>
+          <div class="badge" id="artistRatingBadge" data-i18n="unrated">Unrated</div>
         </div>
-        <div class="ratingSegmented" id="artistRatingControls" data-artist-id="${escapeHtml(artist.id)}" role="group" aria-label="Rating">
-          <button class="ratingSegBtn" data-rate="liked" type="button" aria-pressed="false" aria-label="Liked">
+        <div class="ratingSegmented" id="artistRatingControls" data-artist-id="${escapeHtml(artist.id)}" role="group" aria-label="Rating" data-i18n-aria-label="rating_label">
+          <button class="ratingSegBtn" data-rate="liked" type="button" aria-pressed="false" aria-label="Liked" data-i18n-aria-label="liked">
             <span class="ratingEmoji" aria-hidden="true">&#x1F44D;&#xFE0F;</span>
-            <span class="segLabel">Liked</span>
+            <span class="segLabel" data-i18n="liked">Liked</span>
           </button>
-          <button class="ratingSegBtn" data-rate="maybe" type="button" aria-pressed="false" aria-label="Maybe">
+          <button class="ratingSegBtn" data-rate="maybe" type="button" aria-pressed="false" aria-label="Maybe" data-i18n-aria-label="maybe">
             <span class="ratingEmoji" aria-hidden="true">&#x1F914;</span>
-            <span class="segLabel">Maybe</span>
+            <span class="segLabel" data-i18n="maybe">Maybe</span>
           </button>
-          <button class="ratingSegBtn" data-rate="disliked" type="button" aria-pressed="false" aria-label="Disliked">
+          <button class="ratingSegBtn" data-rate="disliked" type="button" aria-pressed="false" aria-label="Disliked" data-i18n-aria-label="disliked">
             <span class="ratingEmoji" aria-hidden="true">&#x1F44E;&#xFE0F;</span>
-            <span class="segLabel">Nope</span>
+            <span class="segLabel" data-i18n="disliked">Dislike</span>
           </button>
-          <button class="ratingSegBtn" data-rate="unrated" type="button" aria-pressed="false" aria-label="Reset">
+          <button class="ratingSegBtn" data-rate="unrated" type="button" aria-pressed="false" aria-label="Reset" data-i18n-aria-label="rating_reset">
             <span class="ratingEmoji" aria-hidden="true">&#x21BA;&#xFE0F;</span>
-            <span class="segLabel">Reset</span>
+            <span class="segLabel" data-i18n="rating_reset">Reset</span>
           </button>
         </div>
         <div class="playRow" style="margin-top:10px">
           <button class="playBtn" type="button" id="artistPlayBtn" aria-label="Play ${escapeHtml(artist.name)}">
             <span class="playIcon" aria-hidden="true">&#x25B6;</span>
-            <span class="playText">Play</span>
+            <span class="playText" data-i18n="play">Play</span>
           </button>
           <button class="playMoreBtn" type="button" id="artistPlayMoreBtn" aria-label="Choose platform for ${escapeHtml(artist.name)}">
             <span class="playMoreIcon" aria-hidden="true">&#x22EF;</span>
           </button>
         </div>
-        <div class="muted" style="margin-top:8px" id="ratingNote">Stored locally in your browser.</div>
+        <div class="muted" style="margin-top:8px" id="ratingNote" data-i18n="artist_rating_note">Stored locally in your browser.</div>
       </div>
     </section>
   </main>
@@ -253,46 +253,52 @@ function renderArtistPage({ artist, weekend, slug }) {
   <script>
     (function () {
       var artistName = ${JSON.stringify(String(artist.name || ""))};
-      var dict = {
+      var fallback = {
         de: {
-          subtitle: "Artist-Details (privacy-first, ohne Tracking)",
-          backToLineup: "Zur\u00fcck zum Line-up",
-          privacy: "Offline planen, ohne Account, ohne Tracking.",
-          ratingTitle: "Deine Bewertung",
-          ratingLiked: "Gef\u00e4llt",
-          ratingMaybe: "Vielleicht",
-          ratingDisliked: "Mag ich nicht",
-          ratingUnrated: "Unbewertet",
-          ratingReset: "Reset",
+          artist_subtitle: "Artist-Details (privacy-first, ohne Tracking)",
+          artist_back_to_lineup: "Zur\u00fcck zum Line-up",
+          artist_privacy: "Offline planen, ohne Account, ohne Tracking.",
+          artist_rating_title: "Deine Bewertung",
+          liked: "Gef\u00e4llt mir",
+          maybe: "Vielleicht",
+          disliked: "Mag ich nicht",
+          unrated: "Unbewertet",
+          rating_reset: "Reset",
           saved: "Gespeichert \u2713",
-          ratingNote: "Lokal in deinem Browser gespeichert.",
+          artist_rating_note: "Lokal in deinem Browser gespeichert.",
           play: "Play",
-          playMore: "Plattform w\u00e4hlen",
-          playDefault: "Standard",
-          playSetDefault: "Als Standard setzen",
-          meta: "Tomorrowland ${YEAR} - Wochenende ${weekendNum}",
-          title: artistName + " - Tomorrowland ${YEAR} (Wochenende ${weekendNum}) | Festival Planner",
-          desc: "Offline planen f\u00fcr Tomorrowland ${YEAR} Wochenende ${weekendNum}. Kein Account, kein Tracking."
+          play_choose_platform: "Plattform f\u00fcr {name} w\u00e4hlen",
+          play_open_links: "Play-Links f\u00fcr {name} \u00f6ffnen",
+          play_default: "Standard",
+          play_set_default: "Als Standard setzen",
+          artist_meta: "{festival} {year} - Wochenende {weekend}",
+          artist_title: "{name} - {festival} {year} (Wochenende {weekend}) | Festival Planner",
+          artist_desc: "Offline planen f\u00fcr {festival} {year} Wochenende {weekend}. Kein Account, kein Tracking.",
+          artist_stages_label: "Stages",
+          artist_tags_label: "Tags"
         },
         en: {
-          subtitle: "Artist details (privacy-first, no tracking)",
-          backToLineup: "Back to line-up",
-          privacy: "Offline planning, no account, no tracking.",
-          ratingTitle: "Your rating",
-          ratingLiked: "Liked",
-          ratingMaybe: "Maybe",
-          ratingDisliked: "Nope",
-          ratingUnrated: "Unrated",
-          ratingReset: "Reset",
+          artist_subtitle: "Artist details (privacy-first, no tracking)",
+          artist_back_to_lineup: "Back to line-up",
+          artist_privacy: "Offline planning, no account, no tracking.",
+          artist_rating_title: "Your rating",
+          liked: "Like",
+          maybe: "Maybe",
+          disliked: "Dislike",
+          unrated: "Not rated",
+          rating_reset: "Reset",
           saved: "Saved \u2713",
-          ratingNote: "Stored locally in your browser.",
+          artist_rating_note: "Stored locally in your browser.",
           play: "Play",
-          playMore: "Choose platform",
-          playDefault: "Default",
-          playSetDefault: "Set as default",
-          meta: "Tomorrowland ${YEAR} - Weekend ${weekendNum}",
-          title: artistName + " - Tomorrowland ${YEAR} (Weekend ${weekendNum}) | Festival Planner",
-          desc: "Offline planning for Tomorrowland ${YEAR} Weekend ${weekendNum}. No account, no tracking."
+          play_choose_platform: "Choose platform for {name}",
+          play_open_links: "Open play links for {name}",
+          play_default: "Default",
+          play_set_default: "Set as default",
+          artist_meta: "{festival} {year} - Weekend {weekend}",
+          artist_title: "{name} - {festival} {year} (Weekend {weekend}) | Festival Planner",
+          artist_desc: "Offline planning for {festival} {year} Weekend {weekend}. No account, no tracking.",
+          artist_stages_label: "Stages",
+          artist_tags_label: "Tags"
         }
       };
 
@@ -309,53 +315,78 @@ function renderArtistPage({ artist, weekend, slug }) {
       }
       if (!storedLang && lang) localStorage.setItem("fp_lang", lang);
       document.documentElement.lang = lang;
-      var t = dict[lang];
 
-      var subtitle = document.getElementById("artistSubtitle");
-      if (subtitle) subtitle.textContent = t.subtitle;
-      var backBtn = document.getElementById("backToLineup");
-      if (backBtn) backBtn.textContent = t.backToLineup;
-      var privacy = document.getElementById("artistPrivacy");
-      if (privacy) privacy.textContent = t.privacy;
-      var meta = document.getElementById("artistMeta");
-      if (meta) meta.textContent = t.meta;
-      var ratingTitle = document.getElementById("ratingTitle");
-      if (ratingTitle) ratingTitle.textContent = t.ratingTitle;
-      var ratingNote = document.getElementById("ratingNote");
-      if (ratingNote) ratingNote.textContent = t.ratingNote;
-
-      var titleEl = document.querySelector("title");
-      if (titleEl) titleEl.textContent = t.title;
-      var metaDesc = document.querySelector("meta[name='description']");
-      if (metaDesc) metaDesc.setAttribute("content", t.desc);
-      var ogTitle = document.querySelector("meta[property='og:title']");
-      if (ogTitle) ogTitle.setAttribute("content", t.title);
-      var ogDesc = document.querySelector("meta[property='og:description']");
-      if (ogDesc) ogDesc.setAttribute("content", t.desc);
-      var twTitle = document.querySelector("meta[name='twitter:title']");
-      if (twTitle) twTitle.setAttribute("content", t.title);
-      var twDesc = document.querySelector("meta[name='twitter:description']");
-      if (twDesc) twDesc.setAttribute("content", t.desc);
-
-      var ratingControls = document.getElementById("artistRatingControls");
-      var badge = document.getElementById("artistRatingBadge");
-      if (ratingControls) {
-        var btnLiked = ratingControls.querySelector("[data-rate='liked'] .segLabel");
-        var btnMaybe = ratingControls.querySelector("[data-rate='maybe'] .segLabel");
-        var btnDisliked = ratingControls.querySelector("[data-rate='disliked'] .segLabel");
-        var btnReset = ratingControls.querySelector("[data-rate='unrated'] .segLabel");
-        if (btnLiked) btnLiked.textContent = t.ratingLiked;
-        if (btnMaybe) btnMaybe.textContent = t.ratingMaybe;
-        if (btnDisliked) btnDisliked.textContent = t.ratingDisliked;
-        if (btnReset) btnReset.textContent = t.ratingReset;
+      function formatTemplate(template, vars) {
+        return String(template || "").replace(/\{(\w+)\}/g, function (_, key) {
+          return (vars && key in vars) ? vars[key] : "";
+        });
       }
 
-      var labels = {
-        liked: t.ratingLiked,
-        maybe: t.ratingMaybe,
-        disliked: t.ratingDisliked,
-        unrated: t.ratingUnrated
-      };
+      function applyTranslations(dict) {
+        Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (el) {
+          var key = el.getAttribute("data-i18n");
+          if (key && dict[key]) el.textContent = dict[key];
+        });
+        Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-aria-label]"), function (el) {
+          var key = el.getAttribute("data-i18n-aria-label");
+          if (key && dict[key]) el.setAttribute("aria-label", dict[key]);
+        });
+        Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-title]"), function (el) {
+          var key = el.getAttribute("data-i18n-title");
+          if (key && dict[key]) el.setAttribute("title", dict[key]);
+        });
+      }
+
+      function loadDict() {
+        return fetch("/i18n/" + lang + ".json", { cache: "no-store" })
+          .then(function (res) { return res.ok ? res.json() : null; })
+          .catch(function () { return null; })
+          .then(function (data) { return data || fallback[lang] || fallback.en; });
+      }
+
+      loadDict().then(function (dict) {
+        applyTranslations(dict);
+
+        var festivalName = "${FESTIVAL}".replace(/^./, function (m) { return m.toUpperCase(); });
+        var vars = { name: artistName, festival: festivalName, year: "${YEAR}", weekend: "${weekendNum}" };
+        var titleText = formatTemplate(dict.artist_title || fallback.en.artist_title, vars);
+        var descText = formatTemplate(dict.artist_desc || fallback.en.artist_desc, vars);
+
+        var meta = document.getElementById("artistMeta");
+        if (meta) meta.textContent = formatTemplate(dict.artist_meta || fallback.en.artist_meta, vars);
+
+        var titleEl = document.querySelector("title");
+        if (titleEl) titleEl.textContent = titleText;
+        var metaDesc = document.querySelector("meta[name='description']");
+        if (metaDesc) metaDesc.setAttribute("content", descText);
+        var ogTitle = document.querySelector("meta[property='og:title']");
+        if (ogTitle) ogTitle.setAttribute("content", titleText);
+        var ogDesc = document.querySelector("meta[property='og:description']");
+        if (ogDesc) ogDesc.setAttribute("content", descText);
+        var twTitle = document.querySelector("meta[name='twitter:title']");
+        if (twTitle) twTitle.setAttribute("content", titleText);
+        var twDesc = document.querySelector("meta[name='twitter:description']");
+        if (twDesc) twDesc.setAttribute("content", descText);
+
+        var ratingControls = document.getElementById("artistRatingControls");
+        var badge = document.getElementById("artistRatingBadge");
+        if (ratingControls) {
+          var btnLiked = ratingControls.querySelector("[data-rate='liked'] .segLabel");
+          var btnMaybe = ratingControls.querySelector("[data-rate='maybe'] .segLabel");
+          var btnDisliked = ratingControls.querySelector("[data-rate='disliked'] .segLabel");
+          var btnReset = ratingControls.querySelector("[data-rate='unrated'] .segLabel");
+          if (btnLiked) btnLiked.textContent = dict.liked || fallback.en.liked;
+          if (btnMaybe) btnMaybe.textContent = dict.maybe || fallback.en.maybe;
+          if (btnDisliked) btnDisliked.textContent = dict.disliked || fallback.en.disliked;
+          if (btnReset) btnReset.textContent = dict.rating_reset || fallback.en.rating_reset;
+        }
+
+        var labels = {
+          liked: dict.liked || fallback.en.liked,
+          maybe: dict.maybe || fallback.en.maybe,
+          disliked: dict.disliked || fallback.en.disliked,
+          unrated: dict.unrated || fallback.en.unrated
+        };
 
       var toast = null;
       var toastTimer = null;
@@ -409,12 +440,12 @@ function renderArtistPage({ artist, weekend, slug }) {
           var artistId = ratingControls.getAttribute("data-artist-id") || "";
           if (typeof setRating !== "function") {
             applyState(rate);
-            showToast(t.saved);
+            showToast(dict.saved || fallback.en.saved);
             return;
           }
           Promise.resolve(setRating(artistId, rate)).then(function () {
             applyState(rate);
-            showToast(t.saved);
+            showToast(dict.saved || fallback.en.saved);
           });
         });
       });
@@ -583,11 +614,19 @@ function renderArtistPage({ artist, weekend, slug }) {
           var key = btn.getAttribute("data-provider");
           var isActive = key === current;
           btn.classList.toggle("isActive", isActive);
-          btn.textContent = isActive ? t.playDefault : t.playSetDefault;
+          btn.textContent = isActive
+            ? (dict.play_default || fallback.en.play_default)
+            : (dict.play_set_default || fallback.en.play_set_default);
         });
       }
 
-      if (playBtn) playBtn.addEventListener("click", function () { openDefaultPlay(); });
+      if (playBtn) {
+        playBtn.setAttribute("aria-label", formatTemplate(dict.play_open_links || fallback.en.play_open_links, { name: artistName }));
+        var playText = playBtn.querySelector(".playText");
+        if (playText) playText.textContent = dict.play || fallback.en.play;
+        playBtn.addEventListener("click", function () { openDefaultPlay(); });
+      }
+      if (playMoreBtn) playMoreBtn.setAttribute("aria-label", formatTemplate(dict.play_choose_platform || fallback.en.play_choose_platform, { name: artistName }));
       if (playMoreBtn) playMoreBtn.addEventListener("click", function () { openPlayOverlay(playMoreBtn); });
 
       document.addEventListener("keydown", function (e) {
@@ -600,6 +639,7 @@ function renderArtistPage({ artist, weekend, slug }) {
       window.addEventListener("resize", function () {
         if (!playOverlay || playOverlay.hidden || !playOverlayTrigger) return;
         positionPlayOverlay(playOverlayTrigger);
+      });
       });
     })();
   </script>

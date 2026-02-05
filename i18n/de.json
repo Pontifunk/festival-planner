@@ -1,4 +1,4 @@
-﻿{
+{
   "app_title": "Festival Planner",
   "hero_title": "Dein pers\u00f6nlicher Tomorrowland-Line-up-Planer.",
   "hero_subtitle": "Bewerte DJs, markiere Favoriten und behalte den \u00dcberblick \u00fcber dein Festival-Wochenende \u2013 ohne Account, ohne Tracking.",
@@ -21,6 +21,16 @@
   "play": "Play",
   "play_open_links": "Play-Links f\u00fcr {name} \u00f6ffnen",
   "play_choose_platform": "Plattform f\u00fcr {name} w\u00e4hlen",
+  "artist_subtitle": "Artist-Details (privacy-first, ohne Tracking)",
+  "artist_back_to_lineup": "Zur\u00fcck zum Line-up",
+  "artist_privacy": "Offline planen, ohne Account, ohne Tracking.",
+  "artist_rating_title": "Deine Bewertung",
+  "artist_rating_note": "Lokal in deinem Browser gespeichert.",
+  "artist_meta": "{festival} {year} - Wochenende {weekend}",
+  "artist_title": "{name} - {festival} {year} (Wochenende {weekend}) | Festival Planner",
+  "artist_desc": "Offline planen f\u00fcr {festival} {year} Wochenende {weekend}. Kein Account, kein Tracking.",
+  "artist_stages_label": "B\u00fchnen",
+  "artist_tags_label": "Tags",
   "artist_not_found": "Artist im aktuellen Weekend nicht gefunden.",
   "slot_not_found": "Slot im aktuellen Weekend nicht gefunden.",
   "act_not_found": "Act im aktuellen Weekend nicht gefunden.",
