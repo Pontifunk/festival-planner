@@ -109,6 +109,10 @@
           play_open_links: "Play-Links für {name} öffnen",
           play_default: "Standard",
           play_set_default: "Als Standard setzen",
+          play_copy_label: "DJ-Name in Zwischenablage",
+          play_copy_on: "Aktiviert",
+          play_copy_off: "Aus",
+          play_copy_toast: "DJ-Name kopiert",
           artist_meta: "{festival} {year} - Wochenende {weekend}",
           artist_title: "{name} - {festival} {year} (Wochenende {weekend}) | Festival Planner",
           artist_desc: "Offline planen für {festival} {year} Wochenende {weekend}. Kein Account, kein Tracking.",
@@ -132,6 +136,10 @@
           play_open_links: "Open play links for {name}",
           play_default: "Default",
           play_set_default: "Set as default",
+          play_copy_label: "Copy DJ name to clipboard",
+          play_copy_on: "On",
+          play_copy_off: "Off",
+          play_copy_toast: "DJ name copied",
           artist_meta: "{festival} {year} - Weekend {weekend}",
           artist_title: "{name} - {festival} {year} (Weekend {weekend}) | Festival Planner",
           artist_desc: "Offline planning for {festival} {year} Weekend {weekend}. No account, no tracking.",
@@ -310,8 +318,70 @@
       var playMoreLabel = formatTemplate(dict.play_choose_platform || fallback.en.play_choose_platform, { name: artistName });
       var playOpenLabel = formatTemplate(dict.play_open_links || fallback.en.play_open_links, { name: artistName });
       var playSetDefaultLabel = dict.play_set_default || fallback.en.play_set_default;
+      var playCopyLabel = dict.play_copy_label || fallback.en.play_copy_label;
+      var playCopyOn = dict.play_copy_on || fallback.en.play_copy_on;
+      var playCopyOff = dict.play_copy_off || fallback.en.play_copy_off;
+      var playCopyToast = dict.play_copy_toast || fallback.en.play_copy_toast;
 
       var PLAY_PROVIDER_KEY = "fp_play_provider";
+      var PLAY_COPY_KEY = "fp_play_copy_name";
+
+      function isMobileDevice() {
+        var ua = navigator.userAgent || "";
+        var uaMobile = /iPhone|iPad|iPod|Android/i.test(ua);
+        var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+        return uaMobile || coarse;
+      }
+
+      function isIOSDevice() {
+        var ua = navigator.userAgent || "";
+        if (/iPhone|iPad|iPod/i.test(ua)) return true;
+        return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+      }
+
+      function isStandaloneMode() {
+        if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+        return !!navigator.standalone;
+      }
+
+      function openLink(url) {
+        if (!url) return;
+        if (isIOSDevice() || isStandaloneMode()) {
+          window.location.href = url;
+          return;
+        }
+        var win = window.open(url, "_blank", "noopener,noreferrer");
+        if (!win) window.location.href = url;
+      }
+
+      function openWithFallback(opts) {
+        if (!opts || !opts.deepUrl || !opts.webUrl) return;
+        var timer = null;
+        function cleanup() {
+          if (timer) clearTimeout(timer);
+          timer = null;
+          document.removeEventListener("visibilitychange", onVisibilityChange);
+          window.removeEventListener("pagehide", onPageHide);
+          window.removeEventListener("blur", onBlur);
+        }
+        function openWeb() {
+          cleanup();
+          window.location.href = opts.webUrl;
+        }
+        function onVisibilityChange() {
+          if (document.visibilityState === "hidden") cleanup();
+        }
+        function onPageHide() { cleanup(); }
+        function onBlur() {
+          if (document.visibilityState === "hidden") cleanup();
+        }
+        document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
+        window.addEventListener("pagehide", onPageHide, { once: true });
+        window.addEventListener("blur", onBlur, { once: true });
+        timer = setTimeout(openWeb, 700);
+        window.location.href = opts.deepUrl;
+      }
+
       function makeSpotifySearchUrl(name){ return "https://open.spotify.com/search/" + encodeURIComponent(name); }
       function makeAppleMusicSearchUrl(name){ return "https://music.apple.com/search?term=" + encodeURIComponent(name); }
       function makeYouTubeSearchUrl(name){
@@ -321,14 +391,63 @@
       function makeSoundCloudSearchUrl(name){ return "https://soundcloud.com/search?q=" + encodeURIComponent(name); }
       function getPlayProvider() { return localStorage.getItem(PLAY_PROVIDER_KEY) || "sp"; }
       function setPlayProvider(value) { if (value) localStorage.setItem(PLAY_PROVIDER_KEY, value); }
+      function getPlayCopyEnabled() { return localStorage.getItem(PLAY_COPY_KEY) === "true"; }
+      function setPlayCopyEnabled(value) { localStorage.setItem(PLAY_COPY_KEY, value ? "true" : "false"); }
       function buildPlayUrls(name) {
         return { sp: makeSpotifySearchUrl(name), am: makeAppleMusicSearchUrl(name), yt: makeYouTubeSearchUrl(name), sc: makeSoundCloudSearchUrl(name) };
       }
+
+      function buildPlayLinks(name) {
+        var term = (name || "").trim();
+        var encoded = encodeURIComponent(term);
+        return {
+          sp: { web: "https://open.spotify.com/search/" + encoded, deep: "spotify:search:" + encodeURIComponent(term) },
+          am: { web: "https://music.apple.com/search?term=" + encoded },
+          yt: { web: "https://www.youtube.com/results?search_query=" + encodeURIComponent(((term || "") + " Tomorrowland set").trim()) },
+          sc: { web: "https://soundcloud.com/search?q=" + encoded, deep: "soundcloud://search?q=" + encoded }
+        };
+      }
+
+      function copyArtistName(name) {
+        var text = String(name || "").trim();
+        if (!text) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () {
+            showToast(playCopyToast || "DJ name copied");
+          }).catch(function () {});
+          return;
+        }
+        try {
+          var el = document.createElement("textarea");
+          el.value = text;
+          el.setAttribute("readonly", "true");
+          el.style.position = "absolute";
+          el.style.left = "-9999px";
+          document.body.appendChild(el);
+          el.select();
+          document.execCommand("copy");
+          document.body.removeChild(el);
+          showToast(playCopyToast || "DJ name copied");
+        } catch (e) {}
+      }
+
+      function openPlayService(provider) {
+        var links = buildPlayLinks(artistName);
+        var entry = links && links[provider];
+        if (!entry || !entry.web) return;
+        if (getPlayCopyEnabled()) copyArtistName(artistName);
+        var mobile = isMobileDevice();
+        var allowDeepLink = mobile && entry.deep && provider !== "sc";
+        if (allowDeepLink) {
+          openWithFallback({ deepUrl: entry.deep, webUrl: entry.web, fallbackMs: 700 });
+          return;
+        }
+        openLink(entry.web);
+      }
+
       function openDefaultPlay() {
-        var urls = buildPlayUrls(artistName);
-        var provider = getPlayProvider();
-        var url = urls[provider] || urls.sp;
-        if (url) window.open(url, "_blank", "noopener");
+        var provider = getPlayProvider() || "sp";
+        openPlayService(provider);
       }
 
       var playBtn = document.getElementById("artistPlayBtn");
@@ -345,6 +464,8 @@
       var playOverlayTitle = null;
       var playOverlayLinks = null;
       var playOverlayTrigger = null;
+      var playCopyToggleBtn = null;
+      var playCopyLabelEl = null;
 
       function ensurePlayOverlay() {
         if (playOverlay) return;
@@ -389,13 +510,35 @@
           return { row: row, link: a, setBtn: setBtn };
         }
 
+        function makeToggleRow() {
+          var row = document.createElement("div");
+          row.className = "playRowItem";
+
+          var label = document.createElement("div");
+          label.className = "playLink copy";
+          label.textContent = playCopyLabel;
+
+          var toggle = document.createElement("button");
+          toggle.type = "button";
+          toggle.className = "playDefaultBtn";
+          toggle.setAttribute("data-action", "toggleCopyName");
+          toggle.setAttribute("aria-pressed", "false");
+          toggle.textContent = playCopyOff;
+
+          row.append(label, toggle);
+          return { row: row, label: label, button: toggle };
+        }
+
         var sp = makeRow("sp", "Spotify");
         var am = makeRow("am", "Apple Music");
         var yt = makeRow("yt", "YouTube");
         var sc = makeRow("sc", "SoundCloud");
+        var copyRow = makeToggleRow();
 
         playOverlayLinks = [sp.link, am.link, yt.link, sc.link];
-        list.append(sp.row, am.row, yt.row, sc.row);
+        playCopyToggleBtn = copyRow.button;
+        playCopyLabelEl = copyRow.label;
+        list.append(sp.row, am.row, yt.row, sc.row, copyRow.row);
 
         playOverlayPanel.append(playOverlayTitle, list);
         playOverlay.append(playOverlayPanel);
@@ -408,7 +551,21 @@
         playOverlayPanel.addEventListener("click", function (e) {
           var link = e.target.closest("a.playLink");
           if (link) {
+            var provider = link.getAttribute("data-provider");
+            var shouldIntercept = isMobileDevice() && provider === "sp";
+            if (shouldIntercept || getPlayCopyEnabled()) {
+              e.preventDefault();
+              openPlayService(provider);
+            }
             closePlayOverlay();
+            return;
+          }
+          var copyBtn = e.target.closest("button[data-action='toggleCopyName']");
+          if (copyBtn) {
+            var next = !getPlayCopyEnabled();
+            setPlayCopyEnabled(next);
+            updatePlayDefaultUI();
+            showToast(dict.saved || fallback.en.saved);
             return;
           }
           var setBtn = e.target.closest(".playDefaultBtn");
@@ -449,6 +606,7 @@
         playOverlayLinks[1].href = urls.am;
         playOverlayLinks[2].href = urls.yt;
         playOverlayLinks[3].href = urls.sc;
+        if (playCopyLabelEl) playCopyLabelEl.textContent = playCopyLabel;
         updatePlayDefaultUI();
 
         playOverlay.hidden = false;
@@ -469,7 +627,7 @@
       function updatePlayDefaultUI() {
         if (!playOverlayPanel) return;
         var current = getPlayProvider();
-        Array.prototype.forEach.call(playOverlayPanel.querySelectorAll(".playDefaultBtn"), function (btn) {
+        Array.prototype.forEach.call(playOverlayPanel.querySelectorAll(".playDefaultBtn[data-provider]"), function (btn) {
           var key = btn.getAttribute("data-provider");
           var isActive = key === current;
           btn.classList.toggle("isActive", isActive);
@@ -477,6 +635,12 @@
             ? (dict.play_default || fallback.en.play_default)
             : (dict.play_set_default || fallback.en.play_set_default);
         });
+        if (playCopyToggleBtn) {
+          var enabled = getPlayCopyEnabled();
+          playCopyToggleBtn.classList.toggle("isActive", enabled);
+          playCopyToggleBtn.setAttribute("aria-pressed", enabled ? "true" : "false");
+          playCopyToggleBtn.textContent = enabled ? playCopyOn : playCopyOff;
+        }
       }
 
       var backBtn = document.getElementById("backToLineup");
@@ -503,7 +667,30 @@
         playBtn.setAttribute("aria-label", playOpenLabel);
         var playText = playBtn.querySelector(".playText");
         if (playText) playText.textContent = playLabel;
-        playBtn.addEventListener("click", function () { openDefaultPlay(); });
+        var longPress = { timer: null, fired: false };
+        playBtn.addEventListener("pointerdown", function (e) {
+          if (e.button !== void 0 && e.button !== 0) return;
+          longPress.fired = false;
+          longPress.timer = setTimeout(function () {
+            longPress.fired = true;
+            openPlayOverlay(playBtn);
+          }, 550);
+        }, { passive: true });
+        playBtn.addEventListener("pointerup", function () {
+          if (longPress.timer) clearTimeout(longPress.timer);
+          longPress.timer = null;
+        }, { passive: true });
+        playBtn.addEventListener("pointercancel", function () {
+          if (longPress.timer) clearTimeout(longPress.timer);
+          longPress.timer = null;
+        }, { passive: true });
+        playBtn.addEventListener("click", function (e) {
+          if (longPress.fired) {
+            e.preventDefault();
+            return;
+          }
+          openDefaultPlay();
+        });
       }
       if (playMoreBtn) playMoreBtn.setAttribute("aria-label", playMoreLabel);
       if (playMoreBtn) playMoreBtn.addEventListener("click", function () { openPlayOverlay(playMoreBtn); });
