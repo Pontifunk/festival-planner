@@ -495,11 +495,12 @@ function handleMenuItem(item) {
   const action = item.getAttribute("data-action");
   const target = item.getAttribute("data-target");
   let postClose = null;
+  const baseScroll = menuOpen ? (menuScrollY || window.scrollY || 0) : (window.scrollY || 0);
   if (action === "weekend") {
     const weekend = item.getAttribute("data-weekend");
     if (weekend) setActiveWeekend(weekend, true);
     const id = weekend === "W2" ? "#w2Section" : "#w1Section";
-    postClose = () => scrollToTarget(id);
+    postClose = () => scrollToTarget(id, baseScroll);
   } else if (action === "setDay") {
     const day = item.getAttribute("data-day");
     const w = state.weekends[state.activeWeekend];
@@ -511,7 +512,7 @@ function handleMenuItem(item) {
       }
       updateFiltersUI(state.activeWeekend);
       renderActiveWeekend();
-      postClose = () => scrollToTarget(`#day-${day}`);
+      postClose = () => scrollToTarget(`#day-${day}`, baseScroll);
     }
   } else if (action === "setLang") {
     const nextLang = item.getAttribute("data-lang");
@@ -525,7 +526,7 @@ function handleMenuItem(item) {
     if (searchInput) {
       postClose = () => {
         searchInput.focus();
-        scrollToTarget("#searchInput");
+        scrollToTarget("#searchInput", baseScroll);
       };
     }
   } else if (action === "exportRatings") {
@@ -533,7 +534,7 @@ function handleMenuItem(item) {
   } else if (action === "importRatings") {
     if (importRatingsInput) importRatingsInput.click();
   } else if (target) {
-    postClose = () => scrollToTarget(target);
+    postClose = () => scrollToTarget(target, baseScroll);
   }
   // Close menu without restoring scroll, then run the target scroll.
   closeMenu(false);
@@ -545,7 +546,7 @@ function handleMenuItem(item) {
 }
 
 // Scrolls smoothly to the given selector.
-function scrollToTarget(selector) {
+function scrollToTarget(selector, baseScrollY) {
   if (!selector) return;
   if (selector === "#top") {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -554,7 +555,8 @@ function scrollToTarget(selector) {
   const el = document.querySelector(selector);
   if (!el) return;
   const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
-  const y = el.getBoundingClientRect().top + window.scrollY - Math.ceil(topbarHeight) - 8;
+  const base = Number.isFinite(baseScrollY) ? baseScrollY : window.scrollY;
+  const y = el.getBoundingClientRect().top + base - Math.ceil(topbarHeight) - 8;
   window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
 }
 
