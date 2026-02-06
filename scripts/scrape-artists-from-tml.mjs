@@ -30,6 +30,45 @@ function hash16(str) {
   return crypto.createHash("sha256").update(str).digest("hex").slice(0, 16);
 }
 
+function extractTmlArtistIdFromUrl(value) {
+  if (!value || typeof value !== "string") return "";
+  const m = value.match(/[?&]artist=(\d+)/);
+  return m ? m[1] : "";
+}
+
+function extractTmlArtistIdFromNode(node) {
+  if (!node || typeof node !== "object") return "";
+  const urlKeys = [
+    "url",
+    "href",
+    "link",
+    "permalink",
+    "artistUrl",
+    "artistURL",
+    "artist_url",
+    "artistLink",
+    "artist_link",
+    "pageUrl",
+    "pageURL",
+    "page_url",
+    "shareUrl",
+    "shareURL",
+    "share_url"
+  ];
+  for (const key of urlKeys) {
+    const value = node[key];
+    const id = extractTmlArtistIdFromUrl(value);
+    if (id) return id;
+  }
+  for (const value of Object.values(node)) {
+    if (typeof value === "string") {
+      const id = extractTmlArtistIdFromUrl(value);
+      if (id) return id;
+    }
+  }
+  return "";
+}
+
 // Build a deterministic artist ID from the name.
 function makeArtistId(name) {
   return hash16(`tml|${normalizeName(name)}`);
@@ -54,7 +93,11 @@ function findArtistsPayload(jsonPayloads) {
     const str = JSON.stringify(obj).toLowerCase();
     const looksLikeArtists =
       str.includes("artist") && str.includes("name") && !str.includes("start") && !str.includes("stage");
+    const hasArtistLinks = str.includes("artist=") && str.includes("line-up");
+    const hasPerformances = Array.isArray(obj?.performances);
     if (looksLikeArtists) return obj;
+    if (hasArtistLinks) return obj;
+    if (hasPerformances) return obj;
   }
 
   return null;
@@ -67,6 +110,26 @@ function findArtistsPayload(jsonPayloads) {
 // Extract artists from a payload via deep traversal.
 function extractArtistsFromPayload(payload) {
   const found = [];
+
+  if (payload && Array.isArray(payload.performances)) {
+    payload.performances.forEach((performance) => {
+      const artists = Array.isArray(performance?.artists) ? performance.artists : [];
+      artists.forEach((artist) => {
+        const name = String(artist?.name || "").trim();
+        const id = String(artist?.id || "").trim();
+        if (!name) return;
+        found.push({
+          name,
+          nameNormalized: normalizeName(name),
+          artistId: makeArtistId(name),
+          slug: null,
+          image: typeof artist?.image === "string" ? artist.image : null,
+          genres: [],
+          ...(id ? { tomorrowlandArtistId: id } : {})
+        });
+      });
+    });
+  }
 
   function walk(node) {
     if (!node) return;
@@ -93,6 +156,7 @@ function extractArtistsFromPayload(payload) {
 
       if (name && typeof name === "string") {
         const cleanName = name.trim();
+        const tomorrowlandArtistId = extractTmlArtistIdFromNode(node) ?? "";
         if (cleanName.length >= 2) {
           found.push({
             name: cleanName,
@@ -102,7 +166,8 @@ function extractArtistsFromPayload(payload) {
             image: typeof image === "string" ? image : null,
             genres: Array.isArray(genres)
               ? genres.map(g => String(g).trim()).filter(Boolean)
-              : (typeof genres === "string" ? [genres.trim()].filter(Boolean) : [])
+              : (typeof genres === "string" ? [genres.trim()].filter(Boolean) : []),
+            ...(tomorrowlandArtistId ? { tomorrowlandArtistId } : {})
           });
         }
       }
@@ -124,7 +189,8 @@ function extractArtistsFromPayload(payload) {
         ...prev,
         slug: prev.slug ?? a.slug,
         image: prev.image ?? a.image,
-        genres: prev.genres.length ? prev.genres : a.genres
+        genres: prev.genres.length ? prev.genres : a.genres,
+        tomorrowlandArtistId: prev.tomorrowlandArtistId || a.tomorrowlandArtistId
       });
     }
   }
@@ -143,6 +209,42 @@ async function extractArtistsFromDOM(page) {
   // (Selektoren sind bewusst generisch)
   await page.waitForTimeout(1500);
 
+  const linkEntries = await page.$$eval("a[href*='artist=']", (nodes) => {
+    return nodes.map((n) => ({
+      name: (n.textContent || "").trim(),
+      href: n.getAttribute("href") || ""
+    }));
+  });
+  const artistsFromLinks = linkEntries
+    .map((entry) => {
+      const name = String(entry.name || "").trim();
+      if (!name) return null;
+      const m = String(entry.href || "").match(/[?&]artist=(\d+)/);
+      if (!m) return null;
+      return { name, id: m[1] };
+    })
+    .filter(Boolean);
+
+  if (artistsFromLinks.length) {
+    const byId = new Map();
+    artistsFromLinks.forEach((entry) => {
+      const cleanName = String(entry.name || "").trim();
+      if (!cleanName) return;
+      const artistId = makeArtistId(cleanName);
+      if (byId.has(artistId)) return;
+      byId.set(artistId, {
+        name: cleanName,
+        nameNormalized: normalizeName(cleanName),
+        artistId,
+        slug: null,
+        image: null,
+        genres: [],
+        tomorrowlandArtistId: entry.id
+      });
+    });
+    return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
+  }
+
   const names = await page.$$eval("a, div, span", (nodes) => {
     // Heuristik: viele Artist-Namen sind Links/Items; wir filtern kurze/irrelevante Strings raus
     const text = nodes
@@ -155,14 +257,18 @@ async function extractArtistsFromDOM(page) {
   const blacklist = new Set(["line-up", "artists", "stages", "day", "weekend"]);
   const cleaned = names.filter(t => !blacklist.has(t.toLowerCase()));
 
-  const artists = cleaned.map(name => ({
-    name,
-    nameNormalized: normalizeName(name),
-    artistId: makeArtistId(name),
-    slug: null,
-    image: null,
-    genres: []
-  }));
+  const artists = cleaned.map(name => {
+    const tomorrowlandArtistId = "";
+    return {
+      name,
+      nameNormalized: normalizeName(name),
+      artistId: makeArtistId(name),
+      slug: null,
+      image: null,
+      genres: [],
+      ...(tomorrowlandArtistId ? { tomorrowlandArtistId } : {})
+    };
+  });
 
   // dedup + sort
   const byId = new Map();

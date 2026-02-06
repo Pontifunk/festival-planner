@@ -43,6 +43,7 @@ for (const slot of slots) {
     const meta = artistMeta.get(artistId) || {};
     const genres = Array.isArray(meta.genres) ? meta.genres.map(g => String(g || "")).filter(Boolean) : [];
     const links = extractSameAs(meta);
+    const tomorrowlandArtistId = String(meta.tomorrowlandArtistId ?? "").trim();
     artists.set(artistId, {
       id: artistId,
       name,
@@ -50,7 +51,8 @@ for (const slot of slots) {
       slots: [],
       stages: new Set(),
       genres,
-      links
+      links,
+      ...(tomorrowlandArtistId ? { tomorrowlandArtistId } : {})
     });
   }
   const entry = artists.get(artistId);
@@ -149,6 +151,10 @@ function renderArtistPage({ artist, weekend, slug }) {
   const stages = Array.from(artist.stages).sort();
   const genres = Array.isArray(artist.genres) ? artist.genres : [];
   const plannerUrl = `/${FESTIVAL}/${YEAR}/${weekendLower}/?artist=${encodeURIComponent(slug)}`;
+  const tomorrowlandArtistId = String(artist.tomorrowlandArtistId ?? "").trim();
+  const tmlUrlEn = tomorrowlandArtistId
+    ? `https://belgium.tomorrowland.com/en/line-up/?page=artists&artist=${encodeURIComponent(tomorrowlandArtistId)}`
+    : "";
   const sameAs = Array.isArray(artist.links)
     ? artist.links.map(link => String(link || "")).filter(Boolean)
     : [];
@@ -199,6 +205,11 @@ function renderArtistPage({ artist, weekend, slug }) {
     <section class="panel">
       <div class="card">
         <div class="cardTitle">${escapeHtml(artist.name)}</div>
+        ${tomorrowlandArtistId ? `
+        <div class="tmlLinkRow">
+          <a class="tmlLink" href="${escapeHtml(tmlUrlEn)}" target="_blank" rel="noopener noreferrer" aria-label="Open official Tomorrowland artist page" title="Official Tomorrowland page" data-tml-id="${escapeHtml(tomorrowlandArtistId)}" data-i18n="tml_artist_page">Tomorrowland Artist Page \u2197</a>
+        </div>
+        ` : ""}
         <div class="muted" id="artistMeta" data-i18n="artist_meta">Tomorrowland ${YEAR} - Wochenende ${weekendNum}</div>
         <div style="margin-top:12px">
           <button class="btn" id="backToLineup" type="button" data-fallback="${escapeHtml(plannerUrl)}" data-i18n="artist_back_to_lineup">Back to line-up</button>
@@ -275,6 +286,7 @@ function renderArtistPage({ artist, weekend, slug }) {
           play_copy_on: "Aktiviert",
           play_copy_off: "Aus",
           play_copy_toast: "DJ-Name kopiert",
+          tml_artist_page: "Tomorrowland DJ-Seite \u2197",
           artist_meta: "{festival} {year} - Wochenende {weekend}",
           artist_title: "{name} - {festival} {year} (Wochenende {weekend}) | Festival Planner",
           artist_desc: "Offline planen f\u00fcr {festival} {year} Wochenende {weekend}. Kein Account, kein Tracking.",
@@ -302,6 +314,7 @@ function renderArtistPage({ artist, weekend, slug }) {
           play_copy_on: "On",
           play_copy_off: "Off",
           play_copy_toast: "DJ name copied",
+          tml_artist_page: "Tomorrowland DJ Page \u2197",
           artist_meta: "{festival} {year} - Weekend {weekend}",
           artist_title: "{name} - {festival} {year} (Weekend {weekend}) | Festival Planner",
           artist_desc: "Offline planning for {festival} {year} Weekend {weekend}. No account, no tracking.",
@@ -323,6 +336,16 @@ function renderArtistPage({ artist, weekend, slug }) {
       }
       if (!storedLang && lang) localStorage.setItem("fp_lang", lang);
       document.documentElement.lang = lang;
+
+      var tmlLink = document.querySelector(".tmlLink[data-tml-id]");
+      if (tmlLink) {
+        var tmlId = tmlLink.getAttribute("data-tml-id") || "";
+        var tmlLocale = (lang === "nl" || lang === "fr" || lang === "en") ? lang : "en";
+        tmlLink.setAttribute(
+          "href",
+          "https://belgium.tomorrowland.com/" + tmlLocale + "/line-up/?page=artists&artist=" + encodeURIComponent(tmlId)
+        );
+      }
 
       function formatTemplate(template, vars) {
         return String(template || "").replace(/\\{(\\w+)\\}/g, function (_, key) {

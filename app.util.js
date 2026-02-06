@@ -97,6 +97,19 @@ function resolveLangValue(value) {
   return value[active] || value.en || value.de || "";
 }
 
+function normalizeTomorrowlandLocale(locale) {
+  const base = String(locale || "").toLowerCase().split("-")[0];
+  if (base === "nl" || base === "fr" || base === "en") return base;
+  return "en";
+}
+
+function buildTomorrowlandArtistUrl(id, locale) {
+  const artistId = String(id || "").trim();
+  if (!artistId) return "";
+  const safeLocale = normalizeTomorrowlandLocale(locale || getActiveLang());
+  return `https://belgium.tomorrowland.com/${safeLocale}/line-up/?page=artists&artist=${encodeURIComponent(artistId)}`;
+}
+
 // Returns the localized rating label for a state.
 function getRatingLabel(key, { kind = "action" } = {}) {
   const meta = RATING_META?.[key];

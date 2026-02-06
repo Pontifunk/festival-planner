@@ -37,6 +37,11 @@
     <section class="panel">
       <div class="card">
         <div class="cardTitle">Pat B</div>
+        
+        <div class="tmlLinkRow">
+          <a class="tmlLink" href="https://belgium.tomorrowland.com/en/line-up/?page=artists&amp;artist=1536132018" target="_blank" rel="noopener noreferrer" aria-label="Open official Tomorrowland artist page" title="Official Tomorrowland page" data-tml-id="1536132018" data-i18n="tml_artist_page">Tomorrowland Artist Page ↗</a>
+        </div>
+        
         <div class="muted" id="artistMeta" data-i18n="artist_meta">Tomorrowland 2026 - Wochenende 1</div>
         <div style="margin-top:12px">
           <button class="btn" id="backToLineup" type="button" data-fallback="/tomorrowland/2026/w1/?artist=pat-b" data-i18n="artist_back_to_lineup">Back to line-up</button>
@@ -113,6 +118,7 @@
           play_copy_on: "Aktiviert",
           play_copy_off: "Aus",
           play_copy_toast: "DJ-Name kopiert",
+          tml_artist_page: "Tomorrowland DJ-Seite ↗",
           artist_meta: "{festival} {year} - Wochenende {weekend}",
           artist_title: "{name} - {festival} {year} (Wochenende {weekend}) | Festival Planner",
           artist_desc: "Offline planen für {festival} {year} Wochenende {weekend}. Kein Account, kein Tracking.",
@@ -140,6 +146,7 @@
           play_copy_on: "On",
           play_copy_off: "Off",
           play_copy_toast: "DJ name copied",
+          tml_artist_page: "Tomorrowland DJ Page ↗",
           artist_meta: "{festival} {year} - Weekend {weekend}",
           artist_title: "{name} - {festival} {year} (Weekend {weekend}) | Festival Planner",
           artist_desc: "Offline planning for {festival} {year} Weekend {weekend}. No account, no tracking.",
@@ -161,6 +168,16 @@
       }
       if (!storedLang && lang) localStorage.setItem("fp_lang", lang);
       document.documentElement.lang = lang;
+
+      var tmlLink = document.querySelector(".tmlLink[data-tml-id]");
+      if (tmlLink) {
+        var tmlId = tmlLink.getAttribute("data-tml-id") || "";
+        var tmlLocale = (lang === "nl" || lang === "fr" || lang === "en") ? lang : "en";
+        tmlLink.setAttribute(
+          "href",
+          "https://belgium.tomorrowland.com/" + tmlLocale + "/line-up/?page=artists&artist=" + encodeURIComponent(tmlId)
+        );
+      }
 
       function formatTemplate(template, vars) {
         return String(template || "").replace(/\{(\w+)\}/g, function (_, key) {

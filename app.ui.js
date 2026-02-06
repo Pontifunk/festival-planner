@@ -222,6 +222,9 @@ function renderSlot(slot, weekend) {
   const artistId = slot.artistId || "";
   const name = slot.artist || (t("unknown_artist") || "Unknown artist");
   const artistUrl = getArtistPageUrl(weekend, artistId);
+  const tmlId = state.artists.byId.get(artistId)?.tomorrowlandArtistId ?? slot.tomorrowlandArtistId ?? null;
+  const tmlUrl = tmlId ? buildTomorrowlandArtistUrl(tmlId, getActiveLang()) : "";
+  const tmlLabel = t("tml_artist_page") || (getActiveLang() === "de" ? "Tomorrowland Artist-Seite \u2197" : "Tomorrowland Artist Page \u2197");
   const stage = normalizeStage(slot.stage);
   const start = formatTime(slot.start);
   const end = formatTime(slot.end);
@@ -241,8 +244,13 @@ function renderSlot(slot, weekend) {
         <div class="actName">
           ${artistUrl
             ? `<a class="actNameLink" href="${escapeAttr(artistUrl)}">${escapeHtml(name)}</a>`
-            : `${escapeHtml(name)}`}
+            : `<span class="actNameText">${escapeHtml(name)}</span>`}
         </div>
+        ${tmlUrl
+          ? `<div class="tmlLinkRow">
+              <a class="tmlLink" href="${escapeAttr(tmlUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open official Tomorrowland artist page" title="Official Tomorrowland page">${escapeHtml(tmlLabel)}</a>
+            </div>`
+          : ""}
         <div class="actMeta">${escapeHtml(timeRange)} \u00b7 ${escapeHtml(stage)}</div>
       </div>
 
@@ -1291,6 +1299,12 @@ function bindRatingMenus(container, weekend) {
   const ratingCycle = RATING_CYCLE;
 
   container.addEventListener("click", async (e) => {
+    const tmlLink = e.target.closest(".tmlLink");
+    if (tmlLink && container.contains(tmlLink)) {
+      e.stopPropagation();
+      return;
+    }
+
     const chip = e.target.closest(".ratingSegBtn");
     if (chip && container.contains(chip)) {
       e.preventDefault();

@@ -36,6 +36,7 @@
   "slot_not_found": "Slot not found in the current weekend.",
   "act_not_found": "Act not found in the current weekend.",
   "intro": "Find out which DJs really fit you. Explore the Tomorrowland line-up, rate acts, mark favorites, and plan your weekend — private, no login, no tracking.",
+  "tml_artist_page": "Tomorrowland DJ Page ?",
   "weekend": "Weekend",
   "language": "Language",
   "festival": "Festival",
@@ -183,11 +184,5 @@
   "toggle_all": "All",
   "toggle_favorites_only": "Favorites only",
   "rating_progress": "You have rated {rated}/{total} artists.",
-  "not_available_yet": "Not available yet",
-  "festival": "Festival",
-  "year": "Year",
-  "filters": "Filters",
-  "open_spotify": "Spotify",
-  "open_apple": "Apple Music",
-  "open_youtube": "YouTube"
+  "not_available_yet": "Not available yet"
 }

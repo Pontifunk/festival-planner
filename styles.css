@@ -861,6 +861,7 @@ button{
 
 .act:hover{background:rgba(255,255,255,.06)}
 .actName{font-weight:900;font-size:18px}
+.actNameText{display:inline-block}
 .actNameLink{
   color:var(--text);
   text-decoration:none;
@@ -870,6 +871,34 @@ button{
 }
 .actNameLink:hover{text-decoration:underline}
 .actNameLink:focus-visible{outline:2px solid rgba(107,92,255,.7);outline-offset:2px;border-radius:4px}
+.tmlLink{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.tmlLink:hover{
+  color:var(--text);
+  border-color:rgba(255,255,255,.25);
+  background:rgba(255,255,255,.08);
+}
+.tmlLink:focus-visible{outline:2px solid rgba(107,92,255,.7);outline-offset:2px;border-radius:999px}
+.tmlLinkRow{margin:8px 0 2px}
+.artistHeaderActions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:12px;
+  flex-wrap:wrap;
+}
 .actMeta{color:var(--muted);font-size:12px;margin-top:4px}
 
 .badges{

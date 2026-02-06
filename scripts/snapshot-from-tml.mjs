@@ -8,6 +8,7 @@ import { chromium } from "playwright";
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const BASE = path.join(ROOT_DIR, "data", "tomorrowland", "2026");
 const SNAP_DIR = path.join(BASE, "snapshots");
+const ARTISTS_LATEST = path.join(BASE, "artists", "latest.json");
 
 // Day URLs to scrape (W1 + W2).
 const DAY_URLS = [
@@ -25,6 +26,19 @@ const DAY_URLS = [
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function writeJson(file, obj) { fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n", "utf8"); }
 function readJsonSafe(file, fallback) { try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch { return fallback; } }
+
+function loadTomorrowlandArtistMap() {
+  const data = readJsonSafe(ARTISTS_LATEST, null);
+  const map = new Map();
+  if (data && Array.isArray(data.artists)) {
+    data.artists.forEach((artist) => {
+      const artistId = String(artist?.artistId || "");
+      const tmlId = String(artist?.tomorrowlandArtistId || "").trim();
+      if (artistId && tmlId) map.set(artistId, tmlId);
+    });
+  }
+  return map;
+}
 
 // Normalize artist names for stable IDs.
 function normalizeArtist(name) {
@@ -282,6 +296,7 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
 
   try {
+    const tmlArtistMap = loadTomorrowlandArtistMap();
     const allSlots = [];
     for (const url of DAY_URLS) {
       const daySlots = await fetchDay(browser, url);
@@ -297,7 +312,12 @@ async function main() {
     }
 
     // IDs ergänzen
-    const slotsWithIds = [...uniq.values()].map(s => ({ ...s, ...makeIds(s) }));
+    const slotsWithIds = [...uniq.values()].map(s => {
+      const withIds = { ...s, ...makeIds(s) };
+      const tmlId = tmlArtistMap.get(withIds.artistId) ?? null;
+      if (tmlId) withIds.tomorrowlandArtistId = tmlId;
+      return withIds;
+    });
 
     // Optional: getrennte Snapshots pro Weekend
     const byWeekend = slotsWithIds.reduce((acc, s) => {
