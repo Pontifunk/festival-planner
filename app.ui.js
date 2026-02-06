@@ -570,7 +570,12 @@ function scrollToTarget(selector, baseScrollY) {
   })();
   if (selector === "#top") {
     if (debugMenu) console.info("[menu] scroll top");
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => {
+      if (window.scrollY !== 0) window.scrollTo(0, 0);
+    }, 120);
     return;
   }
   const el = document.querySelector(selector);
@@ -582,7 +587,13 @@ function scrollToTarget(selector, baseScrollY) {
   const base = Number.isFinite(baseScrollY) ? baseScrollY : window.scrollY;
   const y = el.getBoundingClientRect().top + base - Math.ceil(topbarHeight) - 8;
   if (debugMenu) console.info("[menu] scroll", { selector, y, topbarHeight, scrollY: window.scrollY, baseScroll: base });
-  window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+  const targetY = Math.max(0, y);
+  window.scrollTo({ top: targetY, behavior: "smooth" });
+  setTimeout(() => {
+    if (Math.abs(window.scrollY - targetY) > 4) {
+      window.scrollTo(0, targetY);
+    }
+  }, 140);
 }
 
 // Populates menu day links for quick navigation.
