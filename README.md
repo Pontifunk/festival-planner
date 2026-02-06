@@ -12,6 +12,8 @@ A lightweight, installable Progressive Web App (PWA) that helps you explore the 
 - Rate artists: Liked / Maybe / Disliked / Reset (unrated)
 - Ratings stored locally only (IndexedDB)
 - Quick links to Spotify, Apple Music, YouTube, and SoundCloud
+- Device-aware deep links with web fallback (Spotify mobile)
+- Optional “Copy DJ name to clipboard” toggle in Play overlay
 - Favorites view
 - Language support: German / English
 - Dark-mode-first, mobile-optimized UI
@@ -121,6 +123,7 @@ Outputs:
 - `dist/styles.min.css`
 
 The HTML entry points reference the `/dist` assets in production.
+`dist/` is ignored in git and is produced during CI deploys.
 
 ## GitHub Pages
 
@@ -142,6 +145,19 @@ You can override defaults via environment variables:
 - `SITE_ORIGIN` (e.g. `https://festival-planner.org`)
 - `FESTIVAL` (e.g. `tomorrowland`)
 - `YEAR` (e.g. `2026`)
+
+---
+
+## Play Links Behavior
+
+- Spotify:
+  - Mobile: attempts deep link `spotify:search:<QUERY>` then falls back to web after ~700ms.
+  - Desktop: opens web search directly.
+- SoundCloud:
+  - Web search only (deep links disabled for reliability).
+- Apple Music / YouTube: web search.
+- Optional clipboard: users can enable “Copy DJ name to clipboard” in the Play overlay; the setting is stored locally.
+- On iOS/PWA, web links open in the same tab to avoid popup blocking.
 
 ---
 
