@@ -1597,6 +1597,7 @@ function openLink(url){
 
 const DEFAULT_PLAY_PROVIDER = "sp";
 const PLAY_PROVIDER_KEY = "fp_play_provider";
+const PLAY_COPY_KEY = "fp_play_copy_name";
 
 function getPlayProvider() {
   return localStorage.getItem(PLAY_PROVIDER_KEY) || DEFAULT_PLAY_PROVIDER;
@@ -1607,11 +1608,21 @@ function setPlayProvider(value) {
   localStorage.setItem(PLAY_PROVIDER_KEY, value);
 }
 
+function getPlayCopyEnabled() {
+  return localStorage.getItem(PLAY_COPY_KEY) === "true";
+}
+
+function setPlayCopyEnabled(value) {
+  localStorage.setItem(PLAY_COPY_KEY, value ? "true" : "false");
+}
+
 let playOverlay = null;
 let playOverlayPanel = null;
 let playOverlayTitle = null;
 let playOverlayLinks = null;
 let playOverlayTrigger = null;
+let playCopyToggleBtn = null;
+let playCopyLabel = null;
 
 // Basic normalization for multi-artist strings (b2b, &, x, feat).
 function normalizeSearchTerm(name) {
@@ -1634,10 +1645,36 @@ function buildPlayUrls(name) {
   };
 }
 
+async function copyArtistName(name) {
+  const text = String(name || "").trim();
+  if (!text) return;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const el = document.createElement("textarea");
+      el.value = text;
+      el.setAttribute("readonly", "true");
+      el.style.position = "absolute";
+      el.style.left = "-9999px";
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    showToast(t("play_copy_toast") || "Name copied");
+  } catch {
+    // Silently ignore clipboard errors.
+  }
+}
+
 function openPlayService(provider, name) {
   const links = buildPlayLinks(name);
   const entry = links?.[provider];
   if (!entry || !entry.web) return;
+  if (getPlayCopyEnabled()) {
+    copyArtistName(name);
+  }
   const mobile = isMobileDevice();
   const allowDeepLink = mobile && entry.deep && provider !== "sc";
   if (allowDeepLink) {
@@ -1698,14 +1735,36 @@ function ensurePlayOverlay() {
     return { row, link: a, button: setBtn };
   };
 
+  const makeToggleRow = () => {
+    const row = document.createElement("div");
+    row.className = "playRowItem";
+
+    const label = document.createElement("div");
+    label.className = "playLink copy";
+    label.textContent = t("play_copy_label") || "Copy DJ name";
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "playDefaultBtn";
+    toggle.setAttribute("data-action", "toggleCopyName");
+    toggle.setAttribute("aria-pressed", "false");
+    toggle.textContent = t("play_copy_off") || "Off";
+
+    row.append(label, toggle);
+    return { row, label, button: toggle };
+  };
+
   const sp = makeRow("sp", "Spotify");
   const am = makeRow("am", "Apple Music");
   const yt = makeRow("yt", "YouTube");
   const sc = makeRow("sc", "SoundCloud");
+  const copyRow = makeToggleRow();
 
   playOverlayLinks = [sp.link, am.link, yt.link, sc.link];
+  playCopyToggleBtn = copyRow.button;
+  playCopyLabel = copyRow.label;
 
-  list.append(sp.row, am.row, yt.row, sc.row);
+  list.append(sp.row, am.row, yt.row, sc.row, copyRow.row);
   playOverlayPanel.append(playOverlayTitle, list);
   playOverlay.append(playOverlayPanel);
   document.body.append(playOverlay);
@@ -1720,11 +1779,19 @@ function ensurePlayOverlay() {
       const provider = link.getAttribute("data-provider");
       const name = playOverlayTitle?.dataset?.artistName || "";
       const shouldIntercept = isMobileDevice() && provider === "sp";
-      if (shouldIntercept) {
+      if (shouldIntercept || getPlayCopyEnabled()) {
         e.preventDefault();
         openPlayService(provider, name);
       }
       closePlayOverlay();
+      return;
+    }
+    const copyBtn = e.target.closest("button[data-action='toggleCopyName']");
+    if (copyBtn) {
+      const next = !getPlayCopyEnabled();
+      setPlayCopyEnabled(next);
+      updatePlayDefaultUI();
+      showToast(t("saved") || "Gespeichert ✓");
       return;
     }
     const setBtn = e.target.closest(".playDefaultBtn");
@@ -1852,6 +1919,7 @@ function openPlayOverlay(artist, trigger) {
   playOverlayLinks[1].href = urls.am;
   playOverlayLinks[2].href = urls.yt;
   playOverlayLinks[3].href = urls.sc;
+  if (playCopyLabel) playCopyLabel.textContent = t("play_copy_label") || "Copy DJ name";
   updatePlayDefaultUI();
 
   playOverlay.hidden = false;
@@ -1876,12 +1944,18 @@ function closePlayOverlay() {
 function updatePlayDefaultUI() {
   if (!playOverlayPanel) return;
   const current = getPlayProvider();
-  playOverlayPanel.querySelectorAll(".playDefaultBtn").forEach((btn) => {
+  playOverlayPanel.querySelectorAll(".playDefaultBtn[data-provider]").forEach((btn) => {
     const key = btn.getAttribute("data-provider");
     const isActive = key === current;
     btn.classList.toggle("isActive", isActive);
     btn.textContent = isActive ? (t("play_default") || "Default") : (t("play_set_default") || "Set as default");
   });
+  if (playCopyToggleBtn) {
+    const enabled = getPlayCopyEnabled();
+    playCopyToggleBtn.classList.toggle("isActive", enabled);
+    playCopyToggleBtn.setAttribute("aria-pressed", enabled ? "true" : "false");
+    playCopyToggleBtn.textContent = enabled ? (t("play_copy_on") || "On") : (t("play_copy_off") || "Off");
+  }
 }
 
 // ====== CUSTOM SELECT ======
