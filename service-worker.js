@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const BUILD_ID = "2026-02-06-2";
+const BUILD_ID = "2026-02-06-3";
 const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 // Assets are served from the site root.
 const withBase = (path) => path;

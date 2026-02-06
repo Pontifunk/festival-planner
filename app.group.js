@@ -936,6 +936,11 @@
       const selected = opt.value === active ? " selected" : "";
       return `<option value="${escapeAttr(opt.value)}"${selected}>${escapeHtml(opt.label)}</option>`;
     }).join("");
+    if (typeof rebuildCustomSelect === "function") {
+      rebuildCustomSelect(personFilter);
+    } else if (typeof initCustomSelect === "function") {
+      initCustomSelect(personFilter);
+    }
   }
 
   function classifyGroupItem({ approvalPct, rejectPct, dislikeCount, likeCount, groupSize }) {

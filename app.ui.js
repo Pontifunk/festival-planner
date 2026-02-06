@@ -1973,9 +1973,10 @@ function updatePlayDefaultUI() {
 }
 
 // ====== CUSTOM SELECT ======
-function initCustomSelect(selectEl) {
-  if (!selectEl) return;
-  const useNative = window.matchMedia("(max-width: 720px)").matches;
+  function initCustomSelect(selectEl) {
+    if (!selectEl) return;
+    const forceCustom = selectEl.dataset.forceCustom === "true";
+    const useNative = !forceCustom && window.matchMedia("(max-width: 720px)").matches;
   if (useNative) {
     const wrapper = selectEl.parentNode?.querySelector(".selectWrap");
     if (wrapper) wrapper.remove();
