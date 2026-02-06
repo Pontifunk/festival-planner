@@ -495,6 +495,16 @@ function handleMenuItem(item) {
   const action = item.getAttribute("data-action");
   const target = item.getAttribute("data-target");
   let postClose = null;
+  const debugMenu = (() => {
+    try {
+      return new URLSearchParams(window.location.search || "").get("debugMenu") === "1";
+    } catch {
+      return false;
+    }
+  })();
+  if (debugMenu) {
+    console.info("[menu] click", { action, target, text: item?.textContent?.trim() });
+  }
   if (action === "weekend") {
     const weekend = item.getAttribute("data-weekend");
     if (weekend) setActiveWeekend(weekend, true);
@@ -545,14 +555,26 @@ function handleMenuItem(item) {
 // Scrolls smoothly to the given selector.
 function scrollToTarget(selector) {
   if (!selector) return;
+  const debugMenu = (() => {
+    try {
+      return new URLSearchParams(window.location.search || "").get("debugMenu") === "1";
+    } catch {
+      return false;
+    }
+  })();
   if (selector === "#top") {
+    if (debugMenu) console.info("[menu] scroll top");
     window.scrollTo({ top: 0, behavior: "smooth" });
     return;
   }
   const el = document.querySelector(selector);
-  if (!el) return;
+  if (!el) {
+    if (debugMenu) console.warn("[menu] target not found", selector);
+    return;
+  }
   const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
   const y = el.getBoundingClientRect().top + window.scrollY - Math.ceil(topbarHeight) - 8;
+  if (debugMenu) console.info("[menu] scroll", { selector, y, topbarHeight, scrollY: window.scrollY });
   window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
 }
 
