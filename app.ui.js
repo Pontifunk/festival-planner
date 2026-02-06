@@ -499,10 +499,6 @@ function handleMenuItem(item) {
   const action = item.getAttribute("data-action");
   const target = item.getAttribute("data-target");
   let postClose = null;
-  const bodyTop = parseFloat(document.body.style.top || "0");
-  const baseScroll = menuOpen
-    ? (menuScrollY || Math.abs(bodyTop || 0) || window.scrollY || 0)
-    : (window.scrollY || 0);
   const debugMenu = (() => {
     try {
       return new URLSearchParams(window.location.search || "").get("debugMenu") === "1";
@@ -511,13 +507,13 @@ function handleMenuItem(item) {
     }
   })();
   if (debugMenu) {
-    console.info("[menu] click", { action, target, text: item?.textContent?.trim(), baseScroll, menuScrollY, bodyTop });
+    console.info("[menu] click", { action, target, text: item?.textContent?.trim(), menuScrollY, bodyTop: document.body.style.top || "" });
   }
   if (action === "weekend") {
     const weekend = item.getAttribute("data-weekend");
     if (weekend) setActiveWeekend(weekend, true);
     const id = weekend === "W2" ? "#w2Section" : "#w1Section";
-    postClose = () => scrollToTarget(id, baseScroll);
+    postClose = () => scrollToTarget(id);
   } else if (action === "setDay") {
     const day = item.getAttribute("data-day");
     const w = state.weekends[state.activeWeekend];
@@ -529,7 +525,7 @@ function handleMenuItem(item) {
       }
       updateFiltersUI(state.activeWeekend);
       renderActiveWeekend();
-      postClose = () => scrollToTarget(`#day-${day}`, baseScroll);
+      postClose = () => scrollToTarget(`#day-${day}`);
     }
   } else if (action === "setLang") {
     const nextLang = item.getAttribute("data-lang");
@@ -543,7 +539,7 @@ function handleMenuItem(item) {
     if (searchInput) {
       postClose = () => {
         searchInput.focus();
-        scrollToTarget("#searchInput", baseScroll);
+        scrollToTarget("#searchInput");
       };
     }
   } else if (action === "exportRatings") {
@@ -551,13 +547,12 @@ function handleMenuItem(item) {
   } else if (action === "importRatings") {
     if (importRatingsInput) importRatingsInput.click();
   } else if (target) {
-    postClose = () => scrollToTarget(target, baseScroll);
+    postClose = () => scrollToTarget(target);
   }
   // Close menu without restoring scroll, then run the target scroll.
   closeMenu(true);
   if (postClose) {
     setTimeout(() => {
-      if (baseScroll) window.scrollTo(0, baseScroll);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => postClose());
       });
@@ -566,7 +561,7 @@ function handleMenuItem(item) {
 }
 
 // Scrolls smoothly to the given selector.
-function scrollToTarget(selector, baseScrollY) {
+function scrollToTarget(selector) {
   if (!selector) return;
   const debugMenu = (() => {
     try {
@@ -591,16 +586,16 @@ function scrollToTarget(selector, baseScrollY) {
     return;
   }
   const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
-  const base = Number.isFinite(baseScrollY) ? baseScrollY : window.scrollY;
-  const y = el.getBoundingClientRect().top + base - Math.ceil(topbarHeight) - 8;
-  if (debugMenu) console.info("[menu] scroll", { selector, y, topbarHeight, scrollY: window.scrollY, baseScroll: base });
-  const targetY = Math.max(0, y);
-  window.scrollTo({ top: targetY, behavior: "smooth" });
+  if (debugMenu) console.info("[menu] scroll", { selector, topbarHeight, scrollY: window.scrollY });
+  el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const offset = Math.ceil(topbarHeight) + 8;
   setTimeout(() => {
-    if (Math.abs(window.scrollY - targetY) > 4) {
-      window.scrollTo(0, targetY);
-    }
-  }, 140);
+    window.scrollBy(0, -offset);
+  }, 80);
+  setTimeout(() => {
+    const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+    if (Math.abs(window.scrollY - targetY) > 4) window.scrollTo(0, targetY);
+  }, 180);
 }
 
 // Populates menu day links for quick navigation.
