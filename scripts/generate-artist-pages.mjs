@@ -317,7 +317,7 @@ function renderArtistPage({ artist, weekend, slug }) {
       document.documentElement.lang = lang;
 
       function formatTemplate(template, vars) {
-        return String(template || "").replace(/\{(\w+)\}/g, function (_, key) {
+        return String(template || "").replace(/\\{(\\w+)\\}/g, function (_, key) {
           return (vars && key in vars) ? vars[key] : "";
         });
       }
