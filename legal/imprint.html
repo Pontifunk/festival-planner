@@ -89,13 +89,22 @@
         }
       });
 
+      function canGoBack() {
+        if (history.length <= 1 || !document.referrer) return false;
+        try {
+          return new URL(document.referrer).origin === location.origin;
+        } catch {
+          return false;
+        }
+      }
+
       const backBtn = document.getElementById("backBtn");
       if (backBtn) {
         backBtn.addEventListener("click", () => {
-          if (history.length > 1) {
+          if (canGoBack()) {
             history.back();
           } else {
-            location.href = "../";
+            location.href = "/";
           }
         });
       }

@@ -2414,7 +2414,15 @@
 
       if (back) {
         back.addEventListener("click", function () {
-          if (history.length > 1) {
+          var canGoBack = false;
+          if (history.length > 1 && document.referrer) {
+            try {
+              canGoBack = new URL(document.referrer).origin === location.origin;
+            } catch (e) {
+              canGoBack = false;
+            }
+          }
+          if (canGoBack) {
             history.back();
           } else {
             var fallback = back.getAttribute("data-fallback") || "/";

@@ -305,10 +305,14 @@ function tryScrollToArtistFromQuery() {
 window.addEventListener("pageshow", (e) => {
   if (!window.__FP_INIT__) return;
   const restoreScroll = () => {
-    const y = Number(sessionStorage.getItem(SCROLL_RESTORE_KEY) || "");
-    if (!Number.isFinite(y) || y <= 0) return;
-    sessionStorage.removeItem(SCROLL_RESTORE_KEY);
-    requestAnimationFrame(() => window.scrollTo(0, y));
+    try {
+      const y = Number(sessionStorage.getItem(SCROLL_RESTORE_KEY) || "");
+      if (!Number.isFinite(y) || y <= 0) return;
+      sessionStorage.removeItem(SCROLL_RESTORE_KEY);
+      requestAnimationFrame(() => window.scrollTo(0, y));
+    } catch {
+      // Ignore storage failures (e.g., privacy mode).
+    }
   };
 
   const hasArtistParam = Boolean(getQueryParam("artist"));

@@ -468,6 +468,11 @@ function renderArtistPage({ artist, weekend, slug }) {
 
       loadRating();
 
+      var playLabel = dict.play || fallback.en.play;
+      var playMoreLabel = formatTemplate(dict.play_choose_platform || fallback.en.play_choose_platform, { name: artistName });
+      var playOpenLabel = formatTemplate(dict.play_open_links || fallback.en.play_open_links, { name: artistName });
+      var playSetDefaultLabel = dict.play_set_default || fallback.en.play_set_default;
+
       var PLAY_PROVIDER_KEY = "fp_play_provider";
       function makeSpotifySearchUrl(name){ return "https://open.spotify.com/search/" + encodeURIComponent(name); }
       function makeAppleMusicSearchUrl(name){ return "https://music.apple.com/search?term=" + encodeURIComponent(name); }
@@ -491,11 +496,11 @@ function renderArtistPage({ artist, weekend, slug }) {
       var playBtn = document.getElementById("artistPlayBtn");
       var playMoreBtn = document.getElementById("artistPlayMoreBtn");
       if (playBtn) {
-        playBtn.setAttribute("aria-label", t.play + " " + artistName);
+        playBtn.setAttribute("aria-label", playOpenLabel);
         var playText = playBtn.querySelector(".playText");
-        if (playText) playText.textContent = t.play;
+        if (playText) playText.textContent = playLabel;
       }
-      if (playMoreBtn) playMoreBtn.setAttribute("aria-label", t.playMore + " " + artistName);
+      if (playMoreBtn) playMoreBtn.setAttribute("aria-label", playMoreLabel);
 
       var playOverlay = null;
       var playOverlayPanel = null;
@@ -519,7 +524,7 @@ function renderArtistPage({ artist, weekend, slug }) {
         playOverlayTitle = document.createElement("div");
         playOverlayTitle.className = "playPanelTitle";
         playOverlayTitle.id = "playOverlayTitle";
-        playOverlayTitle.textContent = t.playMore;
+        playOverlayTitle.textContent = playMoreLabel;
 
         var list = document.createElement("div");
         list.className = "playPanelList";
@@ -540,7 +545,7 @@ function renderArtistPage({ artist, weekend, slug }) {
           setBtn.type = "button";
           setBtn.className = "playDefaultBtn";
           setBtn.setAttribute("data-provider", key);
-          setBtn.textContent = t.playSetDefault;
+          setBtn.textContent = playSetDefaultLabel;
 
           row.append(a, setBtn);
           return { row: row, link: a, setBtn: setBtn };
@@ -639,7 +644,15 @@ function renderArtistPage({ artist, weekend, slug }) {
       var backBtn = document.getElementById("backToLineup");
       if (backBtn) {
         backBtn.addEventListener("click", function () {
-          if (history.length > 1) {
+          var canGoBack = false;
+          if (history.length > 1 && document.referrer) {
+            try {
+              canGoBack = new URL(document.referrer).origin === location.origin;
+            } catch (e) {
+              canGoBack = false;
+            }
+          }
+          if (canGoBack) {
             history.back();
           } else {
             var fallback = backBtn.getAttribute("data-fallback") || "/";
@@ -649,12 +662,12 @@ function renderArtistPage({ artist, weekend, slug }) {
       }
 
       if (playBtn) {
-        playBtn.setAttribute("aria-label", formatTemplate(dict.play_open_links || fallback.en.play_open_links, { name: artistName }));
+        playBtn.setAttribute("aria-label", playOpenLabel);
         var playText = playBtn.querySelector(".playText");
-        if (playText) playText.textContent = dict.play || fallback.en.play;
+        if (playText) playText.textContent = playLabel;
         playBtn.addEventListener("click", function () { openDefaultPlay(); });
       }
-      if (playMoreBtn) playMoreBtn.setAttribute("aria-label", formatTemplate(dict.play_choose_platform || fallback.en.play_choose_platform, { name: artistName }));
+      if (playMoreBtn) playMoreBtn.setAttribute("aria-label", playMoreLabel);
       if (playMoreBtn) playMoreBtn.addEventListener("click", function () { openPlayOverlay(playMoreBtn); });
 
       document.addEventListener("keydown", function (e) {
@@ -797,7 +810,15 @@ ${list}
 
       if (back) {
         back.addEventListener("click", function () {
-          if (history.length > 1) {
+          var canGoBack = false;
+          if (history.length > 1 && document.referrer) {
+            try {
+              canGoBack = new URL(document.referrer).origin === location.origin;
+            } catch (e) {
+              canGoBack = false;
+            }
+          }
+          if (canGoBack) {
             history.back();
           } else {
             var fallback = back.getAttribute("data-fallback") || "/";
