@@ -7,7 +7,7 @@
   <title data-i18n-key="privacy_title">Datenschutz &ndash; Festival Planner</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
-<body class="legalPage">
+<body class="simplePage">
   <!-- Simple header with back link -->
   <header class="topbar">
     <div class="brand">
@@ -101,8 +101,7 @@
       const backBtn = document.getElementById("backBtn");
       if (backBtn) {
         backBtn.addEventListener("click", () => {
-          const sameOrigin = document.referrer && document.referrer.startsWith(location.origin);
-          if (sameOrigin && history.length > 1) {
+          if (history.length > 1) {
             history.back();
           } else {
             location.href = "../";

@@ -1554,8 +1554,12 @@ body.menuOpen{
 }
 
 /* ===== LEGAL ===== */
-body.legalPage{
-  padding-top: var(--topbar-h, 72px);
+body.simplePage .topbar{
+  position:static;
+  height:auto;
+}
+body.simplePage .layout{
+  padding:14px;
 }
 .legalLayout{
   max-width: 980px;

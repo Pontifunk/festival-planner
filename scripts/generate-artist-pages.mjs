@@ -184,7 +184,7 @@ function renderArtistPage({ artist, weekend, slug }) {
     ${JSON.stringify(jsonLd)}
   </script>
 </head>
-<body>
+<body class="simplePage">
   <header class="topbar" id="top">
     <div class="brand">
       <div class="logo">FP</div>
@@ -639,8 +639,7 @@ function renderArtistPage({ artist, weekend, slug }) {
       var backBtn = document.getElementById("backToLineup");
       if (backBtn) {
         backBtn.addEventListener("click", function () {
-          var sameOrigin = document.referrer && document.referrer.indexOf(location.origin) === 0;
-          if (sameOrigin && history.length > 1) {
+          if (history.length > 1) {
             history.back();
           } else {
             var fallback = backBtn.getAttribute("data-fallback") || "/";
@@ -714,7 +713,7 @@ function renderArtistIndexPage({ weekend, entries }) {
   <link rel="stylesheet" href="/styles.css">
   <meta name="theme-color" content="#2c1a60">
 </head>
-<body>
+<body class="simplePage">
   <header class="topbar" id="top">
     <div class="brand">
       <div class="logo">FP</div>
@@ -731,7 +730,7 @@ function renderArtistIndexPage({ weekend, entries }) {
         <h1 class="cardTitle" id="artistIndexTitle">Tomorrowland ${YEAR} Artists - Weekend ${weekendNum}</h1>
         <div class="muted" id="artistIndexNote">Offline planning, no account, no tracking.</div>
         <div style="margin-top:12px">
-          <a class="btn" id="backToPlanner" href="${escapeHtml(plannerUrl)}">Back to Planner</a>
+          <button class="btn" id="backToPlanner" type="button" data-fallback="${escapeHtml(plannerUrl)}">Back to Planner</button>
         </div>
       </div>
       <div class="list" role="list" style="margin-top:12px">
@@ -795,6 +794,17 @@ ${list}
       if (twTitle) twTitle.setAttribute("content", t.title + " | Festival Planner");
       var twDesc = document.querySelector("meta[name='twitter:description']");
       if (twDesc) twDesc.setAttribute("content", t.desc);
+
+      if (back) {
+        back.addEventListener("click", function () {
+          if (history.length > 1) {
+            history.back();
+          } else {
+            var fallback = back.getAttribute("data-fallback") || "/";
+            location.href = fallback;
+          }
+        });
+      }
     })();
   </script>
 </body>

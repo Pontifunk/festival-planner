@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="/styles.css">
   <meta name="theme-color" content="#2c1a60">
 </head>
-<body>
+<body class="simplePage">
   <header class="topbar" id="top">
     <div class="brand">
       <div class="logo">FP</div>
@@ -38,7 +38,7 @@
         <h1 class="cardTitle" id="artistIndexTitle">Tomorrowland 2026 Artists - Weekend 1</h1>
         <div class="muted" id="artistIndexNote">Offline planning, no account, no tracking.</div>
         <div style="margin-top:12px">
-          <a class="btn" id="backToPlanner" href="/tomorrowland/2026/w1/">Back to Planner</a>
+          <button class="btn" id="backToPlanner" type="button" data-fallback="/tomorrowland/2026/w1/">Back to Planner</button>
         </div>
       </div>
       <div class="list" role="list" style="margin-top:12px">
@@ -2411,6 +2411,17 @@
       if (twTitle) twTitle.setAttribute("content", t.title + " | Festival Planner");
       var twDesc = document.querySelector("meta[name='twitter:description']");
       if (twDesc) twDesc.setAttribute("content", t.desc);
+
+      if (back) {
+        back.addEventListener("click", function () {
+          if (history.length > 1) {
+            history.back();
+          } else {
+            var fallback = back.getAttribute("data-fallback") || "/";
+            location.href = fallback;
+          }
+        });
+      }
     })();
   </script>
 </body>

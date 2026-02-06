@@ -22,7 +22,7 @@
     {"@context":"https://schema.org","@type":"MusicGroup","name":"Bibi Seck B2B Faisal","url":"https://festival-planner.org/tomorrowland/2026/w2/artists/bibi-seck-b2b-faisal/"}
   </script>
 </head>
-<body>
+<body class="simplePage">
   <header class="topbar" id="top">
     <div class="brand">
       <div class="logo">FP</div>
@@ -477,8 +477,7 @@
       var backBtn = document.getElementById("backToLineup");
       if (backBtn) {
         backBtn.addEventListener("click", function () {
-          var sameOrigin = document.referrer && document.referrer.indexOf(location.origin) === 0;
-          if (sameOrigin && history.length > 1) {
+          if (history.length > 1) {
             history.back();
           } else {
             var fallback = backBtn.getAttribute("data-fallback") || "/";
