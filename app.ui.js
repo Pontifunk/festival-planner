@@ -1975,8 +1975,7 @@ function updatePlayDefaultUI() {
 // ====== CUSTOM SELECT ======
 function initCustomSelect(selectEl) {
   if (!selectEl) return;
-  const useNative = window.matchMedia("(max-width: 720px)").matches
-    || window.matchMedia("(pointer: coarse)").matches;
+  const useNative = window.matchMedia("(max-width: 720px)").matches;
   if (useNative) {
     const wrapper = selectEl.parentNode?.querySelector(".selectWrap");
     if (wrapper) wrapper.remove();
