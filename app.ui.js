@@ -1434,6 +1434,20 @@ function setActiveWeekend(weekend, updateRoute = true) {
     applySeoFromRoute(route);
   }
 
+  const w = state.weekends?.[normalized];
+  if (w && !w.snapshot && !w.loading) {
+    w.loading = true;
+    loadSnapshotForWeekend(normalized)
+      .then(() => {
+        w.loading = false;
+        if (state.activeWeekend === normalized) renderActiveWeekend();
+      })
+      .catch(() => {
+        w.loading = false;
+        if (state.activeWeekend === normalized) renderActiveWeekend();
+      });
+  }
+
   updateArtistIndexLink();
   renderActiveWeekend();
 }
