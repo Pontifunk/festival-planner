@@ -537,8 +537,21 @@ function handleMenuItem(item) {
   }
   closeMenu(true);
   if (postClose) {
-    // Wait for layout to unlock before scrolling.
-    setTimeout(() => postClose(), 140);
+    const runAfterMenuClose = () => {
+      let attempts = 0;
+      const tryRun = () => {
+        attempts += 1;
+        if ((menuOpen || document.body.classList.contains("menuOpen")) && attempts < 10) {
+          setTimeout(tryRun, 30);
+          return;
+        }
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => postClose());
+        });
+      };
+      setTimeout(tryRun, 0);
+    };
+    runAfterMenuClose();
   }
 }
 
