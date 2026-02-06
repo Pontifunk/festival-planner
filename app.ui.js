@@ -467,7 +467,7 @@ function openMenu() {
 }
 
 // Closes the mobile menu and restores scroll.
-function closeMenu() {
+function closeMenu(restoreScroll = true) {
   if (!menuSheet || !menuOverlay || !menuBtn) return;
   menuOpen = false;
   menuSheet.classList.remove("isOpen");
@@ -477,7 +477,7 @@ function closeMenu() {
   menuSheet.setAttribute("inert", "");
   document.body.classList.remove("menuOpen");
   document.body.style.top = "";
-  if (menuScrollY) window.scrollTo(0, menuScrollY);
+  if (restoreScroll && menuScrollY) window.scrollTo(0, menuScrollY);
 }
 
 // Toggles the mobile menu open/closed.
@@ -496,6 +496,19 @@ function handleMenuItem(item) {
     if (weekend) setActiveWeekend(weekend, true);
     const id = weekend === "W2" ? "#w2Section" : "#w1Section";
     postClose = () => scrollToTarget(id);
+  } else if (action === "setDay") {
+    const day = item.getAttribute("data-day");
+    const w = state.weekends[state.activeWeekend];
+    if (day && w) {
+      w.filters.day = day;
+      if (dayFilter) {
+        dayFilter.value = day;
+        syncCustomSelect(dayFilter);
+      }
+      updateFiltersUI(state.activeWeekend);
+      renderActiveWeekend();
+      postClose = () => scrollToTarget(`#day-${day}`);
+    }
   } else if (action === "setLang") {
     const nextLang = item.getAttribute("data-lang");
     if (nextLang && langSelect) {
@@ -518,8 +531,11 @@ function handleMenuItem(item) {
   } else if (target) {
     postClose = () => scrollToTarget(target);
   }
-  closeMenu();
-  if (postClose) requestAnimationFrame(() => postClose());
+  closeMenu(!postClose);
+  if (postClose) {
+    // Wait for layout to unlock before scrolling.
+    setTimeout(() => postClose(), 60);
+  }
 }
 
 // Scrolls smoothly to the given selector.
@@ -546,7 +562,7 @@ function updateMenuDayLinks(dates) {
   menuDayLinks.innerHTML = dates.map((d) => {
     const label = formatDate(d);
     const target = `#day-${d}`;
-    return `<button class="menuItem isSub" data-target="${escapeAttr(target)}" type="button">${escapeHtml(label)}</button>`;
+    return `<button class="menuItem isSub" data-action="setDay" data-day="${escapeAttr(d)}" data-target="${escapeAttr(target)}" type="button">${escapeHtml(label)}</button>`;
   }).join("");
 }
 
