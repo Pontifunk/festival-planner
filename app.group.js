@@ -15,9 +15,16 @@
   const statusNote = document.getElementById("groupStatusNote");
   const resultsWrap = document.getElementById("groupResults");
   const resultsMeta = document.getElementById("groupResultsMeta");
+  const participantsBar = document.getElementById("groupParticipantsBar");
   const topPicksBody = document.getElementById("groupTopPicksBody");
   const conflictsBody = document.getElementById("groupConflictsBody");
+  const heroList = document.getElementById("groupHeroList");
+  const recommendedList = document.getElementById("groupRecommendedList");
+  const discussionList = document.getElementById("groupDiscussionList");
+  const avoidList = document.getElementById("groupAvoidList");
+  const allBody = document.getElementById("groupAllBody");
   const filterInput = document.getElementById("groupFilterInput");
+  const personFilter = document.getElementById("groupPersonFilter");
   const backLink = document.getElementById("groupBackLink");
   const contextEl = document.getElementById("groupContext");
 
@@ -28,7 +35,8 @@
     files: [],
     allowOverLimit: false,
     results: null,
-    filter: ""
+    filter: "",
+    personFilter: "all"
   };
 
   const reference = {
@@ -141,6 +149,12 @@
       if (state.results) renderResults();
     });
   }
+  if (personFilter) {
+    personFilter.addEventListener("change", () => {
+      state.personFilter = String(personFilter.value || "all");
+      if (state.results) renderResults();
+    });
+  }
 
   function handleIncomingFiles(files) {
     clearStatusNote();
@@ -223,6 +237,9 @@
       entry.meta = parsed.meta || {};
       entry.ratings = parsed.ratings || new Map();
       entry.names = parsed.names || new Map();
+      if (!entry.name && parsed.personName) {
+        entry.name = parsed.personName;
+      }
 
       const mismatchInfo = getMismatchInfo(entry.meta, expected, parsed.weekendSupport);
       entry.mismatch = mismatchInfo.mismatch;
@@ -254,6 +271,13 @@
 
     const ratings = new Map();
     const names = new Map();
+    const personName = String(
+      data?.person?.name ||
+      data?.personName ||
+      data?.name ||
+      data?.profile?.name ||
+      ""
+    ).trim();
 
     const weekendSupport = new Set(weekends.filter(Boolean));
     if (meta.weekend) weekendSupport.add(meta.weekend);
@@ -300,7 +324,7 @@
           ratings.set(id, normalized);
         }
       });
-      return { meta, ratings, names, weekendSupport };
+      return { meta, ratings, names, weekendSupport, personName };
     }
 
     if (data?.ratings && typeof data.ratings === "object") {
@@ -310,7 +334,7 @@
           ratings.set(id, normalized);
         }
       });
-      return { meta, ratings, names, weekendSupport };
+      return { meta, ratings, names, weekendSupport, personName };
     }
 
     return null;
@@ -475,8 +499,18 @@
     if (groupSize < 2) return;
 
     const aggregate = new Map();
+    const people = [];
+    const peopleSeen = new Set();
 
     included.forEach((entry) => {
+      const personName = String(entry.name || "").trim();
+      if (personName) {
+        const key = personName.toLowerCase();
+        if (!peopleSeen.has(key)) {
+          peopleSeen.add(key);
+          people.push(personName);
+        }
+      }
       entry.ratings.forEach((rating, artistId) => {
         const canonicalId = resolveCanonicalId(artistId);
         const nameFromEntry = entry.names.get(artistId) || entry.names.get(canonicalId) || "";
@@ -487,16 +521,32 @@
           meta: display.meta,
           likeCount: 0,
           maybeCount: 0,
-          dislikeCount: 0
+          dislikeCount: 0,
+          likedBy: [],
+          maybeBy: [],
+          dislikedBy: [],
+          ratingsByPerson: new Map()
         };
         if (!stats.name || stats.name === stats.id) {
           const candidate = nameFromEntry || reference.names.get(canonicalId) || reference.names.get(artistId);
           if (candidate) stats.name = candidate;
         }
         if (!stats.meta && display.meta) stats.meta = display.meta;
-        if (rating === "liked") stats.likeCount += 1;
-        if (rating === "maybe") stats.maybeCount += 1;
-        if (rating === "disliked") stats.dislikeCount += 1;
+        if (rating === "liked") {
+          stats.likeCount += 1;
+          if (personName) stats.likedBy.push(personName);
+          if (personName) stats.ratingsByPerson.set(personName, "liked");
+        }
+        if (rating === "maybe") {
+          stats.maybeCount += 1;
+          if (personName) stats.maybeBy.push(personName);
+          if (personName) stats.ratingsByPerson.set(personName, "maybe");
+        }
+        if (rating === "disliked") {
+          stats.dislikeCount += 1;
+          if (personName) stats.dislikedBy.push(personName);
+          if (personName) stats.ratingsByPerson.set(personName, "disliked");
+        }
         aggregate.set(canonicalId, stats);
       });
     });
@@ -504,14 +554,30 @@
     const results = Array.from(aggregate.values()).map((stat) => {
       const ratedCount = stat.likeCount + stat.maybeCount + stat.dislikeCount;
       const sumScore = stat.likeCount * 1 + stat.maybeCount * 0.5 + stat.dislikeCount * -1;
-      const agreement = groupSize ? (stat.likeCount + 0.5 * stat.maybeCount) / groupSize : 0;
+      const approvalPct = groupSize ? (stat.likeCount + 0.5 * stat.maybeCount) / groupSize : 0;
+      const rejectPct = groupSize ? stat.dislikeCount / groupSize : 0;
+      const agreementPct = ratedCount > 0 && groupSize
+        ? Math.max(stat.likeCount, stat.maybeCount, stat.dislikeCount) / groupSize
+        : 0;
+      const agreement = approvalPct;
       const consensus = groupSize ? sumScore / groupSize : 0;
+      const className = classifyGroupItem({
+        approvalPct,
+        rejectPct,
+        dislikeCount: stat.dislikeCount,
+        likeCount: stat.likeCount,
+        groupSize
+      });
       return {
         ...stat,
         ratedCount,
         agreement,
+        approvalPct,
+        rejectPct,
+        agreementPct,
         consensus,
-        sumScore
+        sumScore,
+        className
       };
     });
 
@@ -537,12 +603,45 @@
         return a.name.localeCompare(b.name);
       });
 
+    const sortByDecision = (a, b) => {
+      if (b.approvalPct !== a.approvalPct) return b.approvalPct - a.approvalPct;
+      if (a.dislikeCount !== b.dislikeCount) return a.dislikeCount - b.dislikeCount;
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    };
+
+    const recommended = results.filter((r) => r.className === "recommended").slice().sort(sortByDecision);
+    const discussion = results.filter((r) => r.className === "discussion").slice().sort(sortByDecision);
+    const avoid = results.filter((r) => r.className === "avoid").slice().sort(sortByDecision);
+
+    const hero = [];
+    const heroIds = new Set();
+    recommended.slice(0, 5).forEach((item) => {
+      hero.push({ ...item, heroBorderline: false });
+      heroIds.add(item.id);
+    });
+    if (hero.length < 3) {
+      discussion.forEach((item) => {
+        if (hero.length >= 5) return;
+        if (heroIds.has(item.id)) return;
+        hero.push({ ...item, heroBorderline: true });
+        heroIds.add(item.id);
+      });
+    }
+
+    const allSorted = [...recommended, ...discussion, ...avoid];
+
     state.results = {
       groupSize,
       includedCount: included.length,
       totalCount: state.files.length,
+      people,
       topPicks,
-      conflicts
+      conflicts,
+      recommended,
+      discussion,
+      avoid,
+      hero,
+      allSorted
     };
 
     if (resultsWrap) resultsWrap.hidden = false;
@@ -553,24 +652,79 @@
   function renderResults() {
     if (!state.results) return;
     const filter = state.filter;
+    const activePerson = String(state.personFilter || "all");
+    const people = state.results.people || [];
 
     const filterList = (list) => {
       if (!filter) return list;
       return list.filter((item) => String(item.name || "").toLowerCase().includes(filter));
     };
 
-    const top = filterList(state.results.topPicks).slice(0, 50);
-    const conflicts = filterList(state.results.conflicts).slice(0, 50);
+    const personRank = {
+      liked: 0,
+      maybe: 1,
+      disliked: 2,
+      unrated: 3
+    };
+    const sortWithPerson = (list) => {
+      const copy = list.slice();
+      copy.sort((a, b) => {
+        if (activePerson && activePerson !== "all") {
+          const aRating = a.ratingsByPerson?.get(activePerson) || "unrated";
+          const bRating = b.ratingsByPerson?.get(activePerson) || "unrated";
+          const aRank = personRank[aRating] ?? 3;
+          const bRank = personRank[bRating] ?? 3;
+          if (aRank !== bRank) return aRank - bRank;
+        }
+        if (b.approvalPct !== a.approvalPct) return b.approvalPct - a.approvalPct;
+        if (a.dislikeCount !== b.dislikeCount) return a.dislikeCount - b.dislikeCount;
+        return String(a.name || "").localeCompare(String(b.name || ""));
+      });
+      return copy;
+    };
+
+    const hero = sortWithPerson(filterList(state.results.hero)).slice(0, 5);
+    const recommended = sortWithPerson(filterList(state.results.recommended));
+    const discussion = sortWithPerson(filterList(state.results.discussion));
+    const avoid = sortWithPerson(filterList(state.results.avoid));
+    const allItems = sortWithPerson(filterList(state.results.allSorted));
+
+    renderParticipantsBar(people);
+    renderPersonFilter(people);
 
     if (resultsMeta) {
       const metaText = formatTemplate(t("group_results_meta") || "{count} people included", {
         count: state.results.groupSize
       });
-      resultsMeta.textContent = metaText;
+      const viewFor = activePerson && activePerson !== "all"
+        ? `${t("group_view_for") || "View for"} ${activePerson}`
+        : "";
+      resultsMeta.textContent = viewFor ? `${metaText} \u00b7 ${viewFor}` : metaText;
     }
 
-    renderTableRows(topPicksBody, top, state.results.groupSize, t("group_empty_top") || "No top picks yet.");
-    renderTableRows(conflictsBody, conflicts, state.results.groupSize, t("group_empty_conflicts") || "No conflicts yet.");
+    renderCardList(heroList, hero, state.results.groupSize, {
+      emptyText: t("group_empty_hero") || "No highlights yet.",
+      activePerson,
+      people,
+      showBorderline: true
+    });
+    renderCardList(recommendedList, recommended, state.results.groupSize, {
+      emptyText: t("group_empty_recommended") || "No recommendations yet.",
+      activePerson,
+      people
+    });
+    renderCardList(discussionList, discussion, state.results.groupSize, {
+      emptyText: t("group_empty_discussion") || "No discussion cases yet.",
+      activePerson,
+      people,
+      showOpponents: true
+    });
+    renderCardList(avoidList, avoid, state.results.groupSize, {
+      emptyText: t("group_empty_avoid") || "No skip candidates yet.",
+      activePerson,
+      people
+    });
+    renderTableRows(allBody, allItems, state.results.groupSize, t("group_empty_all") || "No items yet.");
   }
 
   function renderTableRows(tbody, items, groupSize, emptyText) {
@@ -616,6 +770,183 @@
     }).join("");
   }
 
+  function renderCardList(container, items, groupSize, options = {}) {
+    if (!container) return;
+    const { emptyText, activePerson, people, showOpponents, showBorderline } = options;
+    if (!items.length) {
+      container.innerHTML = `<div class="groupZoneEmpty">${escapeHtml(emptyText || "")}</div>`;
+      return;
+    }
+    container.innerHTML = items.map((item) => renderDecisionCard(item, groupSize, {
+      activePerson,
+      people,
+      showOpponents,
+      showBorderline
+    })).join("");
+  }
+
+  function renderDecisionCard(item, groupSize, options = {}) {
+    const displayName = (!item.name || item.name === item.id) && reference.names.has(item.id)
+      ? reference.names.get(item.id)
+      : item.name;
+    const whenLabel = reference.when.get(item.id) || "";
+    const stageLabel = reference.stage.get(item.id) || "";
+    const displayMeta = (!item.meta && reference.meta.has(item.id)) ? reference.meta.get(item.id) : item.meta;
+    const metaLine = [displayMeta || stageLabel, whenLabel].filter(Boolean).join(" \u00b7 ");
+    const badge = item.className === "recommended" ? "\ud83d\udfe2" : item.className === "discussion" ? "\ud83d\udfe1" : "\ud83d\udd34";
+    const hintText = item.className === "recommended"
+      ? (t("group_hint_recommended") || "Solid anchor")
+      : item.className === "discussion"
+        ? (t("group_hint_discussion") || "Quick discussion")
+        : (t("group_hint_avoid") || "Probably skip");
+
+    const likeLabel = t("liked") || "Liked";
+    const maybeLabel = t("maybe") || "Maybe";
+    const dislikeLabel = t("disliked") || "Disliked";
+    const detailsLabel = t("group_votes_details") || "Who voted what?";
+    const activePerson = options.activePerson && options.activePerson !== "all" ? options.activePerson : "";
+    const personRating = activePerson ? (item.ratingsByPerson?.get(activePerson) || "unrated") : "";
+    const personLabel = activePerson && personRating !== "unrated"
+      ? `${activePerson} ${personRating === "liked" ? likeLabel : personRating === "maybe" ? maybeLabel : dislikeLabel}`
+      : "";
+
+    const orderedPeople = Array.isArray(options.people) ? options.people : [];
+    const orderedLiked = orderNames(item.likedBy || [], orderedPeople);
+    const orderedMaybe = orderNames(item.maybeBy || [], orderedPeople);
+    const orderedDisliked = orderNames(item.dislikedBy || [], orderedPeople);
+
+    const opponentsLine = options.showOpponents
+      ? renderOpponentsLine(orderedDisliked, orderedLiked)
+      : "";
+
+    const borderlineBadge = options.showBorderline && item.heroBorderline
+      ? `<span class="groupBorderline">${escapeHtml(t("group_borderline") || "Borderline")}</span>`
+      : "";
+
+    return `
+      <article class="groupItemCard is-${escapeAttr(item.className)}">
+        <div class="groupItemHeader">
+          <div>
+            <div class="groupItemTitle">${escapeHtml(displayName || item.id)}</div>
+            ${metaLine ? `<div class="groupItemMeta">${escapeHtml(metaLine)}</div>` : ""}
+          </div>
+          <div class="groupItemBadge">${badge}</div>
+        </div>
+        <div class="groupItemChips">
+          <span class="groupVoteChip like">\ud83d\udc4d ${item.likeCount}</span>
+          <span class="groupVoteChip maybe">\ud83e\udd14 ${item.maybeCount}</span>
+          <span class="groupVoteChip dislike">\ud83d\udc4e ${item.dislikeCount}</span>
+          ${borderlineBadge}
+        </div>
+        ${personLabel ? `<div class="groupPersonFocus">${escapeHtml(personLabel)}</div>` : ""}
+        <div class="groupItemHint">${escapeHtml(hintText)}</div>
+        ${opponentsLine}
+        <details class="groupItemDetails">
+          <summary>${escapeHtml(detailsLabel)}</summary>
+          <div class="groupItemBreakdown">
+            <div><span class="groupDetailIcon">\ud83d\udc4d</span>${renderNameList(orderedLiked)}</div>
+            <div><span class="groupDetailIcon">\ud83e\udd14</span>${renderNameList(orderedMaybe)}</div>
+            <div><span class="groupDetailIcon">\ud83d\udc4e</span>${renderNameList(orderedDisliked)}</div>
+          </div>
+        </details>
+      </article>
+    `;
+  }
+
+  function renderOpponentsLine(disliked, liked) {
+    if (!Array.isArray(disliked) || !disliked.length) return "";
+    const againstLabel = t("group_against") || "Against";
+    const favorLabel = t("group_in_favor") || "In favor";
+    const against = formatNameList(disliked, 2);
+    const favor = Array.isArray(liked) && liked.length ? formatNameList(liked, 2) : null;
+    const favorText = favor && favor.text
+      ? `<span class="groupOpposeHint">${escapeHtml(favorLabel)}: ${escapeHtml(favor.text)}${favor.extra ? ` +${favor.extra}` : ""}</span>`
+      : "";
+    return `
+      <div class="groupOpposeLine">
+        <span class="groupOpposeHint">${escapeHtml(againstLabel)}: ${escapeHtml(against.text)}${against.extra ? ` +${against.extra}` : ""}</span>
+        ${favorText}
+      </div>
+    `;
+  }
+
+  function renderNameList(list) {
+    if (!Array.isArray(list) || !list.length) return `<span class="groupDetailEmpty">\u2014</span>`;
+    return `<span>${escapeHtml(list.join(", "))}</span>`;
+  }
+
+  function formatNameList(list, maxNames) {
+    const ordered = Array.isArray(list) ? list : [];
+    const max = Math.max(1, maxNames || 2);
+    const visible = ordered.slice(0, max);
+    const extra = ordered.length - visible.length;
+    return { text: visible.join(", "), extra: extra > 0 ? extra : 0 };
+  }
+
+  function orderNames(list, order) {
+    if (!Array.isArray(list)) return [];
+    if (!Array.isArray(order) || !order.length) return list.slice();
+    const set = new Set(list);
+    const ordered = order.filter((name) => set.has(name));
+    const remaining = list.filter((name) => !ordered.includes(name));
+    return ordered.concat(remaining);
+  }
+
+  function renderParticipantsBar(people) {
+    if (!participantsBar) return;
+    if (!Array.isArray(people) || !people.length) {
+      participantsBar.innerHTML = "";
+      return;
+    }
+    const includedLabel = t("group_people_included") || "people included";
+    const count = people.length;
+    const visible = people.slice(0, 3);
+    const extra = count - visible.length;
+    const baseText = `${count} ${includedLabel}: ${visible.join(", ")}`;
+    const more = extra > 0
+      ? `
+        <details class="groupParticipantsMore">
+          <summary>\u2026 +${extra}</summary>
+          <div class="groupParticipantsPopover">${escapeHtml(people.join(", "))}</div>
+        </details>
+      `
+      : "";
+    participantsBar.innerHTML = `
+      <div class="groupParticipantsText">${escapeHtml(baseText)}</div>
+      ${more}
+    `;
+  }
+
+  function renderPersonFilter(people) {
+    if (!personFilter) return;
+    let active = state.personFilter || "all";
+    if (active !== "all" && Array.isArray(people) && !people.includes(active)) {
+      active = "all";
+      state.personFilter = "all";
+    }
+    const options = [];
+    options.push({
+      value: "all",
+      label: t("group_all_participants") || "All participants"
+    });
+    (people || []).forEach((name) => {
+      options.push({ value: name, label: name });
+    });
+    personFilter.innerHTML = options.map((opt) => {
+      const selected = opt.value === active ? " selected" : "";
+      return `<option value="${escapeAttr(opt.value)}"${selected}>${escapeHtml(opt.label)}</option>`;
+    }).join("");
+  }
+
+  function classifyGroupItem({ approvalPct, rejectPct, dislikeCount, likeCount, groupSize }) {
+    if (approvalPct >= 0.7 && dislikeCount === 0) return "recommended";
+    const half = Math.ceil(groupSize / 2);
+    if (dislikeCount >= half || rejectPct >= 0.34) return "avoid";
+    if (dislikeCount >= 1 && likeCount >= 1) return "discussion";
+    if (approvalPct >= 0.4 && approvalPct < 0.7) return "discussion";
+    return "discussion";
+  }
+
   function formatPercent(value, signed) {
     if (!Number.isFinite(value)) return "0%";
     const pct = Math.round(value * 100);
@@ -643,7 +974,13 @@
       })),
       results: {
         topPicks: state.results.topPicks.slice(0, 50),
-        conflicts: state.results.conflicts.slice(0, 50)
+        conflicts: state.results.conflicts.slice(0, 50),
+        decision: {
+          recommended: state.results.recommended?.slice(0, 50) || [],
+          discussion: state.results.discussion?.slice(0, 50) || [],
+          avoid: state.results.avoid?.slice(0, 50) || [],
+          hero: state.results.hero?.slice(0, 5) || []
+        }
       }
     };
 
@@ -778,8 +1115,11 @@
       const date = slot.date || extractDate(slot.start) || extractDate(slot.end) || "";
       const start = formatTime(slot.start);
       const end = formatTime(slot.end);
-      const timeRange = start && end ? `${start}\u2013${end}` : (start || end || "");
+      let timeRange = start && end ? `${start}\u2013${end}` : (start || end || "");
       const dateLabel = date ? formatDate(date) : "";
+      if (dateLabel && !timeRange) {
+        timeRange = t("group_time_tbd") || "Time TBD";
+      }
       const whenLabel = [dateLabel, timeRange].filter(Boolean).join(" \u00b7 ");
       const meta = stageLabel;
 

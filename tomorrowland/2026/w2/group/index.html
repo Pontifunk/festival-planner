@@ -93,16 +93,52 @@
       <div id="groupStatusNote" class="groupStatusNote" hidden></div>
 
       <div id="groupResults" class="groupResults" hidden>
+        <div class="groupParticipantsBar" id="groupParticipantsBar"></div>
+
         <div class="groupResultsHeader">
           <div>
             <div class="cardTitle" data-i18n="group_results_title">Results</div>
             <div class="groupResultsMeta" id="groupResultsMeta"></div>
           </div>
-          <input id="groupFilterInput" class="groupFileInput groupFilterInput" type="search" placeholder="Filter by artist" data-i18n-placeholder="group_filter_placeholder">
+          <div class="groupFilters">
+            <input id="groupFilterInput" class="groupFileInput groupFilterInput" type="search" placeholder="Filter by artist" data-i18n-placeholder="group_filter_placeholder">
+            <div class="groupPersonFilter">
+              <label class="groupFilterLabel" for="groupPersonFilter" data-i18n="group_participants_label">Participants</label>
+              <select id="groupPersonFilter" class="groupFileInput groupFilterSelect"></select>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <div class="cardTitle" data-i18n="group_top_picks">Top Picks</div>
+        <section class="groupZone groupHeroZone">
+          <div class="groupZoneHeader">
+            <div class="cardTitle" data-i18n="group_hero_title">Eure beste gemeinsame Auswahl</div>
+          </div>
+          <div id="groupHeroList" class="groupCardGrid"></div>
+        </section>
+
+        <section class="groupZone">
+          <div class="groupZoneHeader">
+            <div class="cardTitle" data-i18n="group_recommended_title">Empfohlen</div>
+          </div>
+          <div id="groupRecommendedList" class="groupCardGrid"></div>
+        </section>
+
+        <section class="groupZone">
+          <div class="groupZoneHeader">
+            <div class="cardTitle" data-i18n="group_discussion_title">Diskussionsf&auml;lle</div>
+          </div>
+          <div id="groupDiscussionList" class="groupCardGrid"></div>
+        </section>
+
+        <section class="groupZone">
+          <div class="groupZoneHeader">
+            <div class="cardTitle" data-i18n="group_avoid_title">Eher nicht</div>
+          </div>
+          <div id="groupAvoidList" class="groupCardGrid"></div>
+        </section>
+
+        <details class="groupAllDetails">
+          <summary class="groupAllSummary" data-i18n="group_all_details">Alle (Details)</summary>
           <div class="tableWrap">
             <table class="groupTable">
               <thead>
@@ -115,29 +151,10 @@
                   <th class="num" data-i18n="group_col_consensus">Consensus</th>
                 </tr>
               </thead>
-              <tbody id="groupTopPicksBody"></tbody>
+              <tbody id="groupAllBody"></tbody>
             </table>
           </div>
-        </div>
-
-        <div>
-          <div class="cardTitle" data-i18n="group_conflicts">Conflicts / Polarizing</div>
-          <div class="tableWrap">
-            <table class="groupTable">
-              <thead>
-                <tr>
-                  <th data-i18n="group_col_artist">Artist</th>
-                  <th class="num">👍</th>
-                  <th class="num">🤔</th>
-                  <th class="num">👎</th>
-                  <th class="num" data-i18n="group_col_agreement">Agreement</th>
-                  <th class="num" data-i18n="group_col_consensus">Consensus</th>
-                </tr>
-              </thead>
-              <tbody id="groupConflictsBody"></tbody>
-            </table>
-          </div>
-        </div>
+        </details>
       </div>
     </section>
   </main>
