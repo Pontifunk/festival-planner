@@ -207,7 +207,7 @@ function renderArtistPage({ artist, weekend, slug }) {
         <div class="cardTitle">${escapeHtml(artist.name)}</div>
         ${tomorrowlandArtistId ? `
         <div class="tmlLinkRow">
-          <a class="tmlLink" href="${escapeHtml(tmlUrlEn)}" target="_blank" rel="noopener noreferrer" aria-label="Open official Tomorrowland artist page" title="Official Tomorrowland page" data-tml-id="${escapeHtml(tomorrowlandArtistId)}" data-i18n="tml_artist_page">Tomorrowland Artist Page \u2197</a>
+          <a class="tmlLink" href="${escapeHtml(tmlUrlEn)}" target="_blank" rel="noopener noreferrer" aria-label="Open official Tomorrowland artist page" title="Official Tomorrowland page" data-tml-id="${escapeHtml(tomorrowlandArtistId)}" data-i18n="tml_artist_page">Tomorrowland DJ Page</a>
         </div>
         ` : ""}
         <div class="muted" id="artistMeta" data-i18n="artist_meta">Tomorrowland ${YEAR} - Wochenende ${weekendNum}</div>
@@ -286,7 +286,7 @@ function renderArtistPage({ artist, weekend, slug }) {
           play_copy_on: "Aktiviert",
           play_copy_off: "Aus",
           play_copy_toast: "DJ-Name kopiert",
-          tml_artist_page: "Tomorrowland DJ-Seite \u2197",
+          tml_artist_page: "Tomorrowland DJ-Seite",
           artist_meta: "{festival} {year} - Wochenende {weekend}",
           artist_title: "{name} - {festival} {year} (Wochenende {weekend}) | Festival Planner",
           artist_desc: "Offline planen f\u00fcr {festival} {year} Wochenende {weekend}. Kein Account, kein Tracking.",
@@ -314,7 +314,7 @@ function renderArtistPage({ artist, weekend, slug }) {
           play_copy_on: "On",
           play_copy_off: "Off",
           play_copy_toast: "DJ name copied",
-          tml_artist_page: "Tomorrowland DJ Page \u2197",
+          tml_artist_page: "Tomorrowland DJ Page",
           artist_meta: "{festival} {year} - Weekend {weekend}",
           artist_title: "{name} - {festival} {year} (Weekend {weekend}) | Festival Planner",
           artist_desc: "Offline planning for {festival} {year} Weekend {weekend}. No account, no tracking.",

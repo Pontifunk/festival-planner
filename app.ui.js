@@ -224,7 +224,7 @@ function renderSlot(slot, weekend) {
   const artistUrl = getArtistPageUrl(weekend, artistId);
   const tmlId = state.artists.byId.get(artistId)?.tomorrowlandArtistId ?? slot.tomorrowlandArtistId ?? null;
   const tmlUrl = tmlId ? buildTomorrowlandArtistUrl(tmlId, getActiveLang()) : "";
-  const tmlLabel = t("tml_artist_page") || (getActiveLang() === "de" ? "Tomorrowland Artist-Seite \u2197" : "Tomorrowland Artist Page \u2197");
+  const tmlLabel = t("tml_artist_page") || (getActiveLang() === "de" ? "Tomorrowland DJ-Seite" : "Tomorrowland DJ Page");
   const stage = normalizeStage(slot.stage);
   const start = formatTime(slot.start);
   const end = formatTime(slot.end);
