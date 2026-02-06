@@ -102,6 +102,16 @@ function applySeoFromRoute(r) {
   upsertMetaTag("name", "twitter:card", "summary");
   upsertMetaTag("name", "twitter:title", title);
   upsertMetaTag("name", "twitter:description", description);
+
+  const seoWeekendEl = document.querySelector('[data-i18n="seo_weekend_home"]');
+  if (seoWeekendEl) {
+    const weekendKey = weekend === "W1"
+      ? "seo_weekend_w1"
+      : weekend === "W2"
+        ? "seo_weekend_w2"
+        : "seo_weekend_home";
+    seoWeekendEl.textContent = t(weekendKey) || seoWeekendEl.textContent;
+  }
 }
 
 // Parses festival/year/weekend from the current path.
