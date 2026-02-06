@@ -60,6 +60,7 @@ function loadScript(src) {
 }
 
 const ONBOARDING_HINT_KEY = "fp_onboarding_seen";
+const SCROLL_RESTORE_KEY = "fp_scroll_restore_y";
 
 function getOnboardingEls() {
   const hint = onboardingHint || document.getElementById("onboardingHint");
@@ -303,11 +304,31 @@ function tryScrollToArtistFromQuery() {
 
 window.addEventListener("pageshow", (e) => {
   if (!window.__FP_INIT__) return;
+  const restoreScroll = () => {
+    const y = Number(sessionStorage.getItem(SCROLL_RESTORE_KEY) || "");
+    if (!Number.isFinite(y) || y <= 0) return;
+    sessionStorage.removeItem(SCROLL_RESTORE_KEY);
+    requestAnimationFrame(() => window.scrollTo(0, y));
+  };
+
+  const hasArtistParam = Boolean(getQueryParam("artist"));
   if (e && e.persisted) {
-    refreshRatingsFromDb().then(() => tryScrollToArtistFromQuery());
+    refreshRatingsFromDb().then(() => {
+      tryScrollToArtistFromQuery();
+      if (!hasArtistParam) restoreScroll();
+    });
     return;
   }
   tryScrollToArtistFromQuery();
+  if (!hasArtistParam) restoreScroll();
+});
+
+window.addEventListener("pagehide", () => {
+  try {
+    sessionStorage.setItem(SCROLL_RESTORE_KEY, String(window.scrollY || 0));
+  } catch {
+    // Ignore storage failures.
+  }
 });
 
 // Wires the update banner and handles SW update flow.
