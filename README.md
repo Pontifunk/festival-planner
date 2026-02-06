@@ -13,7 +13,7 @@ A lightweight, installable Progressive Web App (PWA) that helps you explore the 
 - Ratings stored locally only (IndexedDB)
 - Quick links to Spotify, Apple Music, YouTube, and SoundCloud
 - Device-aware deep links with web fallback (Spotify mobile)
-- Optional “Copy DJ name to clipboard” toggle in Play overlay
+- Optional "Copy DJ name to clipboard" toggle in Play overlay
 - Favorites view
 - Language support: German / English
 - Dark-mode-first, mobile-optimized UI
@@ -156,7 +156,7 @@ You can override defaults via environment variables:
 - SoundCloud:
   - Web search only (deep links disabled for reliability).
 - Apple Music / YouTube: web search.
-- Optional clipboard: users can enable “Copy DJ name to clipboard” in the Play overlay; the setting is stored locally.
+- Optional clipboard: users can enable "Copy DJ name to clipboard" in the Play overlay; the setting is stored locally.
 - On iOS/PWA, web links open in the same tab to avoid popup blocking.
 
 ---
