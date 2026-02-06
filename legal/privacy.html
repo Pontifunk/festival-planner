@@ -7,7 +7,7 @@
   <title data-i18n-key="privacy_title">Datenschutz &ndash; Festival Planner</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
-<body>
+<body class="legalPage">
   <!-- Simple header with back link -->
   <header class="topbar">
     <div class="brand">
@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="controls">
-      <a class="btn" href="../" data-i18n-key="privacy_back">Zur&uuml;ck</a>
+      <button class="btn" id="backBtn" type="button" data-i18n-key="privacy_back">Zur&uuml;ck</button>
     </div>
   </header>
 
@@ -97,6 +97,18 @@
           el.textContent = value;
         }
       });
+
+      const backBtn = document.getElementById("backBtn");
+      if (backBtn) {
+        backBtn.addEventListener("click", () => {
+          const sameOrigin = document.referrer && document.referrer.startsWith(location.origin);
+          if (sameOrigin && history.length > 1) {
+            history.back();
+          } else {
+            location.href = "../";
+          }
+        });
+      }
     })();
   </script>
 </body>

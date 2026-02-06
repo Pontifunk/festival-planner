@@ -39,7 +39,7 @@
         <div class="cardTitle">Chris Lorenzo</div>
         <div class="muted" id="artistMeta" data-i18n="artist_meta">Tomorrowland 2026 - Wochenende 2</div>
         <div style="margin-top:12px">
-          <a class="btn" id="backToLineup" href="/tomorrowland/2026/w2/?artist=chris-lorenzo" data-i18n="artist_back_to_lineup">Back to line-up</a>
+          <button class="btn" id="backToLineup" type="button" data-fallback="/tomorrowland/2026/w2/?artist=chris-lorenzo" data-i18n="artist_back_to_lineup">Back to line-up</button>
         </div>
         <div class="muted" style="margin-top:12px" data-i18n="artist_stages_label">Stages</div><div class="muted" style="margin-top:4px">THE GREAT LIBRARY</div>
         
@@ -471,6 +471,19 @@
           btn.textContent = isActive
             ? (dict.play_default || fallback.en.play_default)
             : (dict.play_set_default || fallback.en.play_set_default);
+        });
+      }
+
+      var backBtn = document.getElementById("backToLineup");
+      if (backBtn) {
+        backBtn.addEventListener("click", function () {
+          var sameOrigin = document.referrer && document.referrer.indexOf(location.origin) === 0;
+          if (sameOrigin && history.length > 1) {
+            history.back();
+          } else {
+            var fallback = backBtn.getAttribute("data-fallback") || "/";
+            location.href = fallback;
+          }
         });
       }
 

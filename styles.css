@@ -1554,6 +1554,9 @@ body.menuOpen{
 }
 
 /* ===== LEGAL ===== */
+body.legalPage{
+  padding-top: var(--topbar-h, 72px);
+}
 .legalLayout{
   max-width: 980px;
   margin: 18px auto 28px;

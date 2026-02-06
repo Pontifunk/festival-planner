@@ -201,7 +201,7 @@ function renderArtistPage({ artist, weekend, slug }) {
         <div class="cardTitle">${escapeHtml(artist.name)}</div>
         <div class="muted" id="artistMeta" data-i18n="artist_meta">Tomorrowland ${YEAR} - Wochenende ${weekendNum}</div>
         <div style="margin-top:12px">
-          <a class="btn" id="backToLineup" href="${escapeHtml(plannerUrl)}" data-i18n="artist_back_to_lineup">Back to line-up</a>
+          <button class="btn" id="backToLineup" type="button" data-fallback="${escapeHtml(plannerUrl)}" data-i18n="artist_back_to_lineup">Back to line-up</button>
         </div>
         ${stages.length ? `<div class="muted" style="margin-top:12px" data-i18n="artist_stages_label">Stages</div><div class="muted" style="margin-top:4px">${escapeHtml(stages.join(", "))}</div>` : ""}
         ${genres.length ? `<div class="muted" style="margin-top:6px" data-i18n="artist_tags_label">Tags</div><div class="muted" style="margin-top:4px">${escapeHtml(genres.join(", "))}</div>` : ""}
@@ -633,6 +633,19 @@ function renderArtistPage({ artist, weekend, slug }) {
           btn.textContent = isActive
             ? (dict.play_default || fallback.en.play_default)
             : (dict.play_set_default || fallback.en.play_set_default);
+        });
+      }
+
+      var backBtn = document.getElementById("backToLineup");
+      if (backBtn) {
+        backBtn.addEventListener("click", function () {
+          var sameOrigin = document.referrer && document.referrer.indexOf(location.origin) === 0;
+          if (sameOrigin && history.length > 1) {
+            history.back();
+          } else {
+            var fallback = backBtn.getAttribute("data-fallback") || "/";
+            location.href = fallback;
+          }
         });
       }
 
