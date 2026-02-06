@@ -535,10 +535,10 @@ function handleMenuItem(item) {
   } else if (target) {
     postClose = () => scrollToTarget(target);
   }
-  closeMenu(!postClose);
+  closeMenu(true);
   if (postClose) {
     // Wait for layout to unlock before scrolling.
-    setTimeout(() => postClose(), 60);
+    setTimeout(() => postClose(), 140);
   }
 }
 
