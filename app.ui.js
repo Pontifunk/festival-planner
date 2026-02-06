@@ -480,8 +480,12 @@ function closeMenu(restoreScroll = true) {
   menuSheet.setAttribute("aria-hidden", "true");
   menuSheet.setAttribute("inert", "");
   document.body.classList.remove("menuOpen");
+  const bodyTop = parseFloat(document.body.style.top || "0");
   document.body.style.top = "";
-  if (restoreScroll && menuScrollY) window.scrollTo(0, menuScrollY);
+  if (restoreScroll) {
+    const restoreY = menuScrollY || Math.abs(bodyTop || 0);
+    if (restoreY) window.scrollTo(0, restoreY);
+  }
 }
 
 // Toggles the mobile menu open/closed.
@@ -495,7 +499,10 @@ function handleMenuItem(item) {
   const action = item.getAttribute("data-action");
   const target = item.getAttribute("data-target");
   let postClose = null;
-  const baseScroll = menuOpen ? (menuScrollY || window.scrollY || 0) : (window.scrollY || 0);
+  const bodyTop = parseFloat(document.body.style.top || "0");
+  const baseScroll = menuOpen
+    ? (menuScrollY || Math.abs(bodyTop || 0) || window.scrollY || 0)
+    : (window.scrollY || 0);
   const debugMenu = (() => {
     try {
       return new URLSearchParams(window.location.search || "").get("debugMenu") === "1";
@@ -504,7 +511,7 @@ function handleMenuItem(item) {
     }
   })();
   if (debugMenu) {
-    console.info("[menu] click", { action, target, text: item?.textContent?.trim() });
+    console.info("[menu] click", { action, target, text: item?.textContent?.trim(), baseScroll, menuScrollY, bodyTop });
   }
   if (action === "weekend") {
     const weekend = item.getAttribute("data-weekend");
@@ -550,7 +557,7 @@ function handleMenuItem(item) {
   closeMenu(true);
   if (postClose) {
     setTimeout(() => {
-      if (menuScrollY) window.scrollTo(0, menuScrollY);
+      if (baseScroll) window.scrollTo(0, baseScroll);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => postClose());
       });
