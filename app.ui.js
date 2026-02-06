@@ -535,23 +535,12 @@ function handleMenuItem(item) {
   } else if (target) {
     postClose = () => scrollToTarget(target);
   }
-  closeMenu(true);
+  // Close menu without restoring scroll, then run the target scroll.
+  closeMenu(false);
   if (postClose) {
-    const runAfterMenuClose = () => {
-      let attempts = 0;
-      const tryRun = () => {
-        attempts += 1;
-        if ((menuOpen || document.body.classList.contains("menuOpen")) && attempts < 10) {
-          setTimeout(tryRun, 30);
-          return;
-        }
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => postClose());
-        });
-      };
-      setTimeout(tryRun, 0);
-    };
-    runAfterMenuClose();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => postClose());
+    });
   }
 }
 
