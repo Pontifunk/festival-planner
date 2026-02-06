@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const BUILD_ID = "daca48b6+artist2";
+const BUILD_ID = "group-merge-lean-3";
 const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 // Assets are served from the site root.
 const withBase = (path) => path;
@@ -10,12 +10,17 @@ const CORE_ASSETS = [
   "/index.html",
   "/dist/styles.min.css",
   "/dist/app.bundle.min.js",
+  "/app.data.js",
+  "/app.ui.js",
+  "/app.group.js",
   "/manifest.webmanifest",
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/apple-touch-icon.png",
   "/legal/privacy.html",
   "/legal/imprint.html",
+  "/tomorrowland/2026/w1/group/",
+  "/tomorrowland/2026/w2/group/",
   "/i18n/de.json",
   "/i18n/en.json",
 ];

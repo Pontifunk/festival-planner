@@ -1,7 +1,9 @@
 ﻿// ====== UTIL ======
 function getBasePrefix() {
   const parts = location.pathname.split("/").filter(Boolean);
-  const baseParts = parts.length >= 3 ? parts.slice(0, parts.length - 3) : parts;
+  const tail = parts[parts.length - 1];
+  const offset = tail === "group" ? 4 : 3;
+  const baseParts = parts.length >= offset ? parts.slice(0, parts.length - offset) : parts;
   return baseParts.length ? `/${baseParts.join("/")}` : "";
 }
 

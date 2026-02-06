@@ -1,0 +1,176 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>Group Merge | Festival Planner</title>
+  <meta name="description" content="Merge exported ratings locally and analyze group picks. No upload.">
+  <link rel="canonical" href="https://festival-planner.org/tomorrowland/2026/w2/group/">
+
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/favicon.ico">
+  <meta name="theme-color" content="#2c1a60">
+
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Festival Planner">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <meta name="robots" content="index,follow">
+
+  <style>
+    :root{color-scheme:dark;--topbar-h:calc(96px + env(safe-area-inset-top))}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:#0b0c12;color:#f3f4ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .topbar{position:fixed;top:0;left:0;right:0;background:#0b0c12;z-index:100;height:var(--topbar-h);box-sizing:border-box}
+    .layout{padding:calc(14px + var(--topbar-h,72px)) 14px}
+    .panel{background:#111325;border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:14px}
+    @media (max-width: 980px){:root{--topbar-h:calc(112px + env(safe-area-inset-top))}}
+    @media (max-width: 720px){:root{--topbar-h:calc(128px + env(safe-area-inset-top))}}
+  </style>
+
+  <link rel="preload" as="style" href="/dist/styles.min.css">
+  <link rel="stylesheet" href="/dist/styles.min.css">
+  <noscript><link rel="stylesheet" href="/dist/styles.min.css"></noscript>
+</head>
+
+<body class="groupPage jsReady">
+  <header class="topbar groupTopbar" id="top">
+    <div class="brand">
+      <div class="logo">FP</div>
+      <div class="brandText">
+        <div class="title" data-i18n="app_title">Festival Planner</div>
+        <div class="subtitle" data-i18n="disclaimer">Inoffizielles Tool. Angaben k&ouml;nnen sich &auml;ndern. Ma&szlig;geblich sind die Infos des Veranstalters.</div>
+      </div>
+    </div>
+    <div class="groupTopActions">
+      <a class="btn" id="groupBackLink" href="#" data-i18n="group_back">Back to planner</a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel groupPanel">
+      <div class="groupHeader">
+        <div>
+          <div class="groupTitleRow">
+            <h1 data-i18n="group_merge_title">Group Merge</h1>
+            <span class="groupBeta" data-i18n="group_beta">Beta</span>
+          </div>
+          <p class="groupNote" data-i18n="group_merge_note">Everything stays on your device. No upload.</p>
+        </div>
+        <div class="groupContext" id="groupContext"></div>
+      </div>
+
+      <div class="groupDropzone" id="groupDropzone" role="button" tabindex="0">
+        <div class="groupDropTitle" data-i18n="group_drop_title">Drop export JSON files here</div>
+        <div class="groupDropSubtitle" data-i18n="group_drop_subtitle">or</div>
+        <button class="btn primary" id="groupSelectBtn" type="button" data-i18n="group_select_files">Select files...</button>
+        <input id="groupFileInput" type="file" accept=".json,application/json" multiple hidden>
+      </div>
+
+      <div id="groupLimitNote" class="groupLimit" hidden>
+        <div id="groupLimitText" data-i18n="group_soft_limit">Recommended max 20 for best performance.</div>
+        <button class="btn" id="groupProceedBtn" type="button" data-i18n="group_proceed">Proceed anyway</button>
+      </div>
+
+      <div id="groupFileList" class="groupFileList"></div>
+
+      <label class="groupToggle">
+        <input type="checkbox" id="includeMismatchToggle">
+        <span data-i18n="group_include_mismatch">Include mismatched files</span>
+      </label>
+
+      <div class="groupActions">
+        <button class="btn primary" id="groupAnalyzeBtn" type="button" disabled data-i18n="group_analyze">Analyze</button>
+        <button class="btn" id="groupExportBtn" type="button" disabled data-i18n="group_export">Export group result (JSON)</button>
+        <button class="btn isDisabled" id="groupCalendarBtn" type="button" disabled data-i18n="group_calendar">Export calendar</button>
+      </div>
+      <div class="muted" id="groupCalendarNote" data-i18n="group_calendar_note">Calendar export will be available once timetables are published.</div>
+
+      <div id="groupStatusNote" class="groupStatusNote" hidden></div>
+
+      <div id="groupResults" class="groupResults" hidden>
+        <div class="groupResultsHeader">
+          <div>
+            <div class="cardTitle" data-i18n="group_results_title">Results</div>
+            <div class="groupResultsMeta" id="groupResultsMeta"></div>
+          </div>
+          <input id="groupFilterInput" class="groupFileInput groupFilterInput" type="search" placeholder="Filter by artist" data-i18n-placeholder="group_filter_placeholder">
+        </div>
+
+        <div>
+          <div class="cardTitle" data-i18n="group_top_picks">Top Picks</div>
+          <div class="tableWrap">
+            <table class="groupTable">
+              <thead>
+                <tr>
+                  <th data-i18n="group_col_artist">Artist</th>
+                  <th class="num">👍</th>
+                  <th class="num">🤔</th>
+                  <th class="num">👎</th>
+                  <th class="num" data-i18n="group_col_agreement">Agreement</th>
+                  <th class="num" data-i18n="group_col_consensus">Consensus</th>
+                </tr>
+              </thead>
+              <tbody id="groupTopPicksBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <div class="cardTitle" data-i18n="group_conflicts">Conflicts / Polarizing</div>
+          <div class="tableWrap">
+            <table class="groupTable">
+              <thead>
+                <tr>
+                  <th data-i18n="group_col_artist">Artist</th>
+                  <th class="num">👍</th>
+                  <th class="num">🤔</th>
+                  <th class="num">👎</th>
+                  <th class="num" data-i18n="group_col_agreement">Agreement</th>
+                  <th class="num" data-i18n="group_col_consensus">Consensus</th>
+                </tr>
+              </thead>
+              <tbody id="groupConflictsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.__FP_BOOT = { event: "tomorrowland", year: 2026, weekend: "w2", lang: "de" };
+  </script>
+  <script src="/app.util.js" defer></script>
+  <script src="/app.config.js" defer></script>
+  <script src="/app.i18n.js" defer></script>
+  <script src="/app.routing.js" defer></script>
+  <script src="/app.state.js" defer></script>
+  <script src="/app.data.js" defer></script>
+  <script src="/app.ui.js" defer></script>
+  <script src="/app.group.js" defer></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        var swUrl = "/service-worker.js";
+        fetch(swUrl, { cache: "no-store" })
+          .then((res) => {
+            if (!res || !res.ok) return null;
+            return navigator.serviceWorker.register(swUrl, { scope: "/" });
+          })
+          .then((reg) => {
+            if (!reg) return;
+            if (typeof window.setupServiceWorkerUpdates === "function") {
+              window.setupServiceWorkerUpdates(reg);
+            }
+          })
+          .catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
