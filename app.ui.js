@@ -1515,16 +1515,64 @@ function setActiveWeekend(weekend, updateRoute = true) {
 }
 
 // ====== MUSIC LINKS ======
-function makeSpotifySearchUrl(name){ return `https://open.spotify.com/search/${encodeURIComponent(name)}`; }
-// Builds an Apple Music search URL for an artist.
-function makeAppleMusicSearchUrl(name){ return `https://music.apple.com/search?term=${encodeURIComponent(name)}`; }
-// Builds a YouTube search URL for an artist.
-function makeYouTubeSearchUrl(name){
-  const query = `${name || ""} Tomorrowland set`.trim();
-  return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+function isMobileDevice() {
+  const ua = navigator.userAgent || "";
+  const uaMobile = /iPhone|iPad|iPod|Android/i.test(ua);
+  const coarse = typeof window.matchMedia === "function" && window.matchMedia("(pointer: coarse)").matches;
+  return uaMobile || coarse;
 }
-// Builds a SoundCloud search URL for an artist.
-function makeSoundCloudSearchUrl(name){ return `https://soundcloud.com/search?q=${encodeURIComponent(name)}`; }
+
+function openWithFallback({ deepUrl, webUrl, fallbackMs = 700, useNewTab = false }) {
+  if (!deepUrl || !webUrl) return;
+  let timer = null;
+  const cleanup = () => {
+    if (timer) clearTimeout(timer);
+    timer = null;
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    window.removeEventListener("pagehide", onPageHide);
+    window.removeEventListener("blur", onBlur);
+  };
+  const openWeb = () => {
+    cleanup();
+    if (useNewTab) openLink(webUrl);
+    else window.location.href = webUrl;
+  };
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "hidden") cleanup();
+  };
+  const onPageHide = () => cleanup();
+  const onBlur = () => {
+    if (document.visibilityState === "hidden") cleanup();
+  };
+
+  document.addEventListener("visibilitychange", onVisibilityChange, { once: true });
+  window.addEventListener("pagehide", onPageHide, { once: true });
+  window.addEventListener("blur", onBlur, { once: true });
+  timer = setTimeout(openWeb, fallbackMs);
+  window.location.href = deepUrl;
+}
+
+// Builds the provider links for an artist search.
+function buildPlayLinks(name) {
+  const { primary, normalized } = normalizeSearchTerm(name);
+  const term = primary || normalized || "";
+  const encoded = encodeURIComponent(term);
+  const youtubeQuery = `${term || ""} Tomorrowland set`.trim();
+
+  return {
+    sp: {
+      web: `https://open.spotify.com/search/${encoded}`,
+      deep: `spotify:search:${encodeURIComponent(term)}`
+    },
+    am: { web: `https://music.apple.com/search?term=${encoded}` },
+    yt: { web: `https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeQuery)}` },
+    sc: {
+      web: `https://soundcloud.com/search?q=${encoded}`,
+      deep: `soundcloud://search?q=${encoded}`
+    }
+  };
+}
+
 // Opens a link in a new tab safely.
 function openLink(url){ window.open(url, "_blank", "noopener"); }
 
@@ -1558,21 +1606,32 @@ function normalizeSearchTerm(name) {
 
 // Build provider URLs using the best available search term.
 function buildPlayUrls(name) {
-  const { primary, normalized } = normalizeSearchTerm(name);
-  const term = primary || normalized || "";
+  const links = buildPlayLinks(name);
   return {
-    sp: makeSpotifySearchUrl(term),
-    am: makeAppleMusicSearchUrl(term),
-    yt: makeYouTubeSearchUrl(term),
-    sc: makeSoundCloudSearchUrl(term)
+    sp: links.sp.web,
+    am: links.am.web,
+    yt: links.yt.web,
+    sc: links.sc.web
   };
+}
+
+function openPlayService(provider, name) {
+  const links = buildPlayLinks(name);
+  const entry = links?.[provider];
+  if (!entry || !entry.web) return;
+  const mobile = isMobileDevice();
+  if (mobile && entry.deep) {
+    openWithFallback({ deepUrl: entry.deep, webUrl: entry.web, fallbackMs: 700 });
+    return;
+  }
+  openLink(entry.web);
 }
 
 function openDefaultPlay(name) {
   const urls = buildPlayUrls(name);
   const provider = getPlayProvider();
-  const url = urls[provider] || urls.sp;
-  if (url) openLink(url);
+  const target = provider && urls[provider] ? provider : "sp";
+  openPlayService(target, name);
 }
 
 // Create the overlay once and reuse it for all artists.
@@ -1638,6 +1697,13 @@ function ensurePlayOverlay() {
   playOverlayPanel.addEventListener("click", (e) => {
     const link = e.target.closest("a.playLink");
     if (link) {
+      const provider = link.getAttribute("data-provider");
+      const name = playOverlayTitle?.dataset?.artistName || "";
+      const shouldIntercept = isMobileDevice() && (provider === "sp" || provider === "sc");
+      if (shouldIntercept) {
+        e.preventDefault();
+        openPlayService(provider, name);
+      }
       closePlayOverlay();
       return;
     }
