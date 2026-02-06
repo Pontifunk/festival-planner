@@ -1522,6 +1522,17 @@ function isMobileDevice() {
   return uaMobile || coarse;
 }
 
+function isIOSDevice() {
+  const ua = navigator.userAgent || "";
+  if (/iPhone|iPad|iPod/i.test(ua)) return true;
+  return navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
+}
+
+function isStandaloneMode() {
+  if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+  return !!navigator.standalone;
+}
+
 function openWithFallback({ deepUrl, webUrl, fallbackMs = 700, useNewTab = false }) {
   if (!deepUrl || !webUrl) return;
   let timer = null;
@@ -1573,8 +1584,16 @@ function buildPlayLinks(name) {
   };
 }
 
-// Opens a link in a new tab safely.
-function openLink(url){ window.open(url, "_blank", "noopener"); }
+// Opens a link in a new tab when possible, with a same-tab fallback for iOS/PWA.
+function openLink(url){
+  if (!url) return;
+  if (isIOSDevice() || isStandaloneMode()) {
+    window.location.href = url;
+    return;
+  }
+  const win = window.open(url, "_blank", "noopener,noreferrer");
+  if (!win) window.location.href = url;
+}
 
 const DEFAULT_PLAY_PROVIDER = "sp";
 const PLAY_PROVIDER_KEY = "fp_play_provider";
@@ -1620,7 +1639,8 @@ function openPlayService(provider, name) {
   const entry = links?.[provider];
   if (!entry || !entry.web) return;
   const mobile = isMobileDevice();
-  if (mobile && entry.deep) {
+  const allowDeepLink = mobile && entry.deep && provider !== "sc";
+  if (allowDeepLink) {
     openWithFallback({ deepUrl: entry.deep, webUrl: entry.web, fallbackMs: 700 });
     return;
   }
@@ -1699,7 +1719,7 @@ function ensurePlayOverlay() {
     if (link) {
       const provider = link.getAttribute("data-provider");
       const name = playOverlayTitle?.dataset?.artistName || "";
-      const shouldIntercept = isMobileDevice() && (provider === "sp" || provider === "sc");
+      const shouldIntercept = isMobileDevice() && provider === "sp";
       if (shouldIntercept) {
         e.preventDefault();
         openPlayService(provider, name);
