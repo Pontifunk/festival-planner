@@ -469,6 +469,10 @@ function openMenu() {
 // Closes the mobile menu and restores scroll.
 function closeMenu(restoreScroll = true) {
   if (!menuSheet || !menuOverlay || !menuBtn) return;
+  // Move focus out of the menu before hiding it (avoids aria-hidden focus warning).
+  if (menuSheet.contains(document.activeElement)) {
+    menuBtn.focus();
+  }
   menuOpen = false;
   menuSheet.classList.remove("isOpen");
   menuOverlay.hidden = true;
