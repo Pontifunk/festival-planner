@@ -103,14 +103,29 @@ function applySeoFromRoute(r) {
   upsertMetaTag("name", "twitter:title", title);
   upsertMetaTag("name", "twitter:description", description);
 
-  const seoWeekendEl = document.querySelector('[data-i18n="seo_weekend_home"]');
-  if (seoWeekendEl) {
-    const weekendKey = weekend === "W1"
-      ? "seo_weekend_w1"
-      : weekend === "W2"
-        ? "seo_weekend_w2"
-        : "seo_weekend_home";
-    seoWeekendEl.textContent = t(weekendKey) || seoWeekendEl.textContent;
+  const weekendKey = weekend === "W1"
+    ? "seo_weekend_w1"
+    : weekend === "W2"
+      ? "seo_weekend_w2"
+      : "seo_weekend_home";
+  const h1Key = weekend === "W1"
+    ? "seo_h1_w1"
+    : weekend === "W2"
+      ? "seo_h1_w2"
+      : "seo_h1_home";
+  const getDictValue = (key) => (dict && dict[key]) ? dict[key] : "";
+  const weekendText = getDictValue(weekendKey);
+  const h1Text = getDictValue(h1Key);
+
+  if (weekendText) {
+    document.querySelectorAll('[data-i18n="seo_weekend_home"], [data-i18n="seo_weekend_w1"], [data-i18n="seo_weekend_w2"]').forEach((el) => {
+      el.textContent = weekendText;
+    });
+  }
+  if (h1Text) {
+    document.querySelectorAll('[data-i18n="seo_h1_home"], [data-i18n="seo_h1_w1"], [data-i18n="seo_h1_w2"]').forEach((el) => {
+      el.textContent = h1Text;
+    });
   }
 }
 
