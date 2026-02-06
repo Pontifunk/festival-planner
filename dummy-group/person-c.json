@@ -1,0 +1,90 @@
+﻿{
+    "createdAt":  "2026-02-06T21:51:48.1403010Z",
+    "event":  {
+                  "year":  2026,
+                  "festival":  "tomorrowland"
+              },
+    "exportVersion":  4,
+    "app":  "festival-planner",
+    "weekends":  [
+                     "W1",
+                     "W2"
+                 ],
+    "schema":  {
+                   "artistKey":  "artistId",
+                   "slotKey":  "slotId"
+               },
+    "artists":  {
+                    "90a4acc7b017eb48":  {
+                                             "ratings":  {
+                                                             "W1":  "liked"
+                                                         },
+                                             "weekends":  [
+                                                              "W1"
+                                                          ],
+                                             "tags":  [
+
+                                                      ],
+                                             "name":  "Ã†ON:MODE",
+                                             "updatedAt":  "2026-02-06T21:51:48.1937943Z"
+                                         },
+                    "434065c2275e5b1c":  {
+                                             "ratings":  {
+                                                             "W1":  "disliked"
+                                                         },
+                                             "weekends":  [
+                                                              "W1"
+                                                          ],
+                                             "tags":  [
+
+                                                      ],
+                                             "name":  "AdriÃ¡n Mills",
+                                             "updatedAt":  "2026-02-06T21:51:48.1937943Z"
+                                         },
+                    "68e4dbc6b138f393":  {
+                                             "ratings":  {
+                                                             "W1":  "liked"
+                                                         },
+                                             "weekends":  [
+                                                              "W1"
+                                                          ],
+                                             "tags":  [
+
+                                                      ],
+                                             "name":  "Afrojack",
+                                             "updatedAt":  "2026-02-06T21:51:48.1937943Z"
+                                         },
+                    "016291af64342041":  {
+                                             "ratings":  {
+                                                             "W1":  "maybe"
+                                                         },
+                                             "weekends":  [
+                                                              "W1"
+                                                          ],
+                                             "tags":  [
+
+                                                      ],
+                                             "name":  "A Little Sound",
+                                             "updatedAt":  "2026-02-06T21:51:48.1937943Z"
+                                         },
+                    "4f30f1f4c6a6c8e9":  {
+                                             "ratings":  {
+                                                             "W1":  "liked"
+                                                         },
+                                             "weekends":  [
+                                                              "W1"
+                                                          ],
+                                             "tags":  [
+
+                                                      ],
+                                             "name":  "ADAM K",
+                                             "updatedAt":  "2026-02-06T21:51:48.1937943Z"
+                                         }
+                },
+    "settings":  {
+                     "playProvider":  ""
+                 },
+    "slots":  {
+
+              }
+}

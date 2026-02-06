@@ -11,6 +11,7 @@ A lightweight, installable Progressive Web App (PWA) that helps you explore the 
 - Browse Tomorrowland 2026 lineups (W1 / W2)
 - Rate artists: Liked / Maybe / Disliked / Reset (unrated)
 - Ratings stored locally only (IndexedDB)
+- Group Merge (Beta): merge multiple export JSONs locally and analyze group picks
 - Quick links to Spotify, Apple Music, YouTube, and SoundCloud
 - Device-aware deep links with web fallback (Spotify mobile)
 - Optional "Copy DJ name to clipboard" toggle in Play overlay
@@ -78,6 +79,17 @@ No frameworks, no backend, no external databases.
   - Weekend 2
 
 The structure is prepared for future festivals and years.
+
+---
+
+## Group Merge (Beta)
+
+Local-only group analysis for multiple export JSONs:
+
+- Route: `/tomorrowland/2026/w1/group/` and `/tomorrowland/2026/w2/group/`
+- Add multiple export JSONs, name each person, then analyze
+- Shows Top Picks and Conflicts (polarizing artists)
+- No uploads, no tracking, everything stays on device
 
 ---
 
