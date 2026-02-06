@@ -1739,8 +1739,9 @@ function updatePlayDefaultUI() {
 // ====== CUSTOM SELECT ======
 function initCustomSelect(selectEl) {
   if (!selectEl) return;
-  const isMobile = window.matchMedia("(max-width: 980px)").matches;
-  if (isMobile) {
+  const useNative = window.matchMedia("(max-width: 720px)").matches
+    || window.matchMedia("(pointer: coarse)").matches;
+  if (useNative) {
     const wrapper = selectEl.parentNode?.querySelector(".selectWrap");
     if (wrapper) wrapper.remove();
     selectEl.dataset.customReady = "native";
