@@ -499,18 +499,11 @@
     if (groupSize < 2) return;
 
     const aggregate = new Map();
-    const people = [];
-    const peopleSeen = new Set();
+    const people = buildPeopleList(included);
 
     included.forEach((entry) => {
-      const personName = String(entry.name || "").trim();
-      if (personName) {
-        const key = personName.toLowerCase();
-        if (!peopleSeen.has(key)) {
-          peopleSeen.add(key);
-          people.push(personName);
-        }
-      }
+      const person = people.find((p) => p.id === entry.id);
+      const personName = person?.displayName || "";
       entry.ratings.forEach((rating, artistId) => {
         const canonicalId = resolveCanonicalId(artistId);
         const nameFromEntry = entry.names.get(artistId) || entry.names.get(canonicalId) || "";
@@ -535,17 +528,17 @@
         if (rating === "liked") {
           stats.likeCount += 1;
           if (personName) stats.likedBy.push(personName);
-          if (personName) stats.ratingsByPerson.set(personName, "liked");
+          if (person?.id) stats.ratingsByPerson.set(person.id, "liked");
         }
         if (rating === "maybe") {
           stats.maybeCount += 1;
           if (personName) stats.maybeBy.push(personName);
-          if (personName) stats.ratingsByPerson.set(personName, "maybe");
+          if (person?.id) stats.ratingsByPerson.set(person.id, "maybe");
         }
         if (rating === "disliked") {
           stats.dislikeCount += 1;
           if (personName) stats.dislikedBy.push(personName);
-          if (personName) stats.ratingsByPerson.set(personName, "disliked");
+          if (person?.id) stats.ratingsByPerson.set(person.id, "disliked");
         }
         aggregate.set(canonicalId, stats);
       });
@@ -654,6 +647,8 @@
     const filter = state.filter;
     const activePerson = String(state.personFilter || "all");
     const people = state.results.people || [];
+    const peopleById = new Map(people.map((p) => [p.id, p]));
+    const peopleDisplay = people.map((p) => p.displayName);
 
     const filterList = (list) => {
       if (!filter) return list;
@@ -689,7 +684,7 @@
     const avoid = sortWithPerson(filterList(state.results.avoid));
     const allItems = sortWithPerson(filterList(state.results.allSorted));
 
-    renderParticipantsBar(people);
+    renderParticipantsBar(peopleDisplay);
     renderPersonFilter(people);
 
     if (resultsMeta) {
@@ -705,24 +700,28 @@
     renderCardList(heroList, hero, state.results.groupSize, {
       emptyText: t("group_empty_hero") || "No highlights yet.",
       activePerson,
-      people,
+      people: peopleDisplay,
+      peopleById,
       showBorderline: true
     });
     renderCardList(recommendedList, recommended, state.results.groupSize, {
       emptyText: t("group_empty_recommended") || "No recommendations yet.",
       activePerson,
-      people
+      people: peopleDisplay,
+      peopleById
     });
     renderCardList(discussionList, discussion, state.results.groupSize, {
       emptyText: t("group_empty_discussion") || "No discussion cases yet.",
       activePerson,
-      people,
+      people: peopleDisplay,
+      peopleById,
       showOpponents: true
     });
     renderCardList(avoidList, avoid, state.results.groupSize, {
       emptyText: t("group_empty_avoid") || "No skip candidates yet.",
       activePerson,
-      people
+      people: peopleDisplay,
+      peopleById
     });
     renderTableRows(allBody, allItems, state.results.groupSize, t("group_empty_all") || "No items yet.");
   }
@@ -806,8 +805,9 @@
     const detailsLabel = t("group_votes_details") || "Who voted what?";
     const activePerson = options.activePerson && options.activePerson !== "all" ? options.activePerson : "";
     const personRating = activePerson ? (item.ratingsByPerson?.get(activePerson) || "unrated") : "";
-    const personLabel = activePerson && personRating !== "unrated"
-      ? `${activePerson} ${personRating === "liked" ? likeLabel : personRating === "maybe" ? maybeLabel : dislikeLabel}`
+    const personName = activePerson ? (options.peopleById?.get(activePerson)?.displayName || "") : "";
+    const personLabel = personName && personRating !== "unrated"
+      ? `${personName} ${personRating === "liked" ? likeLabel : personRating === "maybe" ? maybeLabel : dislikeLabel}`
       : "";
 
     const orderedPeople = Array.isArray(options.people) ? options.people : [];
@@ -892,6 +892,33 @@
     return ordered.concat(remaining);
   }
 
+  function buildPeopleList(included) {
+    const people = [];
+    const counts = new Map();
+    const normalized = (value) => String(value || "").trim().toLowerCase();
+
+    included.forEach((entry) => {
+      const name = String(entry?.name || "").trim();
+      if (!name) return;
+      const key = normalized(name);
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+
+    const seen = new Map();
+    included.forEach((entry) => {
+      const name = String(entry?.name || "").trim();
+      if (!name) return;
+      const key = normalized(name);
+      const total = counts.get(key) || 1;
+      const index = (seen.get(key) || 0) + 1;
+      seen.set(key, index);
+      const displayName = total > 1 ? `${name} (${index})` : name;
+      people.push({ id: entry.id, name, displayName });
+    });
+
+    return people;
+  }
+
   function renderParticipantsBar(people) {
     if (!participantsBar) return;
     if (!Array.isArray(people) || !people.length) {
@@ -920,7 +947,8 @@
   function renderPersonFilter(people) {
     if (!personFilter) return;
     let active = state.personFilter || "all";
-    if (active !== "all" && Array.isArray(people) && !people.includes(active)) {
+    const ids = Array.isArray(people) ? people.map((p) => p.id) : [];
+    if (active !== "all" && !ids.includes(active)) {
       active = "all";
       state.personFilter = "all";
     }
@@ -929,8 +957,9 @@
       value: "all",
       label: t("group_all_participants") || "All participants"
     });
-    (people || []).forEach((name) => {
-      options.push({ value: name, label: name });
+    (people || []).forEach((person) => {
+      if (!person?.id) return;
+      options.push({ value: person.id, label: person.displayName || person.name || "" });
     });
     personFilter.innerHTML = options.map((opt) => {
       const selected = opt.value === active ? " selected" : "";
@@ -962,6 +991,12 @@
   function exportGroupResults() {
     if (!state.results) return;
     const included = getIncludedFiles();
+    const cleanItem = (item) => {
+      if (!item || typeof item !== "object") return item;
+      const { ratingsByPerson, ...rest } = item;
+      return rest;
+    };
+    const cleanList = (list, limit) => (Array.isArray(list) ? list.slice(0, limit).map(cleanItem) : []);
 
     const payload = {
       app: "festival-planner-group",
@@ -978,13 +1013,13 @@
         mismatch: entry.mismatch || false
       })),
       results: {
-        topPicks: state.results.topPicks.slice(0, 50),
-        conflicts: state.results.conflicts.slice(0, 50),
+        topPicks: cleanList(state.results.topPicks, 50),
+        conflicts: cleanList(state.results.conflicts, 50),
         decision: {
-          recommended: state.results.recommended?.slice(0, 50) || [],
-          discussion: state.results.discussion?.slice(0, 50) || [],
-          avoid: state.results.avoid?.slice(0, 50) || [],
-          hero: state.results.hero?.slice(0, 5) || []
+          recommended: cleanList(state.results.recommended, 50),
+          discussion: cleanList(state.results.discussion, 50),
+          avoid: cleanList(state.results.avoid, 50),
+          hero: cleanList(state.results.hero, 5)
         }
       }
     };
