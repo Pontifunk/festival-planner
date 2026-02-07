@@ -1377,28 +1377,29 @@ button{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.35);
-  z-index:60;
+  z-index:120;
   touch-action:none;
 }
 .menuSheet{
   position:fixed;
   left:0;
   right:0;
+  top:0;
   bottom:0;
   background:var(--panel);
   border-top-left-radius:18px;
   border-top-right-radius:18px;
   border:1px solid var(--border);
   border-bottom:none;
-  padding:10px 14px calc(16px + env(safe-area-inset-bottom));
-  max-height:calc(100dvh - 16px);
+  padding:calc(10px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom));
+  max-height:100dvh;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
   touch-action:pan-y;
   transform:translateY(100%);
   transition:transform .25s ease;
-  z-index:70;
+  z-index:130;
   box-shadow:var(--shadow);
 }
 .menuSheet.isOpen{transform:translateY(0)}
@@ -1587,6 +1588,15 @@ button{
   background:rgba(255,255,255,.04);
 }
 .groupToggle{display:flex;align-items:center;gap:10px;font-size:14px}
+.groupToggleInline{
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  font-size:12px;
+}
 .groupActions{display:flex;flex-wrap:wrap;gap:8px}
 .groupResults{display:flex;flex-direction:column;gap:16px}
 .groupResultsHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -1598,9 +1608,8 @@ button{
 .groupFilterSelect{min-height:36px}
 .groupParticipantsBar{
   display:flex;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
+  flex-direction:column;
+  gap:10px;
   padding:10px 12px;
   border-radius:12px;
   border:1px solid var(--border);
@@ -1608,15 +1617,25 @@ button{
   font-size:13px;
 }
 .groupParticipantsText{font-weight:700}
-.groupParticipantsMore summary{list-style:none;cursor:pointer;color:var(--muted);font-size:12px}
-.groupParticipantsMore summary::-webkit-details-marker{display:none}
-.groupParticipantsPopover{
-  margin-top:8px;
-  padding:8px 10px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:#0f1222;
+.groupParticipantsChips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.groupParticipantChip{
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.04);
+  color:inherit;
   font-size:12px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+.groupParticipantChip:hover{border-color:rgba(255,255,255,.45)}
+.groupParticipantChip.isActive{
+  background:rgba(120,120,255,.18);
+  border-color:rgba(120,120,255,.55);
+  color:#eef0ff;
 }
 .groupZone{display:flex;flex-direction:column;gap:10px}
 .groupZoneHeader{display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -1679,8 +1698,14 @@ button{
 .groupItemHint{font-size:13px;font-weight:700}
 .groupOpposeLine{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
 .groupOpposeHint{font-weight:600}
-.groupItemDetails summary{list-style:none;cursor:pointer;color:var(--muted);font-size:12px}
+.groupItemDetails summary{list-style:none;cursor:pointer;color:var(--muted);font-size:12px;display:inline-flex;align-items:center}
 .groupItemDetails summary::-webkit-details-marker{display:none}
+.groupItemDetails summary::after{
+  content:"▾";
+  margin-left:6px;
+  transition:transform .2s ease;
+}
+.groupItemDetails[open] summary::after{transform:rotate(180deg)}
 .groupItemBreakdown{
   margin-top:8px;
   display:flex;
@@ -1691,8 +1716,14 @@ button{
 .groupDetailIcon{display:inline-flex;min-width:20px}
 .groupDetailEmpty{color:var(--muted)}
 .groupAllDetails{border:1px solid var(--border);border-radius:14px;padding:10px;background:rgba(255,255,255,.02)}
-.groupAllDetails summary{list-style:none;cursor:pointer;font-weight:700}
+.groupAllDetails summary{list-style:none;cursor:pointer;font-weight:700;display:inline-flex;align-items:center}
 .groupAllDetails summary::-webkit-details-marker{display:none}
+.groupAllDetails summary::after{
+  content:"▾";
+  margin-left:6px;
+  transition:transform .2s ease;
+}
+.groupAllDetails[open] summary::after{transform:rotate(180deg)}
 .groupTable{width:100%;border-collapse:collapse}
 .groupTable th,.groupTable td{padding:10px 8px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
 .groupTable th{color:var(--muted);text-align:left}
