@@ -604,6 +604,20 @@ function bindUi() {
     });
   }
 
+  const logoLink = document.querySelector(".logoLink");
+  if (logoLink) {
+    logoLink.addEventListener("click", (e) => {
+      const path = location.pathname || "/";
+      const isHome = path === "/" || path === "/index.html";
+      if (isHome) {
+        e.preventDefault();
+        location.reload();
+        return;
+      }
+      logoLink.setAttribute("href", "/");
+    });
+  }
+
   if (weekendChangesDetails) {
     weekendChangesDetails.addEventListener("click", (e) => {
       const link = e.target.closest(".changesDetailLink");
