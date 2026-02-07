@@ -18,6 +18,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
+          token: ${{ secrets.GH_PAGES_TOKEN }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -75,4 +76,5 @@ jobs:
             exit 0
           fi
           git commit -m "chore: add lineup snapshot"
+          git remote set-url origin "https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git"
           git push
