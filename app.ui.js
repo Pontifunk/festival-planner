@@ -586,7 +586,7 @@ function scrollToTarget(selector, attempt = 0) {
     if (debugMenu) console.info("[menu] scroll top");
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "auto" });
     setTimeout(() => {
       if (window.scrollY !== 0) window.scrollTo(0, 0);
     }, 120);
@@ -602,14 +602,12 @@ function scrollToTarget(selector, attempt = 0) {
   }
   const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
   if (debugMenu) console.info("[menu] scroll", { selector, topbarHeight, scrollY: window.scrollY });
-  el.scrollIntoView({ behavior: "smooth", block: "start" });
   const offset = Math.ceil(topbarHeight) + 8;
+  const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+  window.scrollTo({ top: targetY, behavior: "auto" });
   setTimeout(() => {
-    window.scrollBy(0, -offset);
-  }, 80);
-  setTimeout(() => {
-    const targetY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
-    if (Math.abs(window.scrollY - targetY) > 4) window.scrollTo(0, targetY);
+    const retryY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+    if (Math.abs(window.scrollY - retryY) > 4) window.scrollTo(0, retryY);
   }, 180);
 }
 
