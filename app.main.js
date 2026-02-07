@@ -594,15 +594,8 @@ function bindUi() {
       const item = e.target.closest(".menuItem");
       if (!item) return;
       const href = item.getAttribute("href") || "";
-      const action = item.getAttribute("data-action");
-      const isHash = href.startsWith("#");
-      const allowNativeHash = isHash && !action;
-      if (item.tagName === "A" && !allowNativeHash) {
+      if (item.tagName === "A" && href.startsWith("#")) {
         e.preventDefault();
-      }
-      if (allowNativeHash) {
-        closeMenu(true);
-        return;
       }
       handleMenuItem(item);
     });

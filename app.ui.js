@@ -568,12 +568,12 @@ function handleMenuItem(item) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => postClose());
       });
-    }, 0);
+    }, 280);
   }
 }
 
 // Scrolls smoothly to the given selector.
-function scrollToTarget(selector) {
+function scrollToTarget(selector, attempt = 0) {
   if (!selector) return;
   const debugMenu = (() => {
     try {
@@ -594,6 +594,9 @@ function scrollToTarget(selector) {
   }
   const el = document.querySelector(selector);
   if (!el) {
+    if (attempt < 6) {
+      setTimeout(() => scrollToTarget(selector, attempt + 1), 120);
+    }
     if (debugMenu) console.warn("[menu] target not found", selector);
     return;
   }
