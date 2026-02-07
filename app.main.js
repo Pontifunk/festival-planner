@@ -593,6 +593,7 @@ function bindUi() {
     menuSheet.addEventListener("click", (e) => {
       const item = e.target.closest(".menuItem");
       if (!item) return;
+      if (item.tagName === "A") e.preventDefault();
       handleMenuItem(item);
     });
     document.addEventListener("keydown", (e) => {

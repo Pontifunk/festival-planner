@@ -507,7 +507,9 @@ function toggleMenu() {
 // Routes menu actions (scroll, weekend, filters).
 function handleMenuItem(item) {
   const action = item.getAttribute("data-action");
-  const target = item.getAttribute("data-target");
+  const href = item.getAttribute("href");
+  let target = item.getAttribute("data-target");
+  if (!target && href && href.startsWith("#")) target = href;
   let postClose = null;
   const debugMenu = (() => {
     try {
@@ -618,7 +620,7 @@ function updateMenuDayLinks(dates) {
   menuDayLinks.innerHTML = dates.map((d) => {
     const label = formatDate(d);
     const target = `#day-${d}`;
-    return `<button class="menuItem isSub" data-action="setDay" data-day="${escapeAttr(d)}" data-target="${escapeAttr(target)}" type="button">${escapeHtml(label)}</button>`;
+    return `<a class="menuItem isSub" href="${escapeAttr(target)}" data-action="setDay" data-day="${escapeAttr(d)}" data-target="${escapeAttr(target)}">${escapeHtml(label)}</a>`;
   }).join("");
 }
 
