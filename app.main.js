@@ -61,6 +61,9 @@ function loadScript(src) {
 
 const ONBOARDING_HINT_KEY = "fp_onboarding_seen";
 const SCROLL_RESTORE_KEY = "fp_scroll_restore_y";
+const DATA_REFRESH_MS = 5 * 60 * 1000;
+let lastDataRefresh = 0;
+let refreshingData = false;
 
 function getOnboardingEls() {
   const hint = onboardingHint || document.getElementById("onboardingHint");
@@ -183,6 +186,7 @@ async function init() {
       loadChangesIndex(),
       loadWeekendChanges()
     ]);
+    lastDataRefresh = Date.now();
     logPerf("base-data-ready");
   } catch (e) {
     showError(t("base_data_load_error") || "Error loading base data.");
@@ -203,6 +207,7 @@ async function init() {
   setDefaultSelectedChanges();
   renderWeekendChangesBox();
   setActiveWeekend(state.activeWeekend, false);
+  setupAutoRefresh();
 
   runIdle(() => {
     const otherWeekend = WEEKENDS.find((w) => w !== state.activeWeekend);
@@ -213,6 +218,52 @@ async function init() {
   }, { timeout: 1000 });
 
   tryScrollToArtistFromQuery();
+}
+
+async function refreshActiveWeekendSnapshotIfNeeded() {
+  const wk = state.activeWeekend || DEFAULT_WEEKEND;
+  const currentFile = state.weekends?.[wk]?.selectedFile || null;
+  const latest = await loadLatestSnapshotForWeekend(wk);
+  if (!latest) return;
+  if (latest.file !== currentFile || !state.weekends?.[wk]?.snapshot) {
+    await loadSnapshotForWeekend(wk, latest.file);
+    if (state.activeWeekend === wk) renderActiveWeekend();
+  }
+}
+
+async function refreshBaseData(reason) {
+  if (refreshingData) return;
+  if (!navigator.onLine) return;
+  refreshingData = true;
+  try {
+    await Promise.all([
+      loadSnapshotIndex(),
+      loadArtistsLatest(),
+      loadChangesIndex(),
+      loadWeekendChanges()
+    ]);
+    await refreshActiveWeekendSnapshotIfNeeded();
+    setDefaultSelectedChanges();
+    renderWeekendChangesBox();
+    lastDataRefresh = Date.now();
+    if (reason) console.info("[festival-planner] data refreshed", reason);
+  } catch {
+    // Ignore refresh failures; keep existing state.
+  } finally {
+    refreshingData = false;
+  }
+}
+
+function setupAutoRefresh() {
+  const maybeRefresh = () => {
+    if (document.visibilityState !== "visible") return;
+    const now = Date.now();
+    if (now - lastDataRefresh < DATA_REFRESH_MS) return;
+    refreshBaseData("visibility");
+  };
+  document.addEventListener("visibilitychange", maybeRefresh);
+  window.addEventListener("focus", maybeRefresh);
+  window.addEventListener("online", maybeRefresh);
 }
 
 function resetFiltersForArtistDeepLink() {
@@ -392,6 +443,17 @@ function setupServiceWorkerUpdates(registration) {
     langSelect.addEventListener("change", () => {
       if (!banner.hidden) setLabels();
     });
+  }
+
+  if (typeof registration.update === "function") {
+    const tryUpdate = () => {
+      if (document.visibilityState !== "visible") return;
+      registration.update().catch(() => {});
+    };
+    window.addEventListener("focus", tryUpdate);
+    window.addEventListener("online", tryUpdate);
+    document.addEventListener("visibilitychange", tryUpdate);
+    setTimeout(tryUpdate, 2000);
   }
 }
 

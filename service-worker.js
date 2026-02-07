@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const BUILD_ID = "2026-02-06-3";
+const BUILD_ID = "2026-02-07-1";
 const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 // Assets are served from the site root.
 const withBase = (path) => path;
@@ -141,7 +141,13 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
 
   if (isHtmlRequest(request)) {
-    event.respondWith(cacheFirst(request, true));
+    event.respondWith((async () => {
+      const response = await staleWhileRevalidate(request);
+      if (response && response.status !== 504) return response;
+      const cache = await caches.open(CACHE_NAME);
+      const shell = await cache.match("/index.html");
+      return shell || response;
+    })());
     return;
   }
 

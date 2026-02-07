@@ -36,7 +36,7 @@ async function loadLatestSnapshotForWeekend(weekend) {
 // Fetches a snapshot JSON file by name.
 async function loadSnapshotFile(file) {
   const url = withRoot(`/data/${state.festival}/${state.year}/snapshots/${file}`);
-  return await fetchJson(url, { cache: "default" });
+  return await fetchJson(url, { cache: "no-store" });
 }
 
 // Loads a snapshot into state and updates the select UI.
