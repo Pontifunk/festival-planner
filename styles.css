@@ -68,7 +68,20 @@ a{color:inherit;text-decoration:none}
   box-sizing: border-box;
 }
 
-.brand{display:flex;gap:12px;align-items:center;min-width:240px}
+.brand{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  min-width:240px;
+  color:inherit;
+  text-decoration:none;
+  cursor:pointer;
+}
+.brand:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(107,92,255,.25);
+  border-radius:12px;
+}
 .brandText{display:flex;flex-direction:column;gap:2px}
 
 .logo{
