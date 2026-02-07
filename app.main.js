@@ -593,7 +593,17 @@ function bindUi() {
     menuSheet.addEventListener("click", (e) => {
       const item = e.target.closest(".menuItem");
       if (!item) return;
-      if (item.tagName === "A") e.preventDefault();
+      const href = item.getAttribute("href") || "";
+      const action = item.getAttribute("data-action");
+      const isHash = href.startsWith("#");
+      const allowNativeHash = isHash && !action;
+      if (item.tagName === "A" && !allowNativeHash) {
+        e.preventDefault();
+      }
+      if (allowNativeHash) {
+        closeMenu(true);
+        return;
+      }
       handleMenuItem(item);
     });
     document.addEventListener("keydown", (e) => {
