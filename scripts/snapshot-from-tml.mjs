@@ -26,6 +26,10 @@ const DAY_URLS = [
 function ensureDir(p) { fs.mkdirSync(p, { recursive: true }); }
 function writeJson(file, obj) { fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n", "utf8"); }
 function readJsonSafe(file, fallback) { try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch { return fallback; } }
+function extractDateKeyNoDash(iso) {
+  const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${m[1]}${m[2]}${m[3]}` : "";
+}
 
 function loadTomorrowlandArtistMap() {
   const data = readJsonSafe(ARTISTS_LATEST, null);
@@ -270,17 +274,27 @@ async function fetchDay(browser, url) {
 }
 
 // Update snapshots index.json (latest pointer and history).
-function updateSnapshotIndex(snapshotFile, createdAt, slotCount) {
+function updateSnapshotIndex(snapshotFile, createdAt, slotCount, removedFiles = []) {
   const indexPath = path.join(SNAP_DIR, "index.json");
   const idx = readJsonSafe(indexPath, { latest: null, snapshots: [] });
 
-  idx.snapshots = idx.snapshots.filter(s => s.file !== snapshotFile);
+  const removed = new Set(removedFiles);
+  idx.snapshots = idx.snapshots.filter(s => s.file !== snapshotFile && !removed.has(s.file));
   idx.snapshots.push({ file: snapshotFile, createdAt, slotCount });
   idx.snapshots.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   idx.latest = idx.snapshots.at(-1)?.file ?? null;
 
   writeJson(indexPath, idx);
   return idx;
+}
+
+function pruneSameDaySnapshots(dateKeyNoDash, weekend, keepFile) {
+  const pattern = new RegExp(`^${dateKeyNoDash}_.*_${weekend}\\.json$`);
+  const files = fs.readdirSync(SNAP_DIR).filter(f => pattern.test(f) && f !== keepFile);
+  for (const file of files) {
+    try { fs.unlinkSync(path.join(SNAP_DIR, file)); } catch { /* ignore */ }
+  }
+  return files;
 }
 
 // Main scrape flow for all days and snapshot generation.
@@ -292,6 +306,7 @@ async function main() {
     .replace(/[:-]/g, "")
     .replace(/\.\d{3}Z$/, "Z")
     .replace("T", "_"); // 20260126_074514Z
+  const dateKeyNoDash = extractDateKeyNoDash(createdAt) || ts.slice(0, 8);
 
   const browser = await chromium.launch({ headless: true });
 
@@ -341,8 +356,9 @@ async function main() {
       const file = `${ts}_${weekend}.json`;
       const filePath = path.join(SNAP_DIR, file);
 
+      const removedFiles = pruneSameDaySnapshots(dateKeyNoDash, weekend, file);
       writeJson(filePath, snapshot);
-      const idx = updateSnapshotIndex(file, createdAt, slots.length);
+      const idx = updateSnapshotIndex(file, createdAt, slots.length, removedFiles);
 
       console.log(`Wrote snapshot ${file} (slots=${slots.length}) latest=${idx.latest}`);
     }
