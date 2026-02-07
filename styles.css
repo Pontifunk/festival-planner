@@ -1329,6 +1329,13 @@ button{
   color:var(--text);
   font-weight:900;
 }
+.btn.small{
+  min-height:32px;
+  padding:6px 10px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:800;
+}
 .btn.isDisabled{
   opacity:.6;
   pointer-events:none;
