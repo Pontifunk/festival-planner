@@ -105,6 +105,7 @@
   "planner_note_title": "Import & export",
   "planner_note_intro": "Export and import your ratings here.",
   "planner_note_warning": "Note: Your ratings are stored locally only. Please export them regularly so nothing is lost.",
+  "planner_note_settings": "Export also includes play settings (default platform & DJ name copy).",
   "privacy_note": "All ratings and favorites are stored locally in your browser only. No login, no cloud, no tracking.",
   "saved": "Saved \u2713",
   "export_ratings": "Export ratings",
