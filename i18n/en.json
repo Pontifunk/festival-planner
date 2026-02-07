@@ -208,7 +208,6 @@
   "group_soft_limit": "Recommended max 20 for best performance.",
   "group_proceed": "Proceed anyway",
   "group_include_mismatch": "Include files from other festival/year/weekend",
-  "group_include_mismatch_help": "Includes exports from other festival/year/weekend (otherwise excluded).",
   "group_include_mismatch_help": "Includes exports from a different festival/year/weekend (otherwise excluded).",
   "group_analyze": "Analyze",
   "group_calendar": "Export calendar",
