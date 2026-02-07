@@ -193,7 +193,9 @@ function renderArtistPage({ artist, weekend, slug }) {
 <body class="simplePage">
   <header class="topbar" id="top">
     <div class="brand">
-      <div class="logo">FP</div>
+      <a class="logoLink" href="/" aria-label="Festival Planner">
+        <div class="logo">FP</div>
+      </a>
       <div class="brandText">
         <div class="title">Festival Planner</div>
         <div class="subtitle" id="artistSubtitle" data-i18n="artist_subtitle">Artist details (privacy-first, no tracking)</div>
@@ -939,7 +941,9 @@ function renderArtistIndexPage({ weekend, entries }) {
 <body class="simplePage">
   <header class="topbar" id="top">
     <div class="brand">
-      <div class="logo">FP</div>
+      <a class="logoLink" href="/" aria-label="Festival Planner">
+        <div class="logo">FP</div>
+      </a>
       <div class="brandText">
         <div class="title">Festival Planner</div>
         <div class="subtitle" id="artistIndexSubtitle">Artist directory (privacy-first, no tracking)</div>
