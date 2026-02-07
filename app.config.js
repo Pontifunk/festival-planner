@@ -133,6 +133,7 @@ const menuDayLinks = document.getElementById("menuDayLinks");
 const donateBtn = document.getElementById("donateBtn");
 const feedbackBtn = document.getElementById("feedbackBtn");
 const plannerExportBox = document.getElementById("plannerExportBox");
+const groupMergeLink = document.getElementById("groupMergeLink");
 const mobileExportAnchor = document.getElementById("mobileExportAnchor");
 const controlsCard = document.getElementById("controlsCard");
 const mobileControlsAnchor = document.getElementById("mobileControlsAnchor");

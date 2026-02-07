@@ -1066,13 +1066,21 @@ function renderBuildStamp() {
   buildStamp.hidden = !BUILD_ID;
 }
 
-function updateArtistIndexLink() {
-  if (!artistIndexLink) return;
-  const festival = route?.festival || DEFAULT_FESTIVAL;
-  const year = route?.year || DEFAULT_YEAR;
-  const weekend = String(state.activeWeekend || DEFAULT_WEEKEND).toLowerCase();
-  artistIndexLink.href = `${BASE_PREFIX}/${festival}/${year}/${weekend}/artists/`;
-}
+  function updateArtistIndexLink() {
+    if (!artistIndexLink) return;
+    const festival = route?.festival || DEFAULT_FESTIVAL;
+    const year = route?.year || DEFAULT_YEAR;
+    const weekend = String(state.activeWeekend || DEFAULT_WEEKEND).toLowerCase();
+    artistIndexLink.href = `${BASE_PREFIX}/${festival}/${year}/${weekend}/artists/`;
+  }
+
+  function updateGroupMergeLink() {
+    if (!groupMergeLink) return;
+    const festival = route?.festival || DEFAULT_FESTIVAL;
+    const year = route?.year || DEFAULT_YEAR;
+    const weekend = String(state.activeWeekend || DEFAULT_WEEKEND).toLowerCase();
+    groupMergeLink.href = `${BASE_PREFIX}/${festival}/${year}/${weekend}/group/`;
+  }
 
 // Rebuilds day/stage filter options from snapshot data.
 function updateFiltersUI(weekend) {
@@ -1499,7 +1507,7 @@ function openDetailsForSlot(container, slot) {
 }
 
 // Switches the active weekend tab and updates route.
-function setActiveWeekend(weekend, updateRoute = true) {
+  function setActiveWeekend(weekend, updateRoute = true) {
   const normalized = normalizeWeekend(weekend) || "W1";
   state.activeWeekend = normalized;
   if (!state.ratingsByWeekend) state.ratingsByWeekend = {};
@@ -1536,9 +1544,10 @@ function setActiveWeekend(weekend, updateRoute = true) {
       });
   }
 
-  updateArtistIndexLink();
-  renderActiveWeekend();
-}
+    updateArtistIndexLink();
+    updateGroupMergeLink();
+    renderActiveWeekend();
+  }
 
 // ====== MUSIC LINKS ======
 function isMobileDevice() {
@@ -2205,4 +2214,3 @@ function ensureSelectVisible(selectEl) {
   selectEl.style.opacity = "1";
   selectEl.style.pointerEvents = "auto";
 }
-
