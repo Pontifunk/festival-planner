@@ -63,8 +63,8 @@ a{color:inherit;text-decoration:none}
   background:var(--bg);
   z-index:100;
   box-shadow: var(--shadow);
-  /* CLS stabilization: reserve header height */
-  height: var(--topbar-h);
+  /* CLS stabilization: reserve header height but allow growth */
+  min-height: var(--topbar-h);
   box-sizing: border-box;
 }
 
@@ -334,6 +334,7 @@ button{
   align-items:center;
   justify-content:center;
   cursor:pointer;
+  align-self:center;
 }
 .menuIcon{
   width:18px;
