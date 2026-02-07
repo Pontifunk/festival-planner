@@ -1375,31 +1375,34 @@ button{
 /* Mobile menu overlay & sheet */
 .menuOverlay{
   position:fixed;
-  inset:0;
+  top:var(--topbar-h);
+  left:0;
+  right:0;
+  bottom:0;
   background:rgba(0,0,0,.35);
-  z-index:120;
+  z-index:95;
   touch-action:none;
 }
 .menuSheet{
   position:fixed;
   left:0;
   right:0;
-  top:0;
+  top:var(--topbar-h);
   bottom:0;
   background:var(--panel);
   border-top-left-radius:18px;
   border-top-right-radius:18px;
   border:1px solid var(--border);
   border-bottom:none;
-  padding:calc(10px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom));
-  max-height:100dvh;
+  padding:10px 14px calc(16px + env(safe-area-inset-bottom));
+  max-height:calc(100dvh - var(--topbar-h));
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
   touch-action:pan-y;
   transform:translateY(100%);
   transition:transform .25s ease;
-  z-index:130;
+  z-index:96;
   box-shadow:var(--shadow);
 }
 .menuSheet.isOpen{transform:translateY(0)}
