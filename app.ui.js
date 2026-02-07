@@ -870,10 +870,11 @@ function renderReplacedChangeItem(item) {
 }
 
 // Exports ratings to a local JSON download.
-function exportRatings() {
-  const createdAt = new Date().toISOString();
-  const playProvider = getPlayProvider();
-  const artists = {};
+  function exportRatings() {
+    const createdAt = new Date().toISOString();
+    const playProvider = getPlayProvider();
+    const playCopyName = getPlayCopyEnabled();
+    const artists = {};
   WEEKENDS.forEach((wk) => {
     const wkRatings = state.ratingsByWeekend?.[wk] || {};
     Object.keys(wkRatings).forEach((artistId) => {
@@ -895,19 +896,20 @@ function exportRatings() {
     artists[artistId].weekends = Object.keys(artists[artistId].ratings || {});
   });
 
-  const payload = {
-    app: "festival-planner",
-    exportVersion: 4,
-    createdAt,
-    event: { festival: state.festival, year: state.year },
-    weekends: Array.from(WEEKENDS),
-    settings: {
-      playProvider
-    },
-    schema: { artistKey: "artistId", slotKey: "slotId" },
-    artists,
-    slots: {}
-  };
+    const payload = {
+      app: "festival-planner",
+      exportVersion: 5,
+      createdAt,
+      event: { festival: state.festival, year: state.year },
+      weekends: Array.from(WEEKENDS),
+      settings: {
+        playProvider,
+        playCopyName
+      },
+      schema: { artistKey: "artistId", slotKey: "slotId" },
+      artists,
+      slots: {}
+    };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -960,11 +962,14 @@ async function importRatings(e) {
           incomingByWeekend[normalized][artistId] = rate;
         });
       });
-      const provider = data?.settings?.playProvider;
-      if (provider && ["sp", "am", "yt", "sc"].includes(provider)) {
-        setPlayProvider(provider);
-      }
-      incoming = incomingByWeekend;
+        const provider = data?.settings?.playProvider;
+        if (provider && ["sp", "am", "yt", "sc"].includes(provider)) {
+          setPlayProvider(provider);
+        }
+        if (typeof data?.settings?.playCopyName === "boolean") {
+          setPlayCopyEnabled(data.settings.playCopyName);
+        }
+        incoming = incomingByWeekend;
     } else if (data?.ratings && typeof data.ratings === "object") {
       WEEKENDS.forEach((wk) => { incomingByWeekend[wk] = data.ratings; });
       incoming = incomingByWeekend;
@@ -2200,5 +2205,4 @@ function ensureSelectVisible(selectEl) {
   selectEl.style.opacity = "1";
   selectEl.style.pointerEvents = "auto";
 }
-
 
