@@ -813,7 +813,9 @@
     if (polarizingOnlyToggle) polarizingOnlyToggle.checked = polarizingOnly;
     if (minApprovalSelect) {
       minApprovalSelect.value = String(minApproval);
-      if (typeof syncCustomSelect === "function") {
+      if (typeof initCustomSelect === "function" && minApprovalSelect.dataset.customReady !== "true") {
+        initCustomSelect(minApprovalSelect);
+      } else if (typeof syncCustomSelect === "function") {
         syncCustomSelect(minApprovalSelect);
       }
     }

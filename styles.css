@@ -1628,6 +1628,7 @@ button{
 .groupFilterSelect{min-height:36px}
 .groupAdvancedFilters{
   width:100%;
+  flex-basis:100%;
   padding:10px 12px;
   border-radius:12px;
   border:1px dashed rgba(255,255,255,.15);
@@ -1653,6 +1654,37 @@ button{
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:10px;
   margin-top:10px;
+  align-items:end;
+}
+.groupAdvancedGrid .groupToggleInline{
+  min-height:44px;
+  justify-content:flex-start;
+}
+.groupToggleInline input{
+  appearance:none;
+  width:16px;
+  height:16px;
+  border-radius:4px;
+  border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.03);
+  display:inline-block;
+  position:relative;
+}
+.groupToggleInline input:checked{
+  background:rgba(107,92,255,.35);
+  border-color:rgba(107,92,255,.65);
+}
+.groupToggleInline input:checked::after{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:2px;
+  width:4px;
+  height:8px;
+  border:2px solid #fff;
+  border-top:0;
+  border-left:0;
+  transform:rotate(45deg);
 }
 .groupParticipantsBar{
   display:flex;
