@@ -209,6 +209,7 @@
   "group_soft_limit": "Empfohlen max. 20 Dateien f\u00fcr beste Performance.",
   "group_proceed": "Trotzdem fortfahren",
   "group_include_mismatch": "Dateien mit anderem Festival/Jahr/Wochenende einschlie\u00dfen",
+  "group_include_mismatch_help": "Schlie\u00dft Exporte von anderem Festival/Jahr/Wochenende ein (sonst ausgeschlossen).",
   "group_analyze": "Analysieren",
   "group_calendar": "Kalender exportieren",
   "group_calendar_note": "Kalender-Export wird verf\u00fcgbar, sobald Timetables ver\u00f6ffentlicht sind.",
