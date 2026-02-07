@@ -202,7 +202,6 @@ function renderDayGroup(group, weekend, openState) {
       <summary class="daySummary">
         <div class="daySummaryMain">
           <span class="dayTitle">${escapeHtml(dateLabel)}</span>
-          <span class="dayLinkPseudo" role="link" tabindex="0" data-url="${escapeAttr(dayUrl)}">${escapeHtml(t("lineup"))}</span>
         </div>
         <div class="daySummaryMeta">
           ${renderRatingBreakdown(dayCounts)}
@@ -211,6 +210,9 @@ function renderDayGroup(group, weekend, openState) {
         </div>
       </summary>
       <div class="dayBody">
+        <div class="dayBodyHeader">
+          <a class="dayLinkPseudo" href="${escapeAttr(dayUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t("lineup"))}</a>
+        </div>
         ${stagesHtml}
       </div>
     </details>

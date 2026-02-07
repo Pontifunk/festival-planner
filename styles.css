@@ -741,6 +741,12 @@ button{
   display:grid;
   gap:10px;
 }
+.dayBodyHeader{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  margin-bottom:2px;
+}
 
 .stageGroup{
   border:1px solid var(--border);
