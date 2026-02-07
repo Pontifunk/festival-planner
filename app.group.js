@@ -7,7 +7,6 @@
   const selectBtn = document.getElementById("groupSelectBtn");
   const fileList = document.getElementById("groupFileList");
   const analyzeBtn = document.getElementById("groupAnalyzeBtn");
-  const exportBtn = document.getElementById("groupExportBtn");
   const proceedBtn = document.getElementById("groupProceedBtn");
   const limitNote = document.getElementById("groupLimitNote");
   const limitText = document.getElementById("groupLimitText");
@@ -16,6 +15,18 @@
   const resultsWrap = document.getElementById("groupResults");
   const resultsMeta = document.getElementById("groupResultsMeta");
   const participantsBar = document.getElementById("groupParticipantsBar");
+  const sectionFilter = document.getElementById("groupSectionFilter");
+  const conflictOnlyToggle = document.getElementById("groupConflictOnly");
+  const unanimousOnlyToggle = document.getElementById("groupUnanimousOnly");
+  const noDownvotesToggle = document.getElementById("groupNoDownvotes");
+  const polarizingOnlyToggle = document.getElementById("groupPolarizingOnly");
+  const minApprovalSelect = document.getElementById("groupMinApproval");
+  const rejectedByPersonSelect = document.getElementById("groupRejectedByPerson");
+  const heroSection = document.getElementById("groupHeroSection");
+  const recommendedSection = document.getElementById("groupRecommendedSection");
+  const discussionSection = document.getElementById("groupDiscussionSection");
+  const avoidSection = document.getElementById("groupAvoidSection");
+  const allSection = document.getElementById("groupAllSection");
   const topPicksBody = document.getElementById("groupTopPicksBody");
   const conflictsBody = document.getElementById("groupConflictsBody");
   const heroList = document.getElementById("groupHeroList");
@@ -36,7 +47,14 @@
     allowOverLimit: false,
     results: null,
     filter: "",
-    personFilter: "all"
+    personFilter: "all",
+    sectionFilter: "all",
+    conflictOnly: false,
+    unanimousOnly: false,
+    noDownvotes: false,
+    polarizingOnly: false,
+    minApproval: 0,
+    rejectedByPerson: "any"
   };
 
   const reference = {
@@ -139,10 +157,6 @@
     analyzeBtn.addEventListener("click", () => runAnalysis());
   }
 
-  if (exportBtn) {
-    exportBtn.addEventListener("click", () => exportGroupResults());
-  }
-
   if (filterInput) {
     filterInput.addEventListener("input", () => {
       state.filter = String(filterInput.value || "").trim().toLowerCase();
@@ -152,6 +166,66 @@
   if (personFilter) {
     personFilter.addEventListener("change", () => {
       state.personFilter = String(personFilter.value || "all");
+      if (state.results) renderResults();
+    });
+  }
+  if (sectionFilter) {
+    sectionFilter.addEventListener("change", () => {
+      state.sectionFilter = String(sectionFilter.value || "all");
+      if (state.results) renderResults();
+    });
+  }
+  if (conflictOnlyToggle) {
+    conflictOnlyToggle.addEventListener("change", () => {
+      state.conflictOnly = Boolean(conflictOnlyToggle.checked);
+      if (state.results) renderResults();
+    });
+  }
+  if (unanimousOnlyToggle) {
+    unanimousOnlyToggle.addEventListener("change", () => {
+      state.unanimousOnly = Boolean(unanimousOnlyToggle.checked);
+      if (state.results) renderResults();
+    });
+  }
+  if (noDownvotesToggle) {
+    noDownvotesToggle.addEventListener("change", () => {
+      state.noDownvotes = Boolean(noDownvotesToggle.checked);
+      if (state.results) renderResults();
+    });
+  }
+  if (polarizingOnlyToggle) {
+    polarizingOnlyToggle.addEventListener("change", () => {
+      state.polarizingOnly = Boolean(polarizingOnlyToggle.checked);
+      if (state.results) renderResults();
+    });
+  }
+  if (minApprovalSelect) {
+    minApprovalSelect.addEventListener("change", () => {
+      const next = parseFloat(minApprovalSelect.value || "0");
+      state.minApproval = Number.isFinite(next) ? next : 0;
+      if (state.results) renderResults();
+    });
+  }
+  if (rejectedByPersonSelect) {
+    rejectedByPersonSelect.addEventListener("change", () => {
+      state.rejectedByPerson = String(rejectedByPersonSelect.value || "any");
+      if (state.results) renderResults();
+    });
+  }
+  if (participantsBar) {
+    participantsBar.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-person-id]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-person-id") || "all";
+      state.personFilter = id;
+      if (personFilter) {
+        personFilter.value = id;
+        if (typeof rebuildCustomSelect === "function") {
+          rebuildCustomSelect(personFilter);
+        } else if (typeof initCustomSelect === "function") {
+          initCustomSelect(personFilter);
+        }
+      }
       if (state.results) renderResults();
     });
   }
@@ -481,7 +555,6 @@
     const overLimit = state.files.length > MAX_SOFT && !state.allowOverLimit;
 
     if (analyzeBtn) analyzeBtn.disabled = !(named && enough && !overLimit);
-    if (exportBtn) exportBtn.disabled = !state.results;
   }
 
   function getIncludedFiles() {
@@ -646,13 +719,41 @@
     if (!state.results) return;
     const filter = state.filter;
     const activePerson = String(state.personFilter || "all");
+    const sectionMode = String(state.sectionFilter || "all");
+    const conflictOnly = Boolean(state.conflictOnly);
+    const unanimousOnly = Boolean(state.unanimousOnly);
+    const noDownvotes = Boolean(state.noDownvotes);
+    const polarizingOnly = Boolean(state.polarizingOnly);
+    const minApproval = Number.isFinite(state.minApproval) ? state.minApproval : 0;
+    const rejectedByPerson = String(state.rejectedByPerson || "any");
     const people = state.results.people || [];
     const peopleById = new Map(people.map((p) => [p.id, p]));
     const peopleDisplay = people.map((p) => p.displayName);
 
     const filterList = (list) => {
-      if (!filter) return list;
-      return list.filter((item) => String(item.name || "").toLowerCase().includes(filter));
+      let filtered = Array.isArray(list) ? list.slice() : [];
+      if (filter) {
+        filtered = filtered.filter((item) => String(item.name || "").toLowerCase().includes(filter));
+      }
+      if (conflictOnly) {
+        filtered = filtered.filter((item) => (item.dislikeCount || 0) > 0);
+      }
+      if (unanimousOnly) {
+        filtered = filtered.filter((item) => (item.likeCount || 0) === state.results.groupSize);
+      }
+      if (noDownvotes) {
+        filtered = filtered.filter((item) => (item.dislikeCount || 0) === 0);
+      }
+      if (polarizingOnly) {
+        filtered = filtered.filter((item) => (item.likeCount || 0) > 0 && (item.dislikeCount || 0) > 0);
+      }
+      if (minApproval > 0) {
+        filtered = filtered.filter((item) => (item.approvalPct || 0) >= minApproval);
+      }
+      if (rejectedByPerson !== "any") {
+        filtered = filtered.filter((item) => item.ratingsByPerson?.get(rejectedByPerson) === "disliked");
+      }
+      return filtered;
     };
 
     const personRank = {
@@ -684,15 +785,51 @@
     const avoid = sortWithPerson(filterList(state.results.avoid));
     const allItems = sortWithPerson(filterList(state.results.allSorted));
 
-    renderParticipantsBar(peopleDisplay);
     renderPersonFilter(people);
+    renderSectionFilter();
+    renderRejectedByFilter(people);
+    renderParticipantsBar(people);
+
+    const showHero = sectionMode === "all" || sectionMode === "highlights";
+    const showRecommended = sectionMode === "all" || sectionMode === "recommended";
+    const showDiscussion = sectionMode === "all" || sectionMode === "discussion";
+    const showAvoid = sectionMode === "all" || sectionMode === "avoid";
+    const showAll = sectionMode === "all";
+
+    if (heroSection) heroSection.hidden = !showHero;
+    if (recommendedSection) recommendedSection.hidden = !showRecommended;
+    if (discussionSection) discussionSection.hidden = !showDiscussion;
+    if (avoidSection) avoidSection.hidden = !showAvoid;
+    if (allSection) allSection.hidden = !showAll;
+    if (sectionFilter) {
+      sectionFilter.value = sectionMode;
+      if (typeof syncCustomSelect === "function") {
+        syncCustomSelect(sectionFilter);
+      }
+    }
+    if (conflictOnlyToggle) conflictOnlyToggle.checked = conflictOnly;
+    if (unanimousOnlyToggle) unanimousOnlyToggle.checked = unanimousOnly;
+    if (noDownvotesToggle) noDownvotesToggle.checked = noDownvotes;
+    if (polarizingOnlyToggle) polarizingOnlyToggle.checked = polarizingOnly;
+    if (minApprovalSelect) {
+      minApprovalSelect.value = String(minApproval);
+      if (typeof syncCustomSelect === "function") {
+        syncCustomSelect(minApprovalSelect);
+      }
+    }
+    if (rejectedByPersonSelect) {
+      rejectedByPersonSelect.value = rejectedByPerson;
+      if (typeof syncCustomSelect === "function") {
+        syncCustomSelect(rejectedByPersonSelect);
+      }
+    }
 
     if (resultsMeta) {
       const metaText = formatTemplate(t("group_results_meta") || "{count} people included", {
         count: state.results.groupSize
       });
       const viewFor = activePerson && activePerson !== "all"
-        ? `${t("group_view_for") || "View for"} ${activePerson}`
+        ? `${t("group_view_for") || "View for"} ${peopleById.get(activePerson)?.displayName || activePerson}`
         : "";
       resultsMeta.textContent = viewFor ? `${metaText} \u00b7 ${viewFor}` : metaText;
     }
@@ -927,20 +1064,21 @@
     }
     const includedLabel = t("group_people_included") || "people included";
     const count = people.length;
-    const visible = people.slice(0, 3);
-    const extra = count - visible.length;
-    const baseText = `${count} ${includedLabel}: ${visible.join(", ")}`;
-    const more = extra > 0
-      ? `
-        <details class="groupParticipantsMore">
-          <summary>\u2026 +${extra}</summary>
-          <div class="groupParticipantsPopover">${escapeHtml(people.join(", "))}</div>
-        </details>
-      `
-      : "";
+    const active = String(state.personFilter || "all");
+    const allLabel = t("group_all_participants") || "All participants";
+    const chips = [{ id: "all", label: allLabel }]
+      .concat(people.map((person) => ({
+        id: person.id,
+        label: person.displayName || person.name || ""
+      })));
+    const chipsHtml = chips.map((chip) => {
+      const isActive = chip.id === active ? " isActive" : "";
+      return `<button type="button" class="groupParticipantChip${isActive}" data-person-id="${escapeAttr(chip.id)}">${escapeHtml(chip.label)}</button>`;
+    }).join("");
+    const baseText = `${count} ${includedLabel}`;
     participantsBar.innerHTML = `
       <div class="groupParticipantsText">${escapeHtml(baseText)}</div>
-      ${more}
+      <div class="groupParticipantsChips">${chipsHtml}</div>
     `;
   }
 
@@ -972,6 +1110,52 @@
     }
   }
 
+  function renderSectionFilter() {
+    if (!sectionFilter) return;
+    const active = String(state.sectionFilter || "all");
+    const options = [
+      { value: "all", label: t("group_view_all") || "All sections" },
+      { value: "highlights", label: t("group_view_highlights") || "Highlights" },
+      { value: "recommended", label: t("group_view_recommended") || "Recommended" },
+      { value: "discussion", label: t("group_view_discussion") || "Discussion" },
+      { value: "avoid", label: t("group_view_avoid") || "Avoid" }
+    ];
+    sectionFilter.innerHTML = options.map((opt) => {
+      const selected = opt.value === active ? " selected" : "";
+      return `<option value="${escapeAttr(opt.value)}"${selected}>${escapeHtml(opt.label)}</option>`;
+    }).join("");
+    if (typeof rebuildCustomSelect === "function") {
+      rebuildCustomSelect(sectionFilter);
+    } else if (typeof initCustomSelect === "function") {
+      initCustomSelect(sectionFilter);
+    }
+  }
+
+  function renderRejectedByFilter(people) {
+    if (!rejectedByPersonSelect) return;
+    let active = String(state.rejectedByPerson || "any");
+    const ids = Array.isArray(people) ? people.map((p) => p.id) : [];
+    if (active !== "any" && !ids.includes(active)) {
+      active = "any";
+      state.rejectedByPerson = "any";
+    }
+    const options = [];
+    options.push({ value: "any", label: t("group_filter_any") || "Any" });
+    (people || []).forEach((person) => {
+      if (!person?.id) return;
+      options.push({ value: person.id, label: person.displayName || person.name || "" });
+    });
+    rejectedByPersonSelect.innerHTML = options.map((opt) => {
+      const selected = opt.value === active ? " selected" : "";
+      return `<option value="${escapeAttr(opt.value)}"${selected}>${escapeHtml(opt.label)}</option>`;
+    }).join("");
+    if (typeof rebuildCustomSelect === "function") {
+      rebuildCustomSelect(rejectedByPersonSelect);
+    } else if (typeof initCustomSelect === "function") {
+      initCustomSelect(rejectedByPersonSelect);
+    }
+  }
+
   function classifyGroupItem({ approvalPct, rejectPct, dislikeCount, likeCount, groupSize }) {
     if (approvalPct >= 0.7 && dislikeCount === 0) return "recommended";
     const half = Math.ceil(groupSize / 2);
@@ -988,63 +1172,9 @@
     return `${pct}%`;
   }
 
-  function exportGroupResults() {
-    if (!state.results) return;
-    const included = getIncludedFiles();
-    const cleanItem = (item) => {
-      if (!item || typeof item !== "object") return item;
-      const { ratingsByPerson, ...rest } = item;
-      return rest;
-    };
-    const cleanList = (list, limit) => (Array.isArray(list) ? list.slice(0, limit).map(cleanItem) : []);
-
-    const payload = {
-      app: "festival-planner-group",
-      createdAt: new Date().toISOString(),
-      group: {
-        festival: expected.festival || "",
-        year: expected.year || "",
-        weekend: expected.weekend || "",
-        snapshotId: resolveSnapshotId(included)
-      },
-      people: included.map((entry) => ({
-        name: entry.name,
-        fileName: entry.file.name || "",
-        mismatch: entry.mismatch || false
-      })),
-      results: {
-        topPicks: cleanList(state.results.topPicks, 50),
-        conflicts: cleanList(state.results.conflicts, 50),
-        decision: {
-          recommended: cleanList(state.results.recommended, 50),
-          discussion: cleanList(state.results.discussion, 50),
-          avoid: cleanList(state.results.avoid, 50),
-          hero: cleanList(state.results.hero, 5)
-        }
-      }
-    };
-
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `group-merge-${expected.festival || "festival"}-${expected.year || ""}-${(expected.weekend || "").toLowerCase()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
   function clearResults() {
     state.results = null;
     if (resultsWrap) resultsWrap.hidden = true;
-    if (exportBtn) exportBtn.disabled = true;
-  }
-
-  function resolveSnapshotId(included) {
-    const ids = new Set(included.map((entry) => entry.meta?.snapshotId).filter(Boolean));
-    if (ids.size === 1) return Array.from(ids)[0];
-    return "";
   }
 
   function updateContextUI() {

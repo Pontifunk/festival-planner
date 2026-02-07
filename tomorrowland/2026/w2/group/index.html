@@ -85,7 +85,6 @@
 
       <div class="groupActions">
         <button class="btn primary" id="groupAnalyzeBtn" type="button" disabled data-i18n="group_analyze">Analyze</button>
-        <button class="btn" id="groupExportBtn" type="button" disabled data-i18n="group_export">Export group result (JSON)</button>
         <button class="btn isDisabled" id="groupCalendarBtn" type="button" disabled data-i18n="group_calendar">Export calendar</button>
       </div>
       <div class="muted" id="groupCalendarNote" data-i18n="group_calendar_note">Calendar export will be available once timetables are published.</div>
@@ -106,38 +105,78 @@
               <label class="groupFilterLabel" for="groupPersonFilter" data-i18n="group_participants_label">Participants</label>
               <select id="groupPersonFilter" class="selectNative groupFileInput groupFilterSelect" data-custom-select data-force-custom="true"></select>
             </div>
+            <div class="groupPersonFilter">
+              <label class="groupFilterLabel" for="groupSectionFilter" data-i18n="group_view_label">View</label>
+              <select id="groupSectionFilter" class="selectNative groupFileInput groupFilterSelect" data-custom-select data-force-custom="true"></select>
+            </div>
+            <label class="groupToggle groupToggleInline">
+              <input type="checkbox" id="groupConflictOnly">
+              <span data-i18n="group_conflict_only">Only conflicts (min. 1 👎)</span>
+            </label>
           </div>
+          <details class="groupAdvancedFilters" id="groupAdvancedFilters">
+            <summary data-i18n="group_more_filters">More filters</summary>
+            <div class="groupAdvancedGrid">
+              <label class="groupToggle groupToggleInline">
+                <input type="checkbox" id="groupUnanimousOnly">
+                <span data-i18n="group_filter_unanimous">Only unanimous 👍</span>
+              </label>
+              <label class="groupToggle groupToggleInline">
+                <input type="checkbox" id="groupNoDownvotes">
+                <span data-i18n="group_filter_no_downvotes">No 👎 votes</span>
+              </label>
+              <label class="groupToggle groupToggleInline">
+                <input type="checkbox" id="groupPolarizingOnly">
+                <span data-i18n="group_filter_polarizing">Only polarizing (👍 + 👎)</span>
+              </label>
+              <div class="groupPersonFilter">
+                <label class="groupFilterLabel" for="groupMinApproval" data-i18n="group_filter_min_approval">Min. approval</label>
+                <select id="groupMinApproval" class="selectNative groupFileInput groupFilterSelect" data-custom-select data-force-custom="true">
+                  <option value="0" data-i18n="group_filter_any">Any</option>
+                  <option value="0.5">≥ 50%</option>
+                  <option value="0.6">≥ 60%</option>
+                  <option value="0.7">≥ 70%</option>
+                  <option value="0.8">≥ 80%</option>
+                  <option value="0.9">≥ 90%</option>
+                </select>
+              </div>
+              <div class="groupPersonFilter">
+                <label class="groupFilterLabel" for="groupRejectedByPerson" data-i18n="group_filter_rejected_by">Rejected by</label>
+                <select id="groupRejectedByPerson" class="selectNative groupFileInput groupFilterSelect" data-custom-select data-force-custom="true"></select>
+              </div>
+            </div>
+          </details>
         </div>
 
-        <section class="groupZone groupHeroZone">
+        <section class="groupZone groupHeroZone" id="groupHeroSection">
           <div class="groupZoneHeader">
             <div class="cardTitle" data-i18n="group_hero_title">Eure beste gemeinsame Auswahl</div>
           </div>
           <div id="groupHeroList" class="groupCardGrid"></div>
         </section>
 
-        <section class="groupZone">
+        <section class="groupZone" id="groupRecommendedSection">
           <div class="groupZoneHeader">
             <div class="cardTitle" data-i18n="group_recommended_title">Empfohlen</div>
           </div>
           <div id="groupRecommendedList" class="groupCardGrid"></div>
         </section>
 
-        <section class="groupZone">
+        <section class="groupZone" id="groupDiscussionSection">
           <div class="groupZoneHeader">
             <div class="cardTitle" data-i18n="group_discussion_title">Diskussionsf&auml;lle</div>
           </div>
           <div id="groupDiscussionList" class="groupCardGrid"></div>
         </section>
 
-        <section class="groupZone">
+        <section class="groupZone" id="groupAvoidSection">
           <div class="groupZoneHeader">
             <div class="cardTitle" data-i18n="group_avoid_title">Eher nicht</div>
           </div>
           <div id="groupAvoidList" class="groupCardGrid"></div>
         </section>
 
-        <details class="groupAllDetails">
+        <details class="groupAllDetails" id="groupAllSection">
           <summary class="groupAllSummary" data-i18n="group_all_details">Alle (Details)</summary>
           <div class="tableWrap">
             <table class="groupTable">
