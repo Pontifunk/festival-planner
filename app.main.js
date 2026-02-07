@@ -127,8 +127,11 @@ function initOnboardingHint() {
 }
 
 // Bootstraps UI state, loads data, and renders the initial view.
-async function init() {
-  console.info("[festival-planner] build", BUILD_ID);
+  async function init() {
+    console.info("[festival-planner] build", BUILD_ID);
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
   if (DONATION_URL && !DONATION_URL.includes("DEINNAME")) {
     donateBtn.href = DONATION_URL;
   } else {
@@ -353,18 +356,28 @@ function tryScrollToArtistFromQuery() {
   tryScroll();
 }
 
-window.addEventListener("pageshow", (e) => {
-  if (!window.__FP_INIT__) return;
-  const restoreScroll = () => {
-    try {
-      const y = Number(sessionStorage.getItem(SCROLL_RESTORE_KEY) || "");
-      if (!Number.isFinite(y) || y <= 0) return;
-      sessionStorage.removeItem(SCROLL_RESTORE_KEY);
-      requestAnimationFrame(() => window.scrollTo(0, y));
-    } catch {
-      // Ignore storage failures (e.g., privacy mode).
-    }
-  };
+  window.addEventListener("pageshow", (e) => {
+    if (!window.__FP_INIT__) return;
+    const restoreScroll = () => {
+      try {
+        const y = Number(sessionStorage.getItem(SCROLL_RESTORE_KEY) || "");
+        if (!Number.isFinite(y) || y <= 0) return;
+        let attempts = 0;
+        const maxAttempts = 8;
+        const apply = () => {
+          window.scrollTo(0, y);
+          if (Math.abs(window.scrollY - y) <= 2 || attempts >= maxAttempts) {
+            sessionStorage.removeItem(SCROLL_RESTORE_KEY);
+            return;
+          }
+          attempts += 1;
+          setTimeout(apply, 120);
+        };
+        requestAnimationFrame(apply);
+      } catch {
+        // Ignore storage failures (e.g., privacy mode).
+      }
+    };
 
   const hasArtistParam = Boolean(getQueryParam("artist"));
   if (e && e.persisted) {
@@ -378,13 +391,21 @@ window.addEventListener("pageshow", (e) => {
   if (!hasArtistParam) restoreScroll();
 });
 
-window.addEventListener("pagehide", () => {
-  try {
-    sessionStorage.setItem(SCROLL_RESTORE_KEY, String(window.scrollY || 0));
-  } catch {
-    // Ignore storage failures.
-  }
-});
+  window.addEventListener("pagehide", () => {
+    try {
+      sessionStorage.setItem(SCROLL_RESTORE_KEY, String(window.scrollY || 0));
+    } catch {
+      // Ignore storage failures.
+    }
+  });
+
+  window.addEventListener("beforeunload", () => {
+    try {
+      sessionStorage.setItem(SCROLL_RESTORE_KEY, String(window.scrollY || 0));
+    } catch {
+      // Ignore storage failures.
+    }
+  });
 
 // Wires the update banner and handles SW update flow.
 function setupServiceWorkerUpdates(registration) {
