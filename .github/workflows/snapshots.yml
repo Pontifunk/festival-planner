@@ -60,9 +60,23 @@ jobs:
           set -euxo pipefail
           npm --prefix scripts run generate:artists
 
+      - name: Ensure GH_PAGES_TOKEN is present
+        run: |
+          set -euxo pipefail
+          if [ -z "${GH_PAGES_TOKEN:-}" ]; then
+            echo "GH_PAGES_TOKEN is missing or empty."
+            exit 1
+          fi
+        env:
+          GH_PAGES_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
+
       - name: Commit & push if changed
         run: |
           set -euxo pipefail
+          if [ -z "${GH_PAGES_TOKEN:-}" ]; then
+            echo "GH_PAGES_TOKEN is missing or empty."
+            exit 1
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/tomorrowland/2026/snapshots
@@ -76,5 +90,6 @@ jobs:
             exit 0
           fi
           git commit -m "chore: add lineup snapshot"
-          git remote set-url origin "https://x-access-token:${{ secrets.GH_PAGES_TOKEN }}@github.com/${{ github.repository }}.git"
-          git push
+          git push "https://x-access-token:${GH_PAGES_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
+        env:
+          GH_PAGES_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
