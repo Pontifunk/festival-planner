@@ -18,6 +18,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      is_latest: ${{ steps.check.outputs.is_latest }}
+    steps:
+      - name: Check latest commit on main
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = await github.rest.repos.getBranch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              branch: "main",
+            });
+            const isLatest = branch.data.commit.sha === context.sha;
+            core.setOutput("is_latest", isLatest ? "true" : "false");
+
   build:
     if: >-
       ${{
@@ -25,7 +43,9 @@ jobs:
         && !(github.event_name == 'push'
              && github.actor == 'github-actions[bot]'
              && startsWith(github.event.head_commit.message, 'chore: add lineup snapshot'))
+        && needs.gate.outputs.is_latest == 'true'
       }}
+    needs: gate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
