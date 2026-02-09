@@ -83,7 +83,9 @@ jobs:
           path: dist-site
 
   deploy:
-    needs: build
+    needs:
+      - gate
+      - build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
