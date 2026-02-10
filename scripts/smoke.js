@@ -27,15 +27,34 @@ function checkSitemap() {
   }
 }
 
+function checkIndexReferences() {
+  const indexPath = path.join(dist, "index.html");
+  const html = fs.readFileSync(indexPath, "utf8");
+  if (!html.includes("styles.css")) {
+    throw new Error("index.html does not reference styles.css");
+  }
+  if (!html.includes("app.main.js")) {
+    throw new Error("index.html does not reference app.main.js");
+  }
+  if (!html.toLowerCase().includes("<!doctype html")) {
+    throw new Error("index.html missing doctype");
+  }
+}
+
 function run() {
   if (!fs.existsSync(dist)) {
     throw new Error(`dist-site not found at ${dist}`);
   }
   mustExist("index.html", "index.html");
+  mustExist("404.html", "404.html");
   mustExist("styles.css", "styles.css");
   mustExist("app.main.js", "app.main.js");
   mustExist("sitemap.xml", "sitemap.xml");
+  mustExist("robots.txt", "robots.txt");
+  mustExist("manifest.webmanifest", "manifest.webmanifest");
+  mustExist("service-worker.js", "service-worker.js");
   checkSitemap();
+  checkIndexReferences();
   console.log("Smoke check passed.");
 }
 
