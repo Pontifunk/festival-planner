@@ -22,8 +22,12 @@ function checkSitemap() {
   const hasXmlHeader = xml.trimStart().startsWith("<?xml");
   const hasRoot =
     xml.includes("<urlset") || xml.includes("<sitemapindex");
+  const hasUrl = xml.includes("<url>") || xml.includes("<sitemap>");
   if (!hasXmlHeader || !hasRoot) {
     throw new Error("sitemap.xml does not look like valid XML");
+  }
+  if (!hasUrl) {
+    throw new Error("sitemap.xml contains no entries");
   }
 }
 
@@ -41,6 +45,84 @@ function checkIndexReferences() {
   }
 }
 
+function listLocalAssets(html) {
+  const assets = new Set();
+  const patterns = [
+    /<link[^>]+href=["']([^"']+)["']/gi,
+    /<script[^>]+src=["']([^"']+)["']/gi,
+    /<img[^>]+src=["']([^"']+)["']/gi,
+  ];
+  for (const regex of patterns) {
+    let match = null;
+    while ((match = regex.exec(html)) !== null) {
+      const value = match[1];
+      if (
+        value &&
+        !value.startsWith("http://") &&
+        !value.startsWith("https://") &&
+        !value.startsWith("//") &&
+        !value.startsWith("data:")
+      ) {
+        assets.add(value.replace(/^\//, ""));
+      }
+    }
+  }
+  return [...assets];
+}
+
+function checkIndexAssetsExist() {
+  const indexPath = path.join(dist, "index.html");
+  const html = fs.readFileSync(indexPath, "utf8");
+  const assets = listLocalAssets(html);
+  for (const asset of assets) {
+    const assetPath = path.join(dist, asset);
+    if (!fs.existsSync(assetPath)) {
+      throw new Error(`index.html references missing asset: ${asset}`);
+    }
+  }
+}
+
+function checkRobots() {
+  const robotsPath = path.join(dist, "robots.txt");
+  const content = fs.readFileSync(robotsPath, "utf8");
+  if (!content.toLowerCase().includes("sitemap:")) {
+    throw new Error("robots.txt missing Sitemap directive");
+  }
+}
+
+function checkManifest() {
+  const manifestPath = path.join(dist, "manifest.webmanifest");
+  const text = fs.readFileSync(manifestPath, "utf8");
+  let data = null;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error("manifest.webmanifest is not valid JSON");
+  }
+  if (!data.name && !data.short_name) {
+    throw new Error("manifest.webmanifest missing name/short_name");
+  }
+  if (!Array.isArray(data.icons) || data.icons.length === 0) {
+    throw new Error("manifest.webmanifest missing icons");
+  }
+}
+
+function checkServiceWorker() {
+  const swPath = path.join(dist, "service-worker.js");
+  const text = fs.readFileSync(swPath, "utf8");
+  if (!text.includes("self.addEventListener")) {
+    throw new Error("service-worker.js missing event listeners");
+  }
+}
+
+function checkNoUnresolvedPlaceholders() {
+  const indexPath = path.join(dist, "index.html");
+  const html = fs.readFileSync(indexPath, "utf8");
+  if (html.includes("{{") || html.includes("}}")) {
+    throw new Error("index.html contains unresolved template placeholders");
+  }
+}
+
 function run() {
   if (!fs.existsSync(dist)) {
     throw new Error(`dist-site not found at ${dist}`);
@@ -55,6 +137,11 @@ function run() {
   mustExist("service-worker.js", "service-worker.js");
   checkSitemap();
   checkIndexReferences();
+  checkIndexAssetsExist();
+  checkRobots();
+  checkManifest();
+  checkServiceWorker();
+  checkNoUnresolvedPlaceholders();
   console.log("Smoke check passed.");
 }
 
