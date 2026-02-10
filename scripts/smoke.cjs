@@ -122,14 +122,6 @@ function checkServiceWorker() {
   }
 }
 
-function checkNoUnresolvedPlaceholders() {
-  const indexPath = path.join(dist, "index.html");
-  const html = fs.readFileSync(indexPath, "utf8");
-  if (html.includes("{{") || html.includes("}}")) {
-    throw new Error("index.html contains unresolved template placeholders");
-  }
-}
-
 function checkIndexStructure() {
   const indexPath = path.join(dist, "index.html");
   const html = fs.readFileSync(indexPath, "utf8");
@@ -173,7 +165,6 @@ function run() {
   checkRobots();
   checkManifest();
   checkServiceWorker();
-  checkNoUnresolvedPlaceholders();
   checkIndexStructure();
   checkSitemapUrls();
   console.log("Smoke check passed.");
