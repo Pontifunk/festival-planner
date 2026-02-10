@@ -123,6 +123,32 @@ function checkNoUnresolvedPlaceholders() {
   }
 }
 
+function checkIndexStructure() {
+  const indexPath = path.join(dist, "index.html");
+  const html = fs.readFileSync(indexPath, "utf8");
+  const hasHtml = /<html[\s>]/i.test(html);
+  const hasHead = /<head[\s>]/i.test(html);
+  const hasBody = /<body[\s>]/i.test(html);
+  if (!hasHtml || !hasHead || !hasBody) {
+    throw new Error("index.html missing html/head/body structure");
+  }
+}
+
+function checkSitemapUrls() {
+  const sitemapPath = path.join(dist, "sitemap.xml");
+  const xml = fs.readFileSync(sitemapPath, "utf8");
+  const urlMatches = [...xml.matchAll(/<loc>([^<]+)<\/loc>/gi)];
+  if (urlMatches.length === 0) {
+    return;
+  }
+  for (const match of urlMatches) {
+    const loc = match[1].trim();
+    if (!/^https?:\/\/.+/i.test(loc)) {
+      throw new Error(`sitemap.xml has non-absolute URL: ${loc}`);
+    }
+  }
+}
+
 function run() {
   if (!fs.existsSync(dist)) {
     throw new Error(`dist-site not found at ${dist}`);
@@ -142,6 +168,8 @@ function run() {
   checkManifest();
   checkServiceWorker();
   checkNoUnresolvedPlaceholders();
+  checkIndexStructure();
+  checkSitemapUrls();
   console.log("Smoke check passed.");
 }
 
