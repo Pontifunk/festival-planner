@@ -34,12 +34,6 @@ function checkSitemap() {
 function checkIndexReferences() {
   const indexPath = path.join(dist, "index.html");
   const html = fs.readFileSync(indexPath, "utf8");
-  if (!html.includes("styles.css")) {
-    throw new Error("index.html does not reference styles.css");
-  }
-  if (!html.includes("app.main.js")) {
-    throw new Error("index.html does not reference app.main.js");
-  }
   if (!html.toLowerCase().includes("<!doctype html")) {
     throw new Error("index.html missing doctype");
   }
@@ -68,6 +62,19 @@ function listLocalAssets(html) {
     }
   }
   return [...assets];
+}
+
+function checkIndexHasCssAndJs() {
+  const indexPath = path.join(dist, "index.html");
+  const html = fs.readFileSync(indexPath, "utf8");
+  const cssLinks = [...html.matchAll(/<link[^>]+rel=["']stylesheet["'][^>]*>/gi)];
+  const jsScripts = [...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)];
+  if (cssLinks.length === 0) {
+    throw new Error("index.html has no stylesheet links");
+  }
+  if (jsScripts.length === 0) {
+    throw new Error("index.html has no script tags with src");
+  }
 }
 
 function checkIndexAssetsExist() {
@@ -155,14 +162,13 @@ function run() {
   }
   mustExist("index.html", "index.html");
   mustExist("404.html", "404.html");
-  mustExist("styles.css", "styles.css");
-  mustExist("app.main.js", "app.main.js");
   mustExist("sitemap.xml", "sitemap.xml");
   mustExist("robots.txt", "robots.txt");
   mustExist("manifest.webmanifest", "manifest.webmanifest");
   mustExist("service-worker.js", "service-worker.js");
   checkSitemap();
   checkIndexReferences();
+  checkIndexHasCssAndJs();
   checkIndexAssetsExist();
   checkRobots();
   checkManifest();
