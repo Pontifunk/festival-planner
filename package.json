@@ -5,7 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "build": "node build.js",
-    "dev": "node build.js --watch"
+    "dev": "node build.js --watch",
+    "smoke": "node scripts/smoke.js"
   },
   "devDependencies": {
     "esbuild": "^0.20.2"

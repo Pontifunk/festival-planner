@@ -73,6 +73,9 @@ jobs:
             --exclude 'dist-site' \
             ./ dist-site/
 
+      - name: Smoke test
+        run: npm run smoke
+
       - name: Prepare artifact
         run: |
           rm -rf node_modules
