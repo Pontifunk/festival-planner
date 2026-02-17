@@ -62,6 +62,18 @@ function upsertLinkRel(rel, href) {
   link.setAttribute("href", href);
 }
 
+function upsertAlternateHrefLang(hreflang, href) {
+  if (!document?.head || !hreflang || !href) return;
+  let link = document.head.querySelector(`link[rel="alternate"][hreflang="${hreflang}"]`);
+  if (!link) {
+    link = document.createElement("link");
+    link.setAttribute("rel", "alternate");
+    link.setAttribute("hreflang", hreflang);
+    document.head.appendChild(link);
+  }
+  link.setAttribute("href", href);
+}
+
 function applySeoFromRoute(r) {
   if (!r || typeof document === "undefined") return;
   const normalized = ensureRouteDefaults(r);
@@ -75,8 +87,8 @@ function applySeoFromRoute(r) {
     ? `${festivalName} ${year} Weekend ${weekendNumber} Lineup Planner | Festival Planner`
     : `${festivalName} ${year} Lineup Planner | Festival Planner`;
   const descFallback = weekend
-    ? `Privacy-first ${festivalName} ${year} Weekend ${weekendNumber} lineup planner to rate DJs, save favorites locally, and plan your schedule — no account, no tracking.`
-    : `Privacy-first ${festivalName} ${year} lineup planner to rate DJs, save favorites locally, and plan W1/W2 — no account, no tracking.`;
+    ? `Privacy-first ${festivalName} ${year} Weekend ${weekendNumber} lineup planner to rate DJs, save favorites locally, and plan your schedule â€” no account, no tracking.`
+    : `Privacy-first ${festivalName} ${year} lineup planner to rate DJs, save favorites locally, and plan W1/W2 â€” no account, no tracking.`;
   const title = formatTemplate(titleTemplate || titleFallback, {
     festival: festivalName,
     year,
@@ -102,6 +114,19 @@ function applySeoFromRoute(r) {
   upsertMetaTag("name", "twitter:card", "summary");
   upsertMetaTag("name", "twitter:title", title);
   upsertMetaTag("name", "twitter:description", description);
+  upsertMetaTag("name", "twitter:image", `${SITE_ORIGIN}${OG_IMAGE_PATH}`);
+
+  const canonicalBase = `${SITE_ORIGIN}${canonicalPath(normalized)}`;
+  upsertAlternateHrefLang("de", `${canonicalBase}?lang=de`);
+  upsertAlternateHrefLang("en", `${canonicalBase}?lang=en`);
+  upsertAlternateHrefLang("x-default", canonicalBase);
+
+  const params = new URLSearchParams(location.search || "");
+  const hasDiagnosticParam = params.has("artist")
+    || params.has("pseudoloc")
+    || params.has("i18nqa")
+    || params.has("path");
+  upsertMetaTag("name", "robots", hasDiagnosticParam ? "noindex,follow" : "index,follow");
 
   const weekendKey = weekend === "W1"
     ? "seo_weekend_w1"
@@ -131,7 +156,9 @@ function applySeoFromRoute(r) {
 
 // Parses festival/year/weekend from the current path.
 function parseRoute(pathname) {
-  const overridePath = getQueryParam("path");`r`n  const rawPath = overridePath ? overridePath : pathname;`r`n  const effectivePath = String(rawPath || "/").split("?")[0].split("#")[0];
+  const overridePath = getQueryParam("path");
+  const rawPath = overridePath ? overridePath : pathname;
+  const effectivePath = String(rawPath || "/").split("?")[0].split("#")[0];
 
   const parts = (effectivePath || "/").split("/").filter(Boolean);
   const tail = parts.length >= 3 ? parts.slice(-3) : parts;
