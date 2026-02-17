@@ -361,12 +361,7 @@
 
       function openLink(url) {
         if (!url) return;
-        if (isIOSDevice() || isStandaloneMode()) {
-          window.location.href = url;
-          return;
-        }
-        var win = window.open(url, "_blank", "noopener,noreferrer");
-        if (!win) window.location.href = url;
+        window.open(url, "_blank", "noopener,noreferrer");
       }
 
       function openWithFallback(opts) {
@@ -451,12 +446,6 @@
         var entry = links && links[provider];
         if (!entry || !entry.web) return;
         if (getPlayCopyEnabled()) copyArtistName(artistName);
-        var mobile = isMobileDevice();
-        var allowDeepLink = mobile && entry.deep && provider !== "sc";
-        if (allowDeepLink) {
-          openWithFallback({ deepUrl: entry.deep, webUrl: entry.web, fallbackMs: 700 });
-          return;
-        }
         openLink(entry.web);
       }
 
@@ -567,11 +556,8 @@
           var link = e.target.closest("a.playLink");
           if (link) {
             var provider = link.getAttribute("data-provider");
-            var shouldIntercept = isMobileDevice() && provider === "sp";
-            if (shouldIntercept || getPlayCopyEnabled()) {
-              e.preventDefault();
-              openPlayService(provider);
-            }
+            e.preventDefault();
+            openPlayService(provider);
             closePlayOverlay();
             return;
           }

@@ -1807,11 +1807,8 @@ function ensurePlayOverlay() {
     if (link) {
       const provider = link.getAttribute("data-provider");
       const name = playOverlayTitle?.dataset?.artistName || "";
-      const shouldIntercept = isMobileDevice() && provider === "sp";
-      if (shouldIntercept || getPlayCopyEnabled()) {
-        e.preventDefault();
-        openPlayService(provider, name);
-      }
+      e.preventDefault();
+      openPlayService(provider, name);
       closePlayOverlay();
       return;
     }
