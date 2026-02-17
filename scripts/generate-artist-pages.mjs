@@ -62,7 +62,7 @@ for (const slot of slots) {
 
 function slugify(value) {
   const base = String(value || "")
-    .replace(/[�?]/g, "ss")
+    .replace(/[ß?]/g, "ss")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()

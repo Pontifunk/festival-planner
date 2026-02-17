@@ -87,8 +87,8 @@ function applySeoFromRoute(r) {
     ? `${festivalName} ${year} Weekend ${weekendNumber} Lineup Planner | Festival Planner`
     : `${festivalName} ${year} Lineup Planner | Festival Planner`;
   const descFallback = weekend
-    ? `Privacy-first ${festivalName} ${year} Weekend ${weekendNumber} lineup planner to rate DJs, save favorites locally, and plan your schedule â€” no account, no tracking.`
-    : `Privacy-first ${festivalName} ${year} lineup planner to rate DJs, save favorites locally, and plan W1/W2 â€” no account, no tracking.`;
+    ? `Privacy-first ${festivalName} ${year} Weekend ${weekendNumber} lineup planner to rate DJs, save favorites locally, and plan your schedule — no account, no tracking.`
+    : `Privacy-first ${festivalName} ${year} lineup planner to rate DJs, save favorites locally, and plan W1/W2 — no account, no tracking.`;
   const title = formatTemplate(titleTemplate || titleFallback, {
     festival: festivalName,
     year,
