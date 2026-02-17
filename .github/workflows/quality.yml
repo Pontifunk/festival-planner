@@ -1,0 +1,35 @@
+name: quality
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: i18n lint
+        run: npm run lint:i18n
+
+      - name: Docs link lint
+        run: npm run lint:links
+
+      - name: Build
+        run: npm run build
+
+      - name: Smoke
+        run: npm run test:smoke
