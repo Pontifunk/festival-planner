@@ -1623,15 +1623,10 @@ function buildPlayLinks(name) {
   };
 }
 
-// Opens a link in a new tab when possible, with a same-tab fallback for iOS/PWA.
+// Opens a link strictly in a new tab to keep the planner page in place.
 function openLink(url){
   if (!url) return;
-  if (isIOSDevice() || isStandaloneMode()) {
-    window.location.href = url;
-    return;
-  }
-  const win = window.open(url, "_blank", "noopener,noreferrer");
-  if (!win) window.location.href = url;
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
 const DEFAULT_PLAY_PROVIDER = "sp";
@@ -1714,12 +1709,7 @@ function openPlayService(provider, name) {
   if (getPlayCopyEnabled()) {
     copyArtistName(name);
   }
-  const mobile = isMobileDevice();
-  const allowDeepLink = mobile && entry.deep && provider !== "sc";
-  if (allowDeepLink) {
-    openWithFallback({ deepUrl: entry.deep, webUrl: entry.web, fallbackMs: 700 });
-    return;
-  }
+  // Keep behavior consistent across devices: open only one new tab.
   openLink(entry.web);
 }
 
