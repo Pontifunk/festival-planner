@@ -1,0 +1,276 @@
+{
+  "generatedAt": "2026-02-17T14:36:36.677Z",
+  "summary": {
+    "totalUsedKeys": 228,
+    "totalDictKeys": 265,
+    "missingKeyCount": 0,
+    "unusedKeyCount": 37,
+    "placeholderMismatchCount": 0,
+    "terminologyIssueCount": 0
+  },
+  "missingKeys": [],
+  "unusedKeys": [
+    {
+      "key": "artist_desc",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "artist_title",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "changes_title",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "festival",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "filters",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "group_conflicts",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "group_empty_conflicts",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "group_empty_top",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "group_top_picks",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "intro",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "lineup_status",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "no_data_available",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "no_favorites",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "open_apple",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "open_spotify",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "open_youtube",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_action_disliked",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_action_liked",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_action_maybe",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_action_unrated",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_badge_disliked",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_badge_liked",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_badge_maybe",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_badge_unrated",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_chip_disliked",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_chip_liked",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_chip_maybe",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "rating_chip_unrated",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "reset",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "seo_desc_base",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "seo_desc_weekend",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "seo_title_base",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "seo_title_weekend",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "shown",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "slots",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "weekend",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    },
+    {
+      "key": "year",
+      "presentIn": [
+        "de",
+        "en"
+      ]
+    }
+  ],
+  "placeholderMismatches": [],
+  "terminologyInconsistencies": [],
+  "nearDuplicateKeys": []
+}
