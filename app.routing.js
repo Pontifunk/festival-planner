@@ -1,4 +1,4 @@
-﻿// ====== ROUTING ======
+// ====== ROUTING ======
 function getBootContext() {
   if (typeof window === "undefined") return null;
   const boot = window.__FP_BOOT;
@@ -131,8 +131,7 @@ function applySeoFromRoute(r) {
 
 // Parses festival/year/weekend from the current path.
 function parseRoute(pathname) {
-  const overridePath = getQueryParam("path");
-  const effectivePath = overridePath ? overridePath : pathname;
+  const overridePath = getQueryParam("path");`r`n  const rawPath = overridePath ? overridePath : pathname;`r`n  const effectivePath = String(rawPath || "/").split("?")[0].split("#")[0];
 
   const parts = (effectivePath || "/").split("/").filter(Boolean);
   const tail = parts.length >= 3 ? parts.slice(-3) : parts;
@@ -185,4 +184,5 @@ function ensureCanonicalUrl() {
     history.replaceState({}, "", desired);
   }
 }
+
 
