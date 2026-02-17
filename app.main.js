@@ -467,14 +467,32 @@ function setupServiceWorkerUpdates(registration) {
     banner.classList.add("isVisible");
   };
 
+  let reloading = false;
+  let activating = false;
+  let activationFallbackTimer = null;
+
+  const reloadOnce = () => {
+    if (reloading) return;
+    reloading = true;
+    window.location.reload();
+  };
+
+  const activateWaiting = (waiting) => {
+    if (!waiting || activating) return;
+    activating = true;
+    waiting.postMessage({ type: "SKIP_WAITING" });
+    if (activationFallbackTimer) clearTimeout(activationFallbackTimer);
+    activationFallbackTimer = setTimeout(() => {
+      reloadOnce();
+    }, 4000);
+  };
+
   const onWaiting = (waiting) => {
     if (!waiting) return;
     show();
-    button.onclick = () => {
-      reloading = true;
-      waiting.postMessage({ type: "SKIP_WAITING" });
-      window.location.reload();
-    };
+    button.onclick = () => activateWaiting(waiting);
+    // Auto-apply updates so clients reliably move to the newest version.
+    setTimeout(() => activateWaiting(waiting), 400);
   };
 
   if (registration.waiting) onWaiting(registration.waiting);
@@ -489,11 +507,12 @@ function setupServiceWorkerUpdates(registration) {
     });
   });
 
-  let reloading = false;
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (reloading) return;
-    reloading = true;
-    window.location.reload();
+    if (activationFallbackTimer) {
+      clearTimeout(activationFallbackTimer);
+      activationFallbackTimer = null;
+    }
+    reloadOnce();
   });
 
   if (langSelect) {
