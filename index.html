@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="de">
 <head>
   <!-- Basic metadata and SEO -->
@@ -238,6 +238,7 @@
             <a class="btn" id="groupMergeLink" href="#" data-i18n="planner_note_group_link">Zum Gruppenabgleich</a>
             <button class="btn" id="exportRatingsBtn" data-i18n="export_ratings">Ratings exportieren</button>
             <label class="btn" for="importRatingsInput" data-i18n="import_ratings">Ratings importieren</label>
+            <button class="btn danger" id="resetLocalDataBtn" type="button" data-i18n="reset_local_data">Lokale Daten zur&uuml;cksetzen</button>
             <input id="importRatingsInput" type="file" accept="application/json" hidden />
           </div>
           <div id="importStatus" class="muted"></div>
@@ -322,6 +323,7 @@
       <div class="menuGroupTitle" data-i18n="menu_data">Daten</div>
       <button class="menuItem" data-action="exportRatings" type="button" data-i18n="export_ratings">Ratings exportieren</button>
       <button class="menuItem" data-action="importRatings" type="button" data-i18n="import_ratings">Ratings importieren</button>
+      <button class="menuItem" id="resetLocalDataMenuBtn" data-action="resetLocalData" type="button" data-i18n="reset_local_data">Lokale Daten zur&uuml;cksetzen</button>
       <a class="menuItem" href="/tomorrowland/2026/w1/group/" data-i18n="menu_group_merge">Group Merge</a>
     </div>
     <div class="menuGroup">

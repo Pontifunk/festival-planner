@@ -269,6 +269,42 @@ function setupAutoRefresh() {
   window.addEventListener("online", maybeRefresh);
 }
 
+async function resetLocalData() {
+  const confirmText = t("reset_local_confirm") || "Delete local ratings, preferences and offline cache?";
+  if (!window.confirm(confirmText)) return;
+  try {
+    await dbClearAll();
+    state.ratingsByWeekend = { W1: {}, W2: {} };
+    ratings = {};
+
+    try {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i += 1) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith("fp_")) keys.push(k);
+      }
+      keys.forEach((k) => localStorage.removeItem(k));
+    } catch {
+      // Ignore localStorage errors.
+    }
+
+    if (typeof caches !== "undefined" && caches?.keys) {
+      const names = await caches.keys();
+      await Promise.all(names.map((name) => caches.delete(name)));
+    }
+
+    if (navigator.serviceWorker?.getRegistrations) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((reg) => reg.unregister()));
+    }
+
+    alert(t("reset_local_done") || "Local data was cleared.");
+    window.location.reload();
+  } catch {
+    alert(t("reset_local_failed") || "Failed to clear local data.");
+  }
+}
+
 function resetFiltersForArtistDeepLink() {
   let changed = false;
   if (favoritesOnly) {
@@ -561,6 +597,9 @@ function bindUi() {
   }
   if (importRatingsInput) {
     importRatingsInput.addEventListener("change", (e) => importRatings(e));
+  }
+  if (resetLocalDataBtn) {
+    resetLocalDataBtn.addEventListener("click", () => resetLocalData());
   }
   if (favoritesToggle) {
     favoritesToggle.addEventListener("click", () => setFavoritesOnly(!favoritesOnly));

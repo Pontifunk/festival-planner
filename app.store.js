@@ -105,4 +105,15 @@ async function dbGetAll(prefix){
   });
 }
 
+// Clears all rating entries from IndexedDB.
+async function dbClearAll(){
+  const d = await db();
+  return new Promise((resolve, reject) => {
+    const tx = d.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).clear();
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
 

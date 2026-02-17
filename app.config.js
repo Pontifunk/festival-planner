@@ -106,6 +106,8 @@ const weekendChangesDetails = document.getElementById("weekendChangesDetails");
 const exportRatingsBtn = document.getElementById("exportRatingsBtn");
 const importRatingsInput = document.getElementById("importRatingsInput");
 const importStatus = document.getElementById("importStatus");
+const resetLocalDataBtn = document.getElementById("resetLocalDataBtn");
+const resetLocalDataMenuBtn = document.getElementById("resetLocalDataMenuBtn");
 
 const errorBox = document.getElementById("errorBox");
 
