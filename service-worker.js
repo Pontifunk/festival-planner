@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const BUILD_ID = "2026-02-17-4";
+const BUILD_ID = "2026-02-17-5";
 const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 const OFFLINE_RESPONSE = new Response("Offline", { status: 503, statusText: "Offline" });
 
