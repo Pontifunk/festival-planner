@@ -10,6 +10,12 @@
     <loc>https://festival-planner.org/tomorrowland/2026/w2/</loc>
   </url>
   <url>
+    <loc>https://festival-planner.org/tomorrowland/2026/w1/artists/</loc>
+  </url>
+  <url>
+    <loc>https://festival-planner.org/tomorrowland/2026/w2/artists/</loc>
+  </url>
+  <url>
     <loc>https://festival-planner.org/about/</loc>
   </url>
   <url>
@@ -1987,3 +1993,5 @@
     <loc>https://festival-planner.org/tomorrowland/2026/w2/artists/</loc>
   </url>
 </urlset>
+
+

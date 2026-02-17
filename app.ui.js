@@ -558,6 +558,10 @@ function handleMenuItem(item) {
     if (exportRatingsBtn) exportRatingsBtn.click();
   } else if (action === "importRatings") {
     if (importRatingsInput) importRatingsInput.click();
+  } else if (action === "resetLocalData") {
+    postClose = () => {
+      if (typeof resetLocalData === "function") resetLocalData();
+    };
   } else if (target) {
     postClose = () => scrollToTarget(target);
   }

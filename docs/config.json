@@ -1,0 +1,14 @@
+{
+  "baseUrl": "https://festival-planner.org",
+  "repoUrl": "https://github.com/Pontifunk/festival-planner",
+  "defaultFestival": "tomorrowland",
+  "defaultYear": "2026",
+  "defaultWeekend": "w1",
+  "trailingSlash": true,
+  "supportedLanguages": ["de", "en"],
+  "pwa": {
+    "manifestPath": "/manifest.webmanifest",
+    "serviceWorkerPath": "/service-worker.js"
+  },
+  "dataRoot": "/data/tomorrowland/2026"
+}

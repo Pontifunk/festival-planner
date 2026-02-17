@@ -2,8 +2,9 @@
 const BOOT_CONTEXT = getBootContext();
 const storedLang = localStorage.getItem("fp_lang");
 const bootLang = BOOT_CONTEXT?.lang || "";
+const queryLang = cleanSegment(getQueryParam("lang"), /^(de|en)$/i, "");
 const autoLang = (!storedLang && !bootLang) ? detectPreferredLang() : "";
-let lang = storedLang || bootLang || autoLang || "de";
+let lang = queryLang || storedLang || bootLang || autoLang || "de";
 if (!storedLang && lang) localStorage.setItem("fp_lang", lang);
 let route = ensureRouteDefaults(resolveInitialRoute(location.pathname, BOOT_CONTEXT));
 applySeoFromRoute(route);

@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const root = process.cwd();
-const dist = path.join(root, "dist-site");
+const dist = root;
 
 function mustExist(relativePath, label) {
   const filePath = path.join(dist, relativePath);
