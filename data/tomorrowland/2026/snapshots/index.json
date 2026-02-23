@@ -1,5 +1,5 @@
 {
-  "latest": "20260222_070640Z_W2.json",
+  "latest": "20260223_072058Z_W2.json",
   "snapshots": [
     {
       "file": "20260126_192703Z_W1.json",
@@ -289,6 +289,16 @@
     {
       "file": "20260222_070640Z_W2.json",
       "createdAt": "2026-02-22T07:06:40.962Z",
+      "slotCount": 327
+    },
+    {
+      "file": "20260223_072058Z_W1.json",
+      "createdAt": "2026-02-23T07:20:58.123Z",
+      "slotCount": 334
+    },
+    {
+      "file": "20260223_072058Z_W2.json",
+      "createdAt": "2026-02-23T07:20:58.123Z",
       "slotCount": 327
     }
   ]
