@@ -748,7 +748,7 @@ function bindUi() {
     if (!link) return;
     e.preventDefault();
     e.stopPropagation();
-    const url = link.getAttribute("data-url");
+    const url = link.getAttribute("data-url") || link.getAttribute("href");
     if (url) window.open(url, "_blank", "noopener,noreferrer");
   });
 
@@ -758,7 +758,7 @@ function bindUi() {
     if (!link) return;
     e.preventDefault();
     e.stopPropagation();
-    const url = link.getAttribute("data-url");
+    const url = link.getAttribute("data-url") || link.getAttribute("href");
     if (url) window.open(url, "_blank", "noopener,noreferrer");
   });
 
