@@ -209,6 +209,25 @@ function pickBestPayload(entries, context) {
   return best;
 }
 
+async function gotoAndCollect(page, url, hasCollectedEntries, options = {}) {
+  const {
+    timeout = 90_000,
+    loadWaitMs = 10_000,
+    payloadWaitMs = 15_000,
+    settleWaitMs = 2_000
+  } = options;
+
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout });
+  await page.waitForLoadState("load", { timeout: loadWaitMs }).catch(() => {});
+
+  const deadline = Date.now() + payloadWaitMs;
+  while (!hasCollectedEntries() && Date.now() < deadline) {
+    await page.waitForTimeout(500);
+  }
+
+  await page.waitForTimeout(settleWaitMs);
+}
+
 // Fetch a single day page and extract slots.
 async function fetchDay(browser, url) {
   const date = extractDayParam(url);
@@ -236,10 +255,7 @@ async function fetchDay(browser, url) {
     }
   });
 
-  await page.goto(url, { waitUntil: "networkidle", timeout: 90_000 });
-
-  // Sicherheits-wait: manche Seiten feuern nach networkidle noch XHR nach
-  await page.waitForTimeout(2_000);
+  await gotoAndCollect(page, url, () => jsonEntries.length > 0);
 
   await page.close();
 

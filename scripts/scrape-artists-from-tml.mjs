@@ -276,6 +276,25 @@ async function extractArtistsFromDOM(page) {
   return [...byId.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
+async function gotoAndCollect(page, url, hasCollectedEntries, options = {}) {
+  const {
+    timeout = 90_000,
+    loadWaitMs = 10_000,
+    payloadWaitMs = 15_000,
+    settleWaitMs = 2_000
+  } = options;
+
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout });
+  await page.waitForLoadState("load", { timeout: loadWaitMs }).catch(() => {});
+
+  const deadline = Date.now() + payloadWaitMs;
+  while (!hasCollectedEntries() && Date.now() < deadline) {
+    await page.waitForTimeout(500);
+  }
+
+  await page.waitForTimeout(settleWaitMs);
+}
+
 // Update artists index.json (latest pointer and history).
 function updateArtistsIndex(file, createdAt, count) {
   const indexPath = path.join(OUT_DIR, "index.json");
@@ -324,8 +343,7 @@ async function main() {
       }
     });
 
-    await page.goto(ARTISTS_URL, { waitUntil: "networkidle", timeout: 90_000 });
-    await page.waitForTimeout(2000);
+    await gotoAndCollect(page, ARTISTS_URL, () => jsonPayloads.length > 0);
 
     let artists = [];
     const payload = findArtistsPayload(jsonPayloads);
