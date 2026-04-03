@@ -1,5 +1,5 @@
 {
-  "latest": "20260402_074123Z.json",
+  "latest": "20260403_073746Z.json",
   "artists": [
     {
       "file": "20260126_192728Z.json",
@@ -359,6 +359,11 @@
     {
       "file": "20260402_074123Z.json",
       "createdAt": "2026-04-02T07:41:23.955Z",
+      "artistCount": 405
+    },
+    {
+      "file": "20260403_073746Z.json",
+      "createdAt": "2026-04-03T07:37:46.574Z",
       "artistCount": 405
     }
   ]
