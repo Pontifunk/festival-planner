@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-04-14T08:04:15.667Z",
+    "createdAt": "2026-04-15T08:04:47.973Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,36 +8,255 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260413_082252Z_W1.json",
-        "to": "20260414_080348Z_W1.json",
-        "createdAt": "2026-04-14T08:04:15.667Z",
+        "from": "20260414_080348Z_W1.json",
+        "to": "20260415_080420Z_W1.json",
+        "createdAt": "2026-04-15T08:04:47.973Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 14,
+        "removed": 1,
+        "replaced": 6
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "0873badcf59841b8",
+        "2284e8f95e413f6d",
+        "031e87b3d5299195",
+        "9976b28f25f65d00",
+        "a456c6b7261e7dec",
+        "b627f582c87b27b1",
+        "f2237a86368883a4",
+        "7bcbdff89c7fa199",
+        "66cd47a0a56cc678",
+        "04aec3870d17dbea",
+        "8d95e8725c608878",
+        "e1018330ce89816a",
+        "888a222f394acb34",
+        "65a891dda651f125"
+      ],
+      "removed": [
+        "91a050efa7f7396b"
+      ],
+      "replaced": [
+        {
+          "positionId": "88b59f64f80ae239",
+          "from": {
+            "slotId": "ab348257c8383844",
+            "artistId": "cd4608ecddf0bea1",
+            "artist": "Ben Malone"
+          },
+          "to": {
+            "slotId": "9976b28f25f65d00",
+            "artistId": "d3dd58dab81dc697",
+            "artist": "Junkie Kid"
+          }
+        },
+        {
+          "positionId": "d27de9737ba327aa",
+          "from": {
+            "slotId": "04dd23eb64a6d7c7",
+            "artistId": "fc23ec8267dfbe63",
+            "artist": "Ian Asher"
+          },
+          "to": {
+            "slotId": "8d95e8725c608878",
+            "artistId": "64a0109c65f18d3b",
+            "artist": "Steve Aoki"
+          }
+        },
+        {
+          "positionId": "39e24e36d1f4c82c",
+          "from": {
+            "slotId": "610aa0c7cb057008",
+            "artistId": "6c4f6d3736d1d65c",
+            "artist": "Alesso"
+          },
+          "to": {
+            "slotId": "65a891dda651f125",
+            "artistId": "86df640f9415e4db",
+            "artist": "Malugi"
+          }
+        },
+        {
+          "positionId": "fd52bdd084e7e8a6",
+          "from": {
+            "slotId": "1037b6bb05cf2b23",
+            "artistId": "dc5ade4ce224da22",
+            "artist": "SAMM b2b Ajna"
+          },
+          "to": {
+            "slotId": "888a222f394acb34",
+            "artistId": "77f715e47629ac2a",
+            "artist": "Bedouin"
+          }
+        },
+        {
+          "positionId": "5e8969b902f5cf53",
+          "from": {
+            "slotId": "74d4093453465b30",
+            "artistId": "fae5d4e7e7392cf3",
+            "artist": "Camo & Krooked"
+          },
+          "to": {
+            "slotId": "a456c6b7261e7dec",
+            "artistId": "9bc0de342285c8ee",
+            "artist": "Alison Wonderland"
+          }
+        },
+        {
+          "positionId": "dad2c6e3586b35af",
+          "from": {
+            "slotId": "df0c0b660512adc9",
+            "artistId": "1fd9563a2d8dc0b7",
+            "artist": "Sara Landry"
+          },
+          "to": {
+            "slotId": "e1018330ce89816a",
+            "artistId": "2bdf3a480e9db8af",
+            "artist": "sim0ne b2b Southstar"
+          }
+        }
+      ]
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260413_082252Z_W2.json",
-        "to": "20260414_080348Z_W2.json",
-        "createdAt": "2026-04-14T08:04:15.667Z",
+        "from": "20260414_080348Z_W2.json",
+        "to": "20260415_080420Z_W2.json",
+        "createdAt": "2026-04-15T08:04:47.973Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 13,
+        "removed": 3,
+        "replaced": 8
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "3540486c338243ed",
+        "296b614e53ef1426",
+        "088ddceaef8d8dba",
+        "5a8966f040e746cf",
+        "2b79e52726523ebe",
+        "191083059c05483d",
+        "3c1d38e153e11da9",
+        "aabc22fc07e54e0a",
+        "e604189364b6948d",
+        "1cb50920e3914336",
+        "91949df4e5a997f2",
+        "1fca78f3a41f95f8",
+        "1ad5879375588ec9"
+      ],
+      "removed": [
+        "b3fc5f45f038f24c",
+        "1e68628a8403ecdd",
+        "be21d7d246dfe843"
+      ],
+      "replaced": [
+        {
+          "positionId": "ba12d6eaae463917",
+          "from": {
+            "slotId": "b3fc5f45f038f24c",
+            "artistId": "9e1562e2febb782d",
+            "artist": "Yazeed Alhashim"
+          },
+          "to": {
+            "slotId": "1fca78f3a41f95f8",
+            "artistId": "b4959670d6b93a2a",
+            "artist": "Yaz."
+          }
+        },
+        {
+          "positionId": "feecd908c0898212",
+          "from": {
+            "slotId": "519b264ca7ca0dc6",
+            "artistId": "a5391698b1433114",
+            "artist": "Naomi Cazier"
+          },
+          "to": {
+            "slotId": "aabc22fc07e54e0a",
+            "artistId": "e8165d04bb007985",
+            "artist": "HI-LO b2b Layton Giordani"
+          }
+        },
+        {
+          "positionId": "58b2241e092f80c2",
+          "from": {
+            "slotId": "6c941d9eb9653359",
+            "artistId": "176d132bfa059898",
+            "artist": "Roma"
+          },
+          "to": {
+            "slotId": "296b614e53ef1426",
+            "artistId": "963c58fbe2a7b3e1",
+            "artist": "Netherworld"
+          }
+        },
+        {
+          "positionId": "36f7942101a00ca8",
+          "from": {
+            "slotId": "1c991abaca2253c2",
+            "artistId": "3179d22ad11b206f",
+            "artist": "Martin Trevy"
+          },
+          "to": {
+            "slotId": "1ad5879375588ec9",
+            "artistId": "8e97bd550bd27cac",
+            "artist": "Vinne"
+          }
+        },
+        {
+          "positionId": "852012f8dbc2499f",
+          "from": {
+            "slotId": "93ee9e14b74345ee",
+            "artistId": "cbde46639b0c9be3",
+            "artist": "Holy Priest"
+          },
+          "to": {
+            "slotId": "91949df4e5a997f2",
+            "artistId": "00e33fe67591dea8",
+            "artist": "BYORN"
+          }
+        },
+        {
+          "positionId": "58dec452a83167d5",
+          "from": {
+            "slotId": "8f6e52ee46073b91",
+            "artistId": "6cd9f89c5d63adc3",
+            "artist": "Diego Miranda b2b Jerry Davila"
+          },
+          "to": {
+            "slotId": "1cb50920e3914336",
+            "artistId": "5cad1defe8e43192",
+            "artist": "Paris Hilton"
+          }
+        },
+        {
+          "positionId": "a3ef295a84be9521",
+          "from": {
+            "slotId": "c8e563775b5410bf",
+            "artistId": "99bf09ad24e05690",
+            "artist": "Dino Lenny"
+          },
+          "to": {
+            "slotId": "5a8966f040e746cf",
+            "artistId": "a5dabe90f063b868",
+            "artist": "SHEE"
+          }
+        },
+        {
+          "positionId": "d6b6d571c756ecfb",
+          "from": {
+            "slotId": "242aafadc3809695",
+            "artistId": "cf06b730ed9ccafe",
+            "artist": "Dino"
+          },
+          "to": {
+            "slotId": "088ddceaef8d8dba",
+            "artistId": "ff7fcb88d66815de",
+            "artist": "Vikkstar"
+          }
+        }
+      ]
     }
   }
 }
