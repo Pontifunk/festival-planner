@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-04-25T07:45:28.584Z",
+    "createdAt": "2026-04-26T07:55:14.216Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,43 +8,26 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260424_125950Z_W1.json",
-        "to": "20260425_074502Z_W1.json",
-        "createdAt": "2026-04-25T07:45:28.584Z",
+        "from": "20260425_074502Z_W1.json",
+        "to": "20260426_075447Z_W1.json",
+        "createdAt": "2026-04-26T07:55:14.216Z",
         "version": 1
       },
       "summary": {
-        "added": 2,
+        "added": 0,
         "removed": 0,
-        "replaced": 1
+        "replaced": 0
       },
-      "added": [
-        "8b6ed83f8e3b1d52",
-        "2d3b50b458886388"
-      ],
+      "added": [],
       "removed": [],
-      "replaced": [
-        {
-          "positionId": "5e8969b902f5cf53",
-          "from": {
-            "slotId": "a456c6b7261e7dec",
-            "artistId": "9bc0de342285c8ee",
-            "artist": "Alison Wonderland"
-          },
-          "to": {
-            "slotId": "2d3b50b458886388",
-            "artistId": "74fbf6c08b9f6581",
-            "artist": "Anton Invicta"
-          }
-        }
-      ]
+      "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260424_125950Z_W2.json",
-        "to": "20260425_074502Z_W2.json",
-        "createdAt": "2026-04-25T07:45:28.584Z",
+        "from": "20260425_074502Z_W2.json",
+        "to": "20260426_075447Z_W2.json",
+        "createdAt": "2026-04-26T07:55:14.216Z",
         "version": 1
       },
       "summary": {
