@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-05-12T09:12:45.744Z",
+    "createdAt": "2026-05-13T09:19:27.807Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,36 +8,77 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260511_095918Z_W1.json",
-        "to": "20260512_091219Z_W1.json",
-        "createdAt": "2026-05-12T09:12:45.744Z",
+        "from": "20260512_091219Z_W1.json",
+        "to": "20260513_091902Z_W1.json",
+        "createdAt": "2026-05-13T09:19:27.807Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
+        "added": 3,
         "removed": 0,
-        "replaced": 0
+        "replaced": 1
       },
-      "added": [],
+      "added": [
+        "80f842c45c25850b",
+        "fd2b99b7f5231dc6",
+        "41142d7691c89832"
+      ],
       "removed": [],
-      "replaced": []
+      "replaced": [
+        {
+          "positionId": "387a6ccff908c750",
+          "from": {
+            "slotId": "ddd7d847d9705857",
+            "artistId": "00b15f6904e3a213",
+            "artist": "To be announced"
+          },
+          "to": {
+            "slotId": "41142d7691c89832",
+            "artistId": "9d91e528a40fe55e",
+            "artist": "StadiumX"
+          }
+        }
+      ]
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260511_095918Z_W2.json",
-        "to": "20260512_091219Z_W2.json",
-        "createdAt": "2026-05-12T09:12:45.744Z",
+        "from": "20260512_091219Z_W2.json",
+        "to": "20260513_091902Z_W2.json",
+        "createdAt": "2026-05-13T09:19:27.807Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 5,
+        "removed": 2,
+        "replaced": 1
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "09c0b0442f275d08",
+        "4463ecd2757c8ece",
+        "be21d7d246dfe843",
+        "70402062022ac4d5",
+        "1956f96586b731f6"
+      ],
+      "removed": [
+        "c8e563775b5410bf",
+        "56cdeb5210cf1571"
+      ],
+      "replaced": [
+        {
+          "positionId": "e6b5af8ee21d4e11",
+          "from": {
+            "slotId": "d4adc5519322cb72",
+            "artistId": "08b623a6c86ce33a",
+            "artist": "Catalina"
+          },
+          "to": {
+            "slotId": "70402062022ac4d5",
+            "artistId": "12d9b7d554c06a83",
+            "artist": "Benwal b2b Labat"
+          }
+        }
+      ]
     }
   }
 }
