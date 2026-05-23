@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-05-22T09:49:37.723Z",
+    "createdAt": "2026-05-23T08:31:26.952Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,102 +8,89 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260521_100236Z_W1.json",
-        "to": "20260522_094911Z_W1.json",
-        "createdAt": "2026-05-22T09:49:37.723Z",
+        "from": "20260522_094911Z_W1.json",
+        "to": "20260523_083102Z_W1.json",
+        "createdAt": "2026-05-23T08:31:26.952Z",
         "version": 1
       },
       "summary": {
-        "added": 18,
-        "removed": 14,
-        "replaced": 2
+        "added": 5,
+        "removed": 3,
+        "replaced": 0
       },
       "added": [
-        "9e6a922157c8a0c3",
-        "7732d904dfa2c316",
-        "c3adea1511b9001e",
-        "575d405fc7f2526e",
-        "34eb3c608449516e",
-        "31067d2695bedd9c",
-        "c88ccd86ea9d38fd",
-        "13517331cbf8f590",
-        "2aaf74824a3cee7c",
-        "4cdff6e7c62a3171",
-        "4f07a320b0a7d96b",
-        "30f3efe667b390bf",
-        "8b4048c82cc6db70",
-        "38cafc85011108c3",
-        "e9602c476f77eeb2",
-        "3b30ba4bfcf5d4db",
-        "c114f480d5be6dd3",
-        "128e1094a6f96b26"
+        "f676fbde59be6667",
+        "e3a13a3f868a59dc",
+        "8d15929d50f0d2de",
+        "9fe68f4f0272ba86",
+        "5dc0f4ed5f456bf8"
       ],
       "removed": [
-        "3d2f9dd9e4168d7f",
-        "ea06454327a14adf",
-        "8b2c01729ddf97de",
-        "ee5f1dbf0984025f",
-        "19fcf7d2c809b65c",
-        "5745d99c7635a13b",
-        "0c326294825c6cf2",
-        "9846437c1e8bc5a7",
-        "34014714c67efaf9",
-        "fa5ec6341def703d",
-        "256f8c062e8b8cb8",
-        "3cd251822dc7cc64",
-        "b7eb2cd9f15b9932",
-        "f94ca893c5c3c90b"
+        "114e3ce74899e551",
+        "cc1f9b2c2ec11f8d",
+        "90b706b763e8045a"
       ],
-      "replaced": [
-        {
-          "positionId": "1be2852b678500f2",
-          "from": {
-            "slotId": "95b4defa43fc1440",
-            "artistId": "222917cc97f91094",
-            "artist": "Mark Roma"
-          },
-          "to": {
-            "slotId": "c114f480d5be6dd3",
-            "artistId": "b2dd64074e37cebe",
-            "artist": "MANDY"
-          }
-        },
-        {
-          "positionId": "387a6ccff908c750",
-          "from": {
-            "slotId": "41142d7691c89832",
-            "artistId": "9d91e528a40fe55e",
-            "artist": "StadiumX"
-          },
-          "to": {
-            "slotId": "128e1094a6f96b26",
-            "artistId": "1960474c28d124ae",
-            "artist": "Lucca Van Damme"
-          }
-        }
-      ]
+      "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260521_100236Z_W2.json",
-        "to": "20260522_094911Z_W2.json",
-        "createdAt": "2026-05-22T09:49:37.723Z",
+        "from": "20260522_094911Z_W2.json",
+        "to": "20260523_083102Z_W2.json",
+        "createdAt": "2026-05-23T08:31:26.952Z",
         "version": 1
       },
       "summary": {
-        "added": 1,
-        "removed": 2,
-        "replaced": 0
+        "added": 11,
+        "removed": 3,
+        "replaced": 2
       },
       "added": [
-        "6dec995c1261a66f"
+        "b9979d831cb4bc05",
+        "d930b9f887c5096a",
+        "189bb6926463c5f3",
+        "acc9849fac1433c6",
+        "583c5daf8a70d37c",
+        "78ba07c9ee68310a",
+        "5e09255ed9201579",
+        "f752b8f35a2e132f",
+        "f59c59cd3108d475",
+        "b34f6bbf75daf384",
+        "827c92e1e18a7676"
       ],
       "removed": [
-        "e28319820460b89f",
-        "0c79b25f4e3529e2"
+        "17639bc55ace5fb0",
+        "87651994baff448b",
+        "91949df4e5a997f2"
       ],
-      "replaced": []
+      "replaced": [
+        {
+          "positionId": "095b979f062dad6d",
+          "from": {
+            "slotId": "b3d70262a1ba4f10",
+            "artistId": "6a97866d7d784eae",
+            "artist": "Hyalyte"
+          },
+          "to": {
+            "slotId": "b34f6bbf75daf384",
+            "artistId": "5e44342ce3690135",
+            "artist": "Benny Plays"
+          }
+        },
+        {
+          "positionId": "852012f8dbc2499f",
+          "from": {
+            "slotId": "91949df4e5a997f2",
+            "artistId": "00e33fe67591dea8",
+            "artist": "BYORN"
+          },
+          "to": {
+            "slotId": "93ee9e14b74345ee",
+            "artistId": "cbde46639b0c9be3",
+            "artist": "Holy Priest"
+          }
+        }
+      ]
     }
   }
 }
