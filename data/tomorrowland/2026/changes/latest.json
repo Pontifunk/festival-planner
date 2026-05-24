@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-05-23T08:31:26.952Z",
+    "createdAt": "2026-05-24T08:44:34.501Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,89 +8,36 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260522_094911Z_W1.json",
-        "to": "20260523_083102Z_W1.json",
-        "createdAt": "2026-05-23T08:31:26.952Z",
+        "from": "20260523_083102Z_W1.json",
+        "to": "20260524_084410Z_W1.json",
+        "createdAt": "2026-05-24T08:44:34.501Z",
         "version": 1
       },
       "summary": {
-        "added": 5,
-        "removed": 3,
+        "added": 0,
+        "removed": 0,
         "replaced": 0
       },
-      "added": [
-        "f676fbde59be6667",
-        "e3a13a3f868a59dc",
-        "8d15929d50f0d2de",
-        "9fe68f4f0272ba86",
-        "5dc0f4ed5f456bf8"
-      ],
-      "removed": [
-        "114e3ce74899e551",
-        "cc1f9b2c2ec11f8d",
-        "90b706b763e8045a"
-      ],
+      "added": [],
+      "removed": [],
       "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260522_094911Z_W2.json",
-        "to": "20260523_083102Z_W2.json",
-        "createdAt": "2026-05-23T08:31:26.952Z",
+        "from": "20260523_083102Z_W2.json",
+        "to": "20260524_084410Z_W2.json",
+        "createdAt": "2026-05-24T08:44:34.501Z",
         "version": 1
       },
       "summary": {
-        "added": 11,
-        "removed": 3,
-        "replaced": 2
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "b9979d831cb4bc05",
-        "d930b9f887c5096a",
-        "189bb6926463c5f3",
-        "acc9849fac1433c6",
-        "583c5daf8a70d37c",
-        "78ba07c9ee68310a",
-        "5e09255ed9201579",
-        "f752b8f35a2e132f",
-        "f59c59cd3108d475",
-        "b34f6bbf75daf384",
-        "827c92e1e18a7676"
-      ],
-      "removed": [
-        "17639bc55ace5fb0",
-        "87651994baff448b",
-        "91949df4e5a997f2"
-      ],
-      "replaced": [
-        {
-          "positionId": "095b979f062dad6d",
-          "from": {
-            "slotId": "b3d70262a1ba4f10",
-            "artistId": "6a97866d7d784eae",
-            "artist": "Hyalyte"
-          },
-          "to": {
-            "slotId": "b34f6bbf75daf384",
-            "artistId": "5e44342ce3690135",
-            "artist": "Benny Plays"
-          }
-        },
-        {
-          "positionId": "852012f8dbc2499f",
-          "from": {
-            "slotId": "91949df4e5a997f2",
-            "artistId": "00e33fe67591dea8",
-            "artist": "BYORN"
-          },
-          "to": {
-            "slotId": "93ee9e14b74345ee",
-            "artistId": "cbde46639b0c9be3",
-            "artist": "Holy Priest"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     }
   }
 }
