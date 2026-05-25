@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-05-24T08:44:34.501Z",
+    "createdAt": "2026-05-25T10:47:48.967Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260523_083102Z_W1.json",
-        "to": "20260524_084410Z_W1.json",
-        "createdAt": "2026-05-24T08:44:34.501Z",
+        "from": "20260524_084410Z_W1.json",
+        "to": "20260525_104720Z_W1.json",
+        "createdAt": "2026-05-25T10:47:48.967Z",
         "version": 1
       },
       "summary": {
@@ -25,9 +25,9 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260523_083102Z_W2.json",
-        "to": "20260524_084410Z_W2.json",
-        "createdAt": "2026-05-24T08:44:34.501Z",
+        "from": "20260524_084410Z_W2.json",
+        "to": "20260525_104720Z_W2.json",
+        "createdAt": "2026-05-25T10:47:48.967Z",
         "version": 1
       },
       "summary": {
