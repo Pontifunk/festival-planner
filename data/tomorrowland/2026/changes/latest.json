@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-06-04T10:12:00.414Z",
+    "createdAt": "2026-06-05T10:16:34.868Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,36 +8,90 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260603_112225Z_W1.json",
-        "to": "20260604_101136Z_W1.json",
-        "createdAt": "2026-06-04T10:12:00.414Z",
+        "from": "20260604_101136Z_W1.json",
+        "to": "20260605_101605Z_W1.json",
+        "createdAt": "2026-06-05T10:16:34.868Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
+        "added": 5,
         "removed": 0,
-        "replaced": 0
+        "replaced": 1
       },
-      "added": [],
+      "added": [
+        "1bba3c893144ef40",
+        "0b9349b1095e164a",
+        "df2189a3424a8bb9",
+        "ac073d08ba07b979",
+        "523336e6abdc0d4a"
+      ],
       "removed": [],
-      "replaced": []
+      "replaced": [
+        {
+          "positionId": "99e9b7673f018ac9",
+          "from": {
+            "slotId": "dc16c4a29e1da924",
+            "artistId": "238bd9b807b33f3c",
+            "artist": "Sofia Cristo"
+          },
+          "to": {
+            "slotId": "523336e6abdc0d4a",
+            "artistId": "b3e640506c995bb5",
+            "artist": "Sam Hofman"
+          }
+        }
+      ]
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260603_112225Z_W2.json",
-        "to": "20260604_101136Z_W2.json",
-        "createdAt": "2026-06-04T10:12:00.414Z",
+        "from": "20260604_101136Z_W2.json",
+        "to": "20260605_101605Z_W2.json",
+        "createdAt": "2026-06-05T10:16:34.868Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
+        "added": 6,
         "removed": 0,
-        "replaced": 0
+        "replaced": 2
       },
-      "added": [],
+      "added": [
+        "bf0637dffd2e0905",
+        "5c32d14ac854f36f",
+        "f1978a732408b247",
+        "91949df4e5a997f2",
+        "87381e7cd4b15c73",
+        "3ace02670fabd2b1"
+      ],
       "removed": [],
-      "replaced": []
+      "replaced": [
+        {
+          "positionId": "36f7942101a00ca8",
+          "from": {
+            "slotId": "1ad5879375588ec9",
+            "artistId": "8e97bd550bd27cac",
+            "artist": "Vinne"
+          },
+          "to": {
+            "slotId": "3ace02670fabd2b1",
+            "artistId": "375ef04d2c16c256",
+            "artist": "Didi Hahn"
+          }
+        },
+        {
+          "positionId": "852012f8dbc2499f",
+          "from": {
+            "slotId": "93ee9e14b74345ee",
+            "artistId": "cbde46639b0c9be3",
+            "artist": "Holy Priest"
+          },
+          "to": {
+            "slotId": "91949df4e5a997f2",
+            "artistId": "00e33fe67591dea8",
+            "artist": "Byorn"
+          }
+        }
+      ]
     }
   }
 }
