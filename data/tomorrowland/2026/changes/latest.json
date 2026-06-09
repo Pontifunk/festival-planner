@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-06-08T11:21:07.838Z",
+    "createdAt": "2026-06-09T10:02:57.110Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,64 +8,36 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260607_093529Z_W1.json",
-        "to": "20260608_112042Z_W1.json",
-        "createdAt": "2026-06-08T11:21:07.838Z",
+        "from": "20260608_112042Z_W1.json",
+        "to": "20260609_100228Z_W1.json",
+        "createdAt": "2026-06-09T10:02:57.110Z",
         "version": 1
       },
       "summary": {
-        "added": 3,
+        "added": 0,
         "removed": 0,
         "replaced": 0
       },
-      "added": [
-        "07d8a665559750f8",
-        "d8865e1c89fe7630",
-        "74ed76ccc0d64515"
-      ],
+      "added": [],
       "removed": [],
       "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260607_093529Z_W2.json",
-        "to": "20260608_112042Z_W2.json",
-        "createdAt": "2026-06-08T11:21:07.838Z",
+        "from": "20260608_112042Z_W2.json",
+        "to": "20260609_100228Z_W2.json",
+        "createdAt": "2026-06-09T10:02:57.110Z",
         "version": 1
       },
       "summary": {
-        "added": 7,
-        "removed": 1,
-        "replaced": 1
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "c3654bcb159c89a6",
-        "902533307409d225",
-        "183670cab734c9ea",
-        "6d579c4db34ffbaa",
-        "a1707d2074f2432e",
-        "12aa818f40ab5c90",
-        "6e29e4f8c8bbd02a"
-      ],
-      "removed": [
-        "bf0637dffd2e0905"
-      ],
-      "replaced": [
-        {
-          "positionId": "a6153884838b120a",
-          "from": {
-            "slotId": "720dbca2d281f3bd",
-            "artistId": "950641606a845eef",
-            "artist": "Mr. Belt & Wezol"
-          },
-          "to": {
-            "slotId": "47062049a356aebe",
-            "artistId": "e22a2a2131bb2e15",
-            "artist": "Belters Only"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     }
   }
 }
