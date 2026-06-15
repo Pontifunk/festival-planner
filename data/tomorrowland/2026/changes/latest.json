@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-06-14T09:56:12.157Z",
+    "createdAt": "2026-06-15T12:42:05.314Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,36 +8,312 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260613_093346Z_W1.json",
-        "to": "20260614_095542Z_W1.json",
-        "createdAt": "2026-06-14T09:56:12.157Z",
+        "from": "20260614_095542Z_W1.json",
+        "to": "20260615_124140Z_W1.json",
+        "createdAt": "2026-06-15T12:42:05.314Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 33,
+        "removed": 25,
+        "replaced": 7
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "8c8907b7983c2bb7",
+        "bd0949e083eba3cd",
+        "91a52661dddb9750",
+        "1001a15a9b094f2a",
+        "010d34f0c32a6cbf",
+        "1e0238fdbe6dd825",
+        "77459887207832bc",
+        "1d92797cbf7b8c0b",
+        "4969315d31e54f19",
+        "5ecf89b430778b0c",
+        "16182e9ff8f24b74",
+        "84605f81247c12f2",
+        "bfca449be58b0864",
+        "a8232c0260890442",
+        "5cd4c74cd7451d8a",
+        "ed3897af4d3d0e97",
+        "42e03c7d8fedc559",
+        "ea95cc18de27afeb",
+        "3a494e3941b045c6",
+        "7a34245d75052fb7",
+        "6f8adf762f3fc686",
+        "cab9b404a4c17495",
+        "06f82207b2b702b4",
+        "2687529ddd38eb0a",
+        "aa2d2550a976a63e",
+        "7cd69277101d8f4e",
+        "7e1995ff30aca1e7",
+        "ce116f1a4e1c8b9f",
+        "4088da667fb9d96f",
+        "cd72ba47fc50c726",
+        "f75ac2e9ac19244a",
+        "b7eb2cd9f15b9932",
+        "805e3eb640dc9ba3"
+      ],
+      "removed": [
+        "575d405fc7f2526e",
+        "013de158ece31284",
+        "6161bca447bf858c",
+        "1d4978ded2e0f3c8",
+        "ba5757a874a273c6",
+        "4a098f8e12678aeb",
+        "a8ae953964b594cf",
+        "b82f85065dbfba41",
+        "644dd35da6128930",
+        "03a04a48118a1cef",
+        "ab348257c8383844",
+        "dc16c4a29e1da924",
+        "25c1a5c8e8e4c4cb",
+        "cb487dadfe752c58",
+        "090f920f76442fb4",
+        "36f9cc9dfbd6ec8d",
+        "fef8a726069e63c5",
+        "30cdaa4972a2ab5d",
+        "d58bae528796c530",
+        "133824e7c75493d1",
+        "f96e28d8ee4598db",
+        "81601f3a67099b8e",
+        "ecbbc06e033088e4",
+        "74d4093453465b30",
+        "ac073d08ba07b979"
+      ],
+      "replaced": [
+        {
+          "positionId": "bdfc0ef2b204b303",
+          "from": {
+            "slotId": "39de3040df6c9e74",
+            "artistId": "0d7b68fdbcd81e81",
+            "artist": "Martin Garrix"
+          },
+          "to": {
+            "slotId": "b7eb2cd9f15b9932",
+            "artistId": "6cb25936311ae19e",
+            "artist": "Bassjackers"
+          }
+        },
+        {
+          "positionId": "3e06b864ac11f5e7",
+          "from": {
+            "slotId": "fc8ea69705ce6800",
+            "artistId": "d0af58c20a0be791",
+            "artist": "Oliver Heldens"
+          },
+          "to": {
+            "slotId": "ce116f1a4e1c8b9f",
+            "artistId": "9133f7b469dbb267",
+            "artist": "Hardwell b2b Sub Zero Project"
+          }
+        },
+        {
+          "positionId": "823f349e1c45fa67",
+          "from": {
+            "slotId": "133824e7c75493d1",
+            "artistId": "9133f7b469dbb267",
+            "artist": "Hardwell b2b Sub Zero Project"
+          },
+          "to": {
+            "slotId": "14df04c2667e79b9",
+            "artistId": "b9df398d21c88609",
+            "artist": "Nicky Romero"
+          }
+        },
+        {
+          "positionId": "0f19e320a88d6d08",
+          "from": {
+            "slotId": "090f920f76442fb4",
+            "artistId": "ea9ad1d548fd44e0",
+            "artist": "Jeronimo"
+          },
+          "to": {
+            "slotId": "7cd69277101d8f4e",
+            "artistId": "916a949a50395e08",
+            "artist": "Steww Soundsystem"
+          }
+        },
+        {
+          "positionId": "e96f63ab71edb9a5",
+          "from": {
+            "slotId": "73d1708d1fade9db",
+            "artistId": "6ad5672a7d7fa620",
+            "artist": "The Saints"
+          },
+          "to": {
+            "slotId": "7e1995ff30aca1e7",
+            "artistId": "0af47b8167a31009",
+            "artist": "Bonzai All Stars"
+          }
+        },
+        {
+          "positionId": "5ee66edabed91207",
+          "from": {
+            "slotId": "30cdaa4972a2ab5d",
+            "artistId": "916a949a50395e08",
+            "artist": "Steww Soundsystem"
+          },
+          "to": {
+            "slotId": "12c73f6921014b50",
+            "artistId": "564b48dd0f8aa88a",
+            "artist": "Afrolosjes Soundsystem"
+          }
+        },
+        {
+          "positionId": "f36c28d5357ac811",
+          "from": {
+            "slotId": "d58bae528796c530",
+            "artistId": "0af47b8167a31009",
+            "artist": "Bonzai All Stars"
+          },
+          "to": {
+            "slotId": "f75ac2e9ac19244a",
+            "artistId": "fae5d4e7e7392cf3",
+            "artist": "Camo & Krooked"
+          }
+        }
+      ]
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260613_093346Z_W2.json",
-        "to": "20260614_095542Z_W2.json",
-        "createdAt": "2026-06-14T09:56:12.157Z",
+        "from": "20260614_095542Z_W2.json",
+        "to": "20260615_124140Z_W2.json",
+        "createdAt": "2026-06-15T12:42:05.314Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 37,
+        "removed": 19,
+        "replaced": 5
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "ba97d2493a5069d7",
+        "f4c81c9194b033e9",
+        "58353f562f407711",
+        "ab9e0367535340ca",
+        "191083059c05483d",
+        "2e191f90f2ae9d66",
+        "135c2a12c29393ab",
+        "637098ea17db0b14",
+        "d0a93b492307e2f8",
+        "fcdfd1c8804ae604",
+        "0919aaf166ac59db",
+        "f56850f8ea698e04",
+        "b3f227966d1b459c",
+        "3c536596f2dca96e",
+        "fe88f5bea370da94",
+        "9a2ecebf8f5f152b",
+        "bc55f6e58d387f9b",
+        "6f1217be90b275c4",
+        "973db7f29e3943d1",
+        "288ce8e1f599d9f9",
+        "2f3d8805fe30dbb3",
+        "be6140fb96d5b44b",
+        "18f6636c575f0d61",
+        "2fb000914f1d5717",
+        "7fdc49006e316ff7",
+        "6bbdf105b01446a1",
+        "c3316e185dccc02a",
+        "9b8ee50ebea48ea2",
+        "e6848c5462df5ab7",
+        "ff08c8cc5d192c91",
+        "8ab9ed0b72fe3469",
+        "a66aaeceb3e9f17a",
+        "d05088d00f64a408",
+        "adc1b796c58c84df",
+        "d53fde5918f791eb",
+        "eff3cbb41c7c9286",
+        "404a46b9d6ac5a3c"
+      ],
+      "removed": [
+        "c3654bcb159c89a6",
+        "f752b8f35a2e132f",
+        "b04fe07b4ca59e3a",
+        "ce557032106963b8",
+        "cca534935f409668",
+        "4ef19140e326fce6",
+        "a460419a858cbc38",
+        "d15e602fa96f5bbe",
+        "7c26deec471ad39f",
+        "0d93c183630d535a",
+        "93ee9e14b74345ee",
+        "54d4936ef078c2e9",
+        "ce679199b068f1ff",
+        "2f57575ff10a45d2",
+        "7d5604ec2b61521a",
+        "4830cc7e41820ffd",
+        "70402062022ac4d5",
+        "88c4b43bac2ac6df",
+        "cc799f19c0afc4fc"
+      ],
+      "replaced": [
+        {
+          "positionId": "1ede7ccf25ab2204",
+          "from": {
+            "slotId": "cc799f19c0afc4fc",
+            "artistId": "8df8719406a9d168",
+            "artist": "Mr E."
+          },
+          "to": {
+            "slotId": "404a46b9d6ac5a3c",
+            "artistId": "b9947e2ac1a8daf3",
+            "artist": "Mr. E"
+          }
+        },
+        {
+          "positionId": "26675a9288075fd4",
+          "from": {
+            "slotId": "4830cc7e41820ffd",
+            "artistId": "211b5fd8ae3fdae9",
+            "artist": "Thomas Gold"
+          },
+          "to": {
+            "slotId": "03880a129b10fa4f",
+            "artistId": "65e4e9e539f684a9",
+            "artist": "Yves V b2b StadiumX"
+          }
+        },
+        {
+          "positionId": "c4460d1edd5fa5c2",
+          "from": {
+            "slotId": "54d4936ef078c2e9",
+            "artistId": "85c877e8239b8a25",
+            "artist": "Cham b2b Uneak"
+          },
+          "to": {
+            "slotId": "5713b5304b27bfd6",
+            "artistId": "c72ecc735c5e6710",
+            "artist": "Irwan"
+          }
+        },
+        {
+          "positionId": "e6b5af8ee21d4e11",
+          "from": {
+            "slotId": "70402062022ac4d5",
+            "artistId": "12d9b7d554c06a83",
+            "artist": "Benwal b2b Labat"
+          },
+          "to": {
+            "slotId": "d53fde5918f791eb",
+            "artistId": "7ad582aabd40460d",
+            "artist": "Benwal b2b LB aka Labat"
+          }
+        },
+        {
+          "positionId": "16b1c67134ca7786",
+          "from": {
+            "slotId": "88c4b43bac2ac6df",
+            "artistId": "1089ea3e0a885347",
+            "artist": "Franc Fala b2b Benja"
+          },
+          "to": {
+            "slotId": "eff3cbb41c7c9286",
+            "artistId": "2822b3e2774f8925",
+            "artist": "Benja b2b Franc Fala"
+          }
+        }
+      ]
     }
   }
 }
