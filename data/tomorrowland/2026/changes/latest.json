@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-06-16T11:33:57.190Z",
+    "createdAt": "2026-06-17T11:16:59.614Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,166 +8,36 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260615_124140Z_W1.json",
-        "to": "20260616_113327Z_W1.json",
-        "createdAt": "2026-06-16T11:33:57.190Z",
+        "from": "20260616_113327Z_W1.json",
+        "to": "20260617_111634Z_W1.json",
+        "createdAt": "2026-06-17T11:16:59.614Z",
         "version": 1
       },
       "summary": {
-        "added": 4,
-        "removed": 6,
-        "replaced": 7
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "30cdaa4972a2ab5d",
-        "d58bae528796c530",
-        "133824e7c75493d1",
-        "74d4093453465b30"
-      ],
-      "removed": [
-        "ddd7d847d9705857",
-        "69c7647e85c265f1",
-        "7cd69277101d8f4e",
-        "7e1995ff30aca1e7",
-        "ce116f1a4e1c8b9f",
-        "f75ac2e9ac19244a"
-      ],
-      "replaced": [
-        {
-          "positionId": "3e06b864ac11f5e7",
-          "from": {
-            "slotId": "ce116f1a4e1c8b9f",
-            "artistId": "9133f7b469dbb267",
-            "artist": "Hardwell b2b Sub Zero Project"
-          },
-          "to": {
-            "slotId": "fc8ea69705ce6800",
-            "artistId": "d0af58c20a0be791",
-            "artist": "Oliver Heldens"
-          }
-        },
-        {
-          "positionId": "4bc1a3bb8d1f93bc",
-          "from": {
-            "slotId": "69c7647e85c265f1",
-            "artistId": "00b15f6904e3a213",
-            "artist": "To be announced"
-          },
-          "to": {
-            "slotId": "1aaee087bc6e8a4f",
-            "artistId": "8bb1fb030c8c0770",
-            "artist": "Olive Anguz"
-          }
-        },
-        {
-          "positionId": "823f349e1c45fa67",
-          "from": {
-            "slotId": "14df04c2667e79b9",
-            "artistId": "b9df398d21c88609",
-            "artist": "Nicky Romero"
-          },
-          "to": {
-            "slotId": "133824e7c75493d1",
-            "artistId": "9133f7b469dbb267",
-            "artist": "Hardwell b2b Sub Zero Project"
-          }
-        },
-        {
-          "positionId": "0f19e320a88d6d08",
-          "from": {
-            "slotId": "7cd69277101d8f4e",
-            "artistId": "916a949a50395e08",
-            "artist": "Steww Soundsystem"
-          },
-          "to": {
-            "slotId": "06f82207b2b702b4",
-            "artistId": "3eab403383747f74",
-            "artist": "Jeronimø"
-          }
-        },
-        {
-          "positionId": "e96f63ab71edb9a5",
-          "from": {
-            "slotId": "7e1995ff30aca1e7",
-            "artistId": "0af47b8167a31009",
-            "artist": "Bonzai All Stars"
-          },
-          "to": {
-            "slotId": "73d1708d1fade9db",
-            "artistId": "6ad5672a7d7fa620",
-            "artist": "The Saints"
-          }
-        },
-        {
-          "positionId": "5ee66edabed91207",
-          "from": {
-            "slotId": "12c73f6921014b50",
-            "artistId": "564b48dd0f8aa88a",
-            "artist": "Afrolosjes Soundsystem"
-          },
-          "to": {
-            "slotId": "30cdaa4972a2ab5d",
-            "artistId": "916a949a50395e08",
-            "artist": "Steww Soundsystem"
-          }
-        },
-        {
-          "positionId": "f36c28d5357ac811",
-          "from": {
-            "slotId": "f75ac2e9ac19244a",
-            "artistId": "fae5d4e7e7392cf3",
-            "artist": "Camo & Krooked"
-          },
-          "to": {
-            "slotId": "d58bae528796c530",
-            "artistId": "0af47b8167a31009",
-            "artist": "Bonzai All Stars"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260615_124140Z_W2.json",
-        "to": "20260616_113327Z_W2.json",
-        "createdAt": "2026-06-16T11:33:57.190Z",
+        "from": "20260616_113327Z_W2.json",
+        "to": "20260617_111634Z_W2.json",
+        "createdAt": "2026-06-17T11:16:59.614Z",
         "version": 1
       },
       "summary": {
-        "added": 5,
-        "removed": 5,
-        "replaced": 1
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "b04fe07b4ca59e3a",
-        "cca534935f409668",
-        "93ee9e14b74345ee",
-        "54d4936ef078c2e9",
-        "2f57575ff10a45d2"
-      ],
-      "removed": [
-        "6bbdf105b01446a1",
-        "c3316e185dccc02a",
-        "ff08c8cc5d192c91",
-        "8ab9ed0b72fe3469",
-        "d05088d00f64a408"
-      ],
-      "replaced": [
-        {
-          "positionId": "c4460d1edd5fa5c2",
-          "from": {
-            "slotId": "5713b5304b27bfd6",
-            "artistId": "c72ecc735c5e6710",
-            "artist": "Irwan"
-          },
-          "to": {
-            "slotId": "54d4936ef078c2e9",
-            "artistId": "85c877e8239b8a25",
-            "artist": "Cham b2b Uneak"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     }
   }
 }
