@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-06-17T11:16:59.614Z",
+    "createdAt": "2026-06-18T10:47:46.380Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,36 +8,88 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260616_113327Z_W1.json",
-        "to": "20260617_111634Z_W1.json",
-        "createdAt": "2026-06-17T11:16:59.614Z",
+        "from": "20260617_111634Z_W1.json",
+        "to": "20260618_104720Z_W1.json",
+        "createdAt": "2026-06-18T10:47:46.380Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
+        "added": 13,
+        "removed": 1,
         "replaced": 0
       },
-      "added": [],
-      "removed": [],
+      "added": [
+        "730fcddcaa95c037",
+        "d0f53f234d3c9d2d",
+        "9c0060d566358895",
+        "c14ead6341ffd8a2",
+        "30f6791ad38469ce",
+        "5fd4afddbe950181",
+        "9a21c4c448240af4",
+        "cb267e3f36e1eb19",
+        "bc8dc7bb2c7a7e59",
+        "86d2f89d622d6096",
+        "510542f01fbf1268",
+        "9cc237f3b1b790cc",
+        "2c656ed77c43b280"
+      ],
+      "removed": [
+        "51091d54f1e6d3d6"
+      ],
       "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260616_113327Z_W2.json",
-        "to": "20260617_111634Z_W2.json",
-        "createdAt": "2026-06-17T11:16:59.614Z",
+        "from": "20260617_111634Z_W2.json",
+        "to": "20260618_104720Z_W2.json",
+        "createdAt": "2026-06-18T10:47:46.380Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 18,
+        "removed": 2,
+        "replaced": 1
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "f8e7d3de46195a48",
+        "3bbfe4ef04747af7",
+        "a93e048c193cfc29",
+        "c931da587d2d1abf",
+        "f1f10f65117d081f",
+        "e4272b7386e8094c",
+        "006c5d63f866bdf4",
+        "e9c32db401407dde",
+        "6a1b3d2de293ac40",
+        "5ba847d5fba3b294",
+        "794e9a4abc9baa5a",
+        "33a685b04aa548bd",
+        "262ddd73f5e4f9e7",
+        "4896dca1ae144877",
+        "639e758c45267175",
+        "567a08e708e09795",
+        "8f4a5f66c04b74c0",
+        "831b24d06d4d2880"
+      ],
+      "removed": [
+        "183670cab734c9ea",
+        "3ace02670fabd2b1"
+      ],
+      "replaced": [
+        {
+          "positionId": "36f7942101a00ca8",
+          "from": {
+            "slotId": "3ace02670fabd2b1",
+            "artistId": "375ef04d2c16c256",
+            "artist": "Didi Hahn"
+          },
+          "to": {
+            "slotId": "831b24d06d4d2880",
+            "artistId": "dc691f7b19a76dd9",
+            "artist": "Didi Han"
+          }
+        }
+      ]
     }
   }
 }
