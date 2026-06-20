@@ -1,7 +1,7 @@
 {
   "latest": {
-    "W1": "20260619_105715Z_W1.changes.json",
-    "W2": "20260619_105715Z_W2.changes.json"
+    "W1": "20260620_093955Z_W1.changes.json",
+    "W2": "20260620_093955Z_W2.changes.json"
   },
   "entries": [
     {
@@ -3577,6 +3577,30 @@
       "summary": {
         "added": 405,
         "removed": 402,
+        "replaced": 0
+      }
+    },
+    {
+      "weekend": "W1",
+      "file": "20260620_093955Z_W1.changes.json",
+      "from": "20260619_105645Z_W1.json",
+      "to": "20260620_093928Z_W1.json",
+      "createdAt": "2026-06-20T09:39:55.519Z",
+      "summary": {
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
+      }
+    },
+    {
+      "weekend": "W2",
+      "file": "20260620_093955Z_W2.changes.json",
+      "from": "20260619_105645Z_W2.json",
+      "to": "20260620_093928Z_W2.json",
+      "createdAt": "2026-06-20T09:39:55.519Z",
+      "summary": {
+        "added": 0,
+        "removed": 0,
         "replaced": 0
       }
     }
