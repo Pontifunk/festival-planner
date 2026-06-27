@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-06-26T09:51:25.016Z",
+    "createdAt": "2026-06-27T08:49:47.202Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,44 +8,26 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260625_094311Z_W1.json",
-        "to": "20260626_095058Z_W1.json",
-        "createdAt": "2026-06-26T09:51:25.016Z",
+        "from": "20260626_095058Z_W1.json",
+        "to": "20260627_084919Z_W1.json",
+        "createdAt": "2026-06-27T08:49:47.202Z",
         "version": 1
       },
       "summary": {
-        "added": 1,
-        "removed": 1,
-        "replaced": 1
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "ded16f5e6d80d439"
-      ],
-      "removed": [
-        "6c1af12817e74a3c"
-      ],
-      "replaced": [
-        {
-          "positionId": "8011cb3687d83372",
-          "from": {
-            "slotId": "6c1af12817e74a3c",
-            "artistId": "48bb8af2ec3aac01",
-            "artist": "MAE.LIEN"
-          },
-          "to": {
-            "slotId": "ded16f5e6d80d439",
-            "artistId": "07f16a4831311efd",
-            "artist": "MAE.LIE"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260625_094311Z_W2.json",
-        "to": "20260626_095058Z_W2.json",
-        "createdAt": "2026-06-26T09:51:25.016Z",
+        "from": "20260626_095058Z_W2.json",
+        "to": "20260627_084919Z_W2.json",
+        "createdAt": "2026-06-27T08:49:47.202Z",
         "version": 1
       },
       "summary": {
