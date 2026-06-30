@@ -5,7 +5,12 @@ function renderActiveWeekend() {
     updateFavoritesToggleUI();
   }
   updateFiltersUI(state.activeWeekend);
-  renderWeekend(state.activeWeekend);
+  updateViewToggleUI();
+  if (viewMode === "timetable") {
+    renderTimetableWeekend(state.activeWeekend);
+  } else {
+    renderWeekend(state.activeWeekend);
+  }
   updateInlineFavoritesToggleUI();
   updateRatingsProgress();
   renderFavorites();
@@ -70,7 +75,13 @@ function renderSkeletonList(count = SKELETON_ROWS) {
 function renderWeekend(weekend) {
   const w = state.weekends[weekend];
   const container = weekend === "W1" ? actsListW1 : actsListW2;
+  const timetable = weekend === "W1" ? timetableViewW1 : timetableViewW2;
   if (!container) return;
+  if (timetable) {
+    timetable.hidden = true;
+    timetable.innerHTML = "";
+  }
+  container.hidden = false;
 
   if (w.error) {
     container.innerHTML = `<div class="muted">${escapeHtml(w.error)}</div>`;
@@ -160,6 +171,200 @@ function renderWeekend(weekend) {
   };
 
   requestAnimationFrame(renderChunk);
+}
+
+function updateViewToggleUI() {
+  if (viewToggleList) {
+    viewToggleList.classList.toggle("isActive", viewMode === "list");
+    viewToggleList.setAttribute("aria-pressed", viewMode === "list" ? "true" : "false");
+  }
+  if (viewToggleTimetable) {
+    viewToggleTimetable.classList.toggle("isActive", viewMode === "timetable");
+    viewToggleTimetable.setAttribute("aria-pressed", viewMode === "timetable" ? "true" : "false");
+  }
+}
+
+function setViewMode(mode) {
+  const next = mode === "timetable" ? "timetable" : "list";
+  if (viewMode === next) return;
+  viewMode = next;
+  try {
+    localStorage.setItem("fp_view_mode", viewMode);
+  } catch {
+    // Ignore storage failures.
+  }
+  renderActiveWeekend();
+}
+
+function timetableContainerForWeekend(weekend) {
+  return weekend === "W1" ? timetableViewW1 : timetableViewW2;
+}
+
+function timetableMinute(value) {
+  const t = formatTime(value);
+  if (!t) return 0;
+  const [h, m] = t.split(":").map(Number);
+  return (h < 6 ? h + 24 : h) * 60 + m;
+}
+
+function timetableEndMinute(slot) {
+  const start = timetableMinute(slot.start);
+  let end = timetableMinute(slot.end);
+  if (end <= start) end += 24 * 60;
+  return end;
+}
+
+function slotOverlaps(a, b) {
+  return a !== b
+    && (a.date || extractDate(a.start)) === (b.date || extractDate(b.start))
+    && timetableMinute(a.start) < timetableEndMinute(b)
+    && timetableMinute(b.start) < timetableEndMinute(a);
+}
+
+function getFilteredSlotsForTimetable(weekend) {
+  const w = state.weekends[weekend];
+  const filters = w.filters || { day: "all", stage: "all" };
+  const ratingValue = favoritesOnly ? "liked" : (ratingFilter?.value || "all");
+  return (w.snapshot?.slots || []).filter((slot) => {
+    const artistId = slot.artistId || "";
+    const rating = ratings[artistId] || "unrated";
+    const date = slot.date || extractDate(slot.start) || (t("unknown") || "Unknown");
+    const stage = normalizeStage(slot.stage);
+    if (ratingValue !== "all" && rating !== ratingValue) return false;
+    if (filters.day && filters.day !== "all" && date !== filters.day) return false;
+    if (filters.stage && filters.stage !== "all" && stage !== filters.stage) return false;
+    return true;
+  });
+}
+
+function renderTimetableWeekend(weekend) {
+  const w = state.weekends[weekend];
+  const container = timetableContainerForWeekend(weekend);
+  const list = weekend === "W1" ? actsListW1 : actsListW2;
+  if (!container) return;
+  if (list) {
+    list.hidden = true;
+    list.innerHTML = "";
+    list.classList.remove("isSkeleton");
+    list.setAttribute("aria-busy", "false");
+  }
+  container.hidden = false;
+
+  if (w.error) {
+    container.innerHTML = `<div class="muted">${escapeHtml(w.error)}</div>`;
+    return;
+  }
+  if (!w.snapshot || !Array.isArray(w.snapshot.slots)) {
+    container.innerHTML = renderSkeletonList(4);
+    return;
+  }
+
+  w.artistSlots = buildArtistSlotMap(w.snapshot.slots);
+  w.artistSlugMap = buildArtistSlugMap(w.snapshot.slots);
+
+  const slots = getFilteredSlotsForTimetable(weekend);
+  if (!slots.length) {
+    container.innerHTML = `<div class="emptyState">${escapeHtml(t("no_results") || "Keine Treffer.")}</div>`;
+    return;
+  }
+
+  const likedSlots = slots.filter((slot) => ratings[slot.artistId || ""] === "liked");
+  const conflictIds = new Set();
+  likedSlots.forEach((slot) => {
+    likedSlots.forEach((other) => {
+      if (slotOverlaps(slot, other)) {
+        conflictIds.add(slot.slotId || `${slot.artistId}-${slot.start}`);
+        conflictIds.add(other.slotId || `${other.artistId}-${other.start}`);
+      }
+    });
+  });
+
+  const byDate = new Map();
+  slots.forEach((slot) => {
+    const date = slot.date || extractDate(slot.start) || (t("unknown") || "Unknown");
+    if (!byDate.has(date)) byDate.set(date, []);
+    byDate.get(date).push(slot);
+  });
+
+  const dayHtml = Array.from(byDate.keys()).sort().map((date) => {
+    const daySlots = byDate.get(date);
+    const stages = sortStagesByOrder(Array.from(new Set(daySlots.map((slot) => normalizeStage(slot.stage)))));
+    const startMinute = 12 * 60;
+    const endMinute = 26 * 60;
+    const minuteHeight = 1.15;
+    const gridHeight = (endMinute - startMinute) * minuteHeight;
+    const hourRows = Array.from({ length: (endMinute - startMinute) / 60 + 1 }, (_, index) => startMinute + index * 60);
+    const stageColumns = stages.map((stage) => {
+      const cards = daySlots
+        .filter((slot) => normalizeStage(slot.stage) === stage)
+        .sort((a, b) => timetableMinute(a.start) - timetableMinute(b.start))
+        .map((slot) => renderTimetableSlot(slot, weekend, startMinute, minuteHeight, conflictIds))
+        .join("");
+      return `<div class="ttStageColumn">${cards}</div>`;
+    }).join("");
+
+    return `
+      <section class="ttDay">
+        <div class="ttDayHeader">
+          <div>
+            <div class="ttDayTitle">${escapeHtml(formatDate(date))}</div>
+            <div class="ttDayMeta">${escapeHtml(String(daySlots.length))} Slots · ${escapeHtml(String(stages.length))} Bühnen</div>
+          </div>
+        </div>
+        <div class="ttScroller">
+          <div class="ttGrid" style="grid-template-columns:72px repeat(${Math.max(stages.length, 1)}, minmax(170px, 1fr));height:${gridHeight}px">
+            <div class="ttCorner"></div>
+            ${stages.map(stage => `<div class="ttStageHeader">${escapeHtml(stage)}</div>`).join("")}
+            <div class="ttTimeAxis">
+              ${hourRows.map(minute => `<div class="ttHour" style="top:${(minute - startMinute) * minuteHeight}px">${escapeHtml(formatClockLabel(minute))}</div>`).join("")}
+            </div>
+            ${stageColumns}
+            ${hourRows.map(minute => `<div class="ttGridLine" style="top:${(minute - startMinute) * minuteHeight}px"></div>`).join("")}
+          </div>
+        </div>
+      </section>
+    `;
+  }).join("");
+
+  container.innerHTML = dayHtml;
+  bindSlotInteractions(container, weekend);
+}
+
+function formatClockLabel(totalMinutes) {
+  const normalized = totalMinutes % (24 * 60);
+  const h = Math.floor(normalized / 60);
+  const m = normalized % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+function renderTimetableSlot(slot, weekend, startMinute, minuteHeight, conflictIds) {
+  const artistId = slot.artistId || "";
+  const name = getArtistName(artistId, slot);
+  const stage = normalizeStage(slot.stage);
+  const start = formatTime(slot.start);
+  const end = formatTime(slot.end);
+  const startMin = timetableMinute(slot.start);
+  const endMin = timetableEndMinute(slot);
+  const top = Math.max(0, (startMin - startMinute) * minuteHeight);
+  const height = Math.max(46, (endMin - startMin) * minuteHeight - 5);
+  const rating = ratings[artistId] || "unrated";
+  const isLiked = rating === "liked";
+  const slotKey = slot.slotId || `${artistId}-${slot.start}`;
+  const hasConflict = conflictIds.has(slotKey);
+  const slotId = slot.slotId ? `slot-${weekend}-${slot.slotId}` : `slot-${weekend}-${hashMini(name + stage + start)}`;
+
+  return `
+    <div class="ttSlot slot ${isLiked ? "isLiked" : ""} ${hasConflict ? "hasConflict" : ""}" id="${escapeAttr(slotId)}" data-artist-id="${escapeAttr(artistId)}" style="top:${top}px;height:${height}px">
+      <div class="ttSlotTop">
+        <div class="ttSlotName">${escapeHtml(name)}</div>
+        <div class="ratingSegmented ttFavSegment" data-id="${escapeAttr(artistId)}">
+          <button class="ttFavBtn ratingSegBtn ${isLiked ? "isActive" : ""}" data-rate="${isLiked ? "unrated" : "liked"}" type="button" aria-label="${escapeAttr(isLiked ? "Favorit entfernen" : "Favorit setzen")}">${isLiked ? "★" : "☆"}</button>
+        </div>
+      </div>
+      <div class="ttSlotTime">${escapeHtml(start)}–${escapeHtml(end)}</div>
+      ${hasConflict ? `<div class="ttConflict">Overlap</div>` : ""}
+    </div>
+  `;
 }
 
 // Renders a day group with stage accordions.

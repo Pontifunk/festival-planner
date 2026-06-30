@@ -12,6 +12,7 @@ let selectUid = 0;
 const customSelectMap = new WeakMap();
 let ratings = {};
 let favoritesOnly = false;
+let viewMode = localStorage.getItem("fp_view_mode") === "timetable" ? "timetable" : "list";
 let lastFilterValue = "all";
 let toastTimer = null;
 let menuOpen = false;
@@ -35,4 +36,3 @@ const state = {
   ratings: {},
   ratingsByWeekend: { W1: {}, W2: {} }
 };
-

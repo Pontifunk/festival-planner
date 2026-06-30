@@ -629,6 +629,12 @@ function bindUi() {
   if (favoritesToggleOnly) {
     favoritesToggleOnly.addEventListener("click", () => setFavoritesOnly(true));
   }
+  if (viewToggleList) {
+    viewToggleList.addEventListener("click", () => setViewMode("list"));
+  }
+  if (viewToggleTimetable) {
+    viewToggleTimetable.addEventListener("click", () => setViewMode("timetable"));
+  }
   if (favoritesList) {
     favoritesList.addEventListener("click", async (e) => {
       const link = e.target.closest("[data-action='scrollLineup']");

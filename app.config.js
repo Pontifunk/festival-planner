@@ -87,6 +87,8 @@ const searchResults = document.getElementById("searchResults");
 const inlineFavoritesBar = document.getElementById("inlineFavoritesBar");
 const favoritesToggleAll = document.getElementById("favoritesToggleAll");
 const favoritesToggleOnly = document.getElementById("favoritesToggleOnly");
+const viewToggleList = document.getElementById("viewToggleList");
+const viewToggleTimetable = document.getElementById("viewToggleTimetable");
 const ratingProgress = document.getElementById("ratingProgress");
 const onboardingHint = document.getElementById("onboardingHint");
 const onboardingHintText = document.getElementById("onboardingHintText");
@@ -120,6 +122,8 @@ const weekendMetaW1 = document.getElementById("weekendMetaW1");
 const weekendMetaW2 = document.getElementById("weekendMetaW2");
 const actsListW1 = document.getElementById("actsListW1");
 const actsListW2 = document.getElementById("actsListW2");
+const timetableViewW1 = document.getElementById("timetableViewW1");
+const timetableViewW2 = document.getElementById("timetableViewW2");
 
 const favoritesList = document.getElementById("favoritesList");
 const favoritesToggle = document.getElementById("favoritesToggle");
