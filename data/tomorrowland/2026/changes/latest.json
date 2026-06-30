@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-06-29T11:23:40.238Z",
+    "createdAt": "2026-06-30T10:00:11.647Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260628_093213Z_W1.json",
-        "to": "20260629_112314Z_W1.json",
-        "createdAt": "2026-06-29T11:23:40.238Z",
+        "from": "20260629_112314Z_W1.json",
+        "to": "20260630_095946Z_W1.json",
+        "createdAt": "2026-06-30T10:00:11.647Z",
         "version": 1
       },
       "summary": {
@@ -25,19 +25,70 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260628_093213Z_W2.json",
-        "to": "20260629_112314Z_W2.json",
-        "createdAt": "2026-06-29T11:23:40.238Z",
+        "from": "20260629_112314Z_W2.json",
+        "to": "20260630_095946Z_W2.json",
+        "createdAt": "2026-06-30T10:00:11.647Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 5,
+        "removed": 4,
+        "replaced": 3
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "703839eb29513dd9",
+        "ad2ee63809540874",
+        "6fdc1e19713a26d0",
+        "3f042c7d77860411",
+        "c6b19ce94fea3aa8"
+      ],
+      "removed": [
+        "bf0a0d3cfd9f8dae",
+        "77dd41eb6e8f4266",
+        "4ed84c70bb8b55aa",
+        "eed69df3f4335c38"
+      ],
+      "replaced": [
+        {
+          "positionId": "d5e4868b892befa9",
+          "from": {
+            "slotId": "eed69df3f4335c38",
+            "artistId": "e22a2a2131bb2e15",
+            "artist": "Belters Only"
+          },
+          "to": {
+            "slotId": "703839eb29513dd9",
+            "artistId": "a48717fcea66a6f6",
+            "artist": "Mark Knight"
+          }
+        },
+        {
+          "positionId": "af806f4f319f99cc",
+          "from": {
+            "slotId": "77dd41eb6e8f4266",
+            "artistId": "950641606a845eef",
+            "artist": "Mr. Belt & Wezol"
+          },
+          "to": {
+            "slotId": "3f042c7d77860411",
+            "artistId": "1cfb3b6fb0d27384",
+            "artist": "Ruze b2b Ranger Trucco"
+          }
+        },
+        {
+          "positionId": "45712e13d005161e",
+          "from": {
+            "slotId": "4ed84c70bb8b55aa",
+            "artistId": "1cfb3b6fb0d27384",
+            "artist": "Ruze b2b Ranger Trucco"
+          },
+          "to": {
+            "slotId": "c6b19ce94fea3aa8",
+            "artistId": "e22a2a2131bb2e15",
+            "artist": "Belters Only"
+          }
+        }
+      ]
     }
   }
 }
