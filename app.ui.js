@@ -286,7 +286,7 @@ function renderTimetableWeekend(weekend) {
     byDate.get(date).push(slot);
   });
 
-  const dayHtml = Array.from(byDate.keys()).sort().map((date) => {
+    const dayHtml = Array.from(byDate.keys()).sort().map((date) => {
     const daySlots = byDate.get(date);
     const stages = sortStagesByOrder(Array.from(new Set(daySlots.map((slot) => normalizeStage(slot.stage)))));
     const startMinute = 12 * 60;
@@ -303,12 +303,15 @@ function renderTimetableWeekend(weekend) {
       return `<div class="ttStageColumn">${cards}</div>`;
     }).join("");
 
+    const slotCountLabel = formatTemplate(t("timetable_slots_count") || "{count} Slots", { count: daySlots.length });
+    const stageCountLabel = formatTemplate(t("timetable_stage_count") || "{count} Bühnen", { count: stages.length });
+
     return `
       <section class="ttDay">
         <div class="ttDayHeader">
           <div>
             <div class="ttDayTitle">${escapeHtml(formatDate(date))}</div>
-            <div class="ttDayMeta">${escapeHtml(String(daySlots.length))} Slots · ${escapeHtml(String(stages.length))} Bühnen</div>
+            <div class="ttDayMeta">${escapeHtml(slotCountLabel)} · ${escapeHtml(stageCountLabel)}</div>
           </div>
         </div>
         <div class="ttScroller">
@@ -352,17 +355,21 @@ function renderTimetableSlot(slot, weekend, startMinute, minuteHeight, conflictI
   const slotKey = slot.slotId || `${artistId}-${slot.start}`;
   const hasConflict = conflictIds.has(slotKey);
   const slotId = slot.slotId ? `slot-${weekend}-${slot.slotId}` : `slot-${weekend}-${hashMini(name + stage + start)}`;
+  const favoriteLabel = isLiked
+    ? (t("timetable_favorite_remove") || t("favorites_remove") || "Favorit entfernen")
+    : (t("timetable_favorite_add") || "Favorit setzen");
+  const conflictLabel = t("timetable_overlap") || "Overlap";
 
   return `
     <div class="ttSlot slot ${isLiked ? "isLiked" : ""} ${hasConflict ? "hasConflict" : ""}" id="${escapeAttr(slotId)}" data-artist-id="${escapeAttr(artistId)}" style="top:${top}px;height:${height}px">
       <div class="ttSlotTop">
         <div class="ttSlotName">${escapeHtml(name)}</div>
         <div class="ratingSegmented ttFavSegment" data-id="${escapeAttr(artistId)}">
-          <button class="ttFavBtn ratingSegBtn ${isLiked ? "isActive" : ""}" data-rate="${isLiked ? "unrated" : "liked"}" type="button" aria-label="${escapeAttr(isLiked ? "Favorit entfernen" : "Favorit setzen")}">${isLiked ? "★" : "☆"}</button>
+          <button class="ttFavBtn ratingSegBtn ${isLiked ? "isActive" : ""}" data-rate="${isLiked ? "unrated" : "liked"}" type="button" aria-label="${escapeAttr(favoriteLabel)}">${isLiked ? "★" : "☆"}</button>
         </div>
       </div>
       <div class="ttSlotTime">${escapeHtml(start)}–${escapeHtml(end)}</div>
-      ${hasConflict ? `<div class="ttConflict">Overlap</div>` : ""}
+      ${hasConflict ? `<div class="ttConflict">${escapeHtml(conflictLabel)}</div>` : ""}
     </div>
   `;
 }
