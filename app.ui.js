@@ -317,7 +317,7 @@ function renderTimetableWeekend(weekend) {
         <div class="ttScroller">
           <div class="ttGrid" style="grid-template-columns:72px repeat(${Math.max(stages.length, 1)}, minmax(170px, 1fr));height:${gridHeight}px">
             <div class="ttCorner"></div>
-            ${stages.map(stage => `<div class="ttStageHeader">${escapeHtml(stage)}</div>`).join("")}
+            ${stages.map(stage => `<div class="ttStageHeader" title="${escapeAttr(stage)}">${escapeHtml(stage)}</div>`).join("")}
             <div class="ttTimeAxis">
               ${hourRows.map(minute => `<div class="ttHour" style="top:${(minute - startMinute) * minuteHeight}px">${escapeHtml(formatClockLabel(minute))}</div>`).join("")}
             </div>
@@ -361,7 +361,7 @@ function renderTimetableSlot(slot, weekend, startMinute, minuteHeight, conflictI
   const conflictLabel = t("timetable_overlap") || "Overlap";
 
   return `
-    <div class="ttSlot slot ${isLiked ? "isLiked" : ""} ${hasConflict ? "hasConflict" : ""}" id="${escapeAttr(slotId)}" data-artist-id="${escapeAttr(artistId)}" style="top:${top}px;height:${height}px">
+    <div class="ttSlot slot ${isLiked ? "isLiked" : ""} ${hasConflict ? "hasConflict" : ""}" id="${escapeAttr(slotId)}" data-artist-id="${escapeAttr(artistId)}" title="${escapeAttr(`${name} · ${stage} · ${start}-${end}`)}" style="top:${top}px;height:${height}px">
       <div class="ttSlotTop">
         <div class="ttSlotName">${escapeHtml(name)}</div>
         <div class="ratingSegmented ttFavSegment" data-id="${escapeAttr(artistId)}">
