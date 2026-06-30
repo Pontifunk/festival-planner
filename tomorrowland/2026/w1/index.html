@@ -155,6 +155,10 @@
           <button class="inlineToggleBtn" id="favoritesToggleAll" type="button" data-i18n="toggle_all">Alle</button>
           <button class="inlineToggleBtn" id="favoritesToggleOnly" type="button" data-i18n="toggle_favorites_only">Nur Favoriten</button>
         </div>
+        <div class="inlineToggle viewToggle" role="group" aria-label="Ansicht">
+          <button class="inlineToggleBtn isActive" id="viewToggleList" type="button">Liste</button>
+          <button class="inlineToggleBtn" id="viewToggleTimetable" type="button">Timetable</button>
+        </div>
         <div class="inlineProgress" id="ratingProgress"></div>
       </div>
 
@@ -178,6 +182,7 @@
             <select id="snapshotSelectW1" aria-label="Snapshot W1" aria-labelledby="snapshotLabelW1" data-i18n-aria-label="snapshot_w1_aria" class="selectNative" data-custom-select></select>
           </div>
         </div>
+        <div id="timetableViewW1" class="timetableView" hidden></div>
         <div id="actsListW1" class="list"></div>
       </section>
 
@@ -190,6 +195,7 @@
             <select id="snapshotSelectW2" aria-label="Snapshot W2" aria-labelledby="snapshotLabelW2" data-i18n-aria-label="snapshot_w2_aria" class="selectNative" data-custom-select></select>
           </div>
         </div>
+        <div id="timetableViewW2" class="timetableView" hidden></div>
         <div id="actsListW2" class="list"></div>
       </section>
     </section>
@@ -357,4 +363,3 @@
   </script>
 </body>
 </html>
-

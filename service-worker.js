@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const BUILD_ID = "2026-02-17-5";
+const BUILD_ID = "2026-06-30-1";
 const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 const OFFLINE_RESPONSE = new Response("Offline", { status: 503, statusText: "Offline" });
 
@@ -127,6 +127,10 @@ self.addEventListener("fetch", (event) => {
   }
 
   if (isStaticAssetRequest(request, url)) {
+    if (url.pathname.endsWith(".js") || url.pathname.endsWith(".css")) {
+      event.respondWith(networkFirst(request));
+      return;
+    }
     event.respondWith(staleWhileRevalidate(request));
   }
 });
