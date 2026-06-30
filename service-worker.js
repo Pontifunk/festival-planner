@@ -1,5 +1,5 @@
 // Cache versioning to bust old assets when app changes.
-const BUILD_ID = "2026-06-30-3";
+const BUILD_ID = "2026-06-30-4";
 const CACHE_NAME = `app-shell-${BUILD_ID || "v1"}`;
 const OFFLINE_RESPONSE = new Response("Offline", { status: 503, statusText: "Offline" });
 
@@ -49,6 +49,18 @@ self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING" || event.data === "SKIP_WAITING") {
     self.skipWaiting();
   }
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      const existing = clientList.find((client) => client.url && new URL(client.url).origin === self.location.origin);
+      if (existing?.focus) return existing.focus();
+      if (clients.openWindow) return clients.openWindow("/");
+      return null;
+    })
+  );
 });
 
 function isHtmlRequest(req) {

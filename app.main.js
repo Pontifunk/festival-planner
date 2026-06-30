@@ -211,12 +211,14 @@ function initOnboardingHint() {
   renderWeekendChangesBox();
   setActiveWeekend(state.activeWeekend, false);
   setupAutoRefresh();
+  setupTimetableReminders();
 
   runIdle(() => {
     const otherWeekend = WEEKENDS.find((w) => w !== state.activeWeekend);
     if (!otherWeekend) return;
     loadSnapshotForWeekend(otherWeekend).then(() => {
       if (state.activeWeekend === otherWeekend) renderActiveWeekend();
+      checkUpcomingFavoriteReminders();
     });
   }, { timeout: 1000 });
 
@@ -634,6 +636,9 @@ function bindUi() {
   }
   if (viewToggleTimetable) {
     viewToggleTimetable.addEventListener("click", () => setViewMode("timetable"));
+  }
+  if (reminderToggle) {
+    reminderToggle.addEventListener("click", () => setRemindersEnabled(!remindersEnabled));
   }
   if (favoritesList) {
     favoritesList.addEventListener("click", async (e) => {

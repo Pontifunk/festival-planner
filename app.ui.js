@@ -18,6 +18,7 @@ function renderActiveWeekend() {
   renderActiveFilters();
   renderStatusPills();
   renderWeekendChangesBox();
+  updateReminderToggleUI();
 }
 
 const renderTokens = { W1: 0, W2: 0 };
@@ -660,6 +661,177 @@ function setFavoritesOnly(next) {
   updateFavoritesToggleUI();
   updateInlineFavoritesToggleUI();
   renderActiveWeekend();
+}
+
+function isReminderSupported() {
+  return typeof window !== "undefined" && "Notification" in window;
+}
+
+function getReminderPermission() {
+  if (!isReminderSupported()) return "unsupported";
+  return Notification.permission || "default";
+}
+
+function updateReminderToggleUI() {
+  if (!reminderToggle) return;
+  const supported = isReminderSupported();
+  const permission = getReminderPermission();
+  reminderToggle.hidden = !supported;
+  reminderToggle.disabled = !supported || permission === "denied";
+  reminderToggle.classList.toggle("isActive", remindersEnabled && permission === "granted");
+  reminderToggle.setAttribute("aria-pressed", remindersEnabled && permission === "granted" ? "true" : "false");
+  if (!supported) {
+    reminderToggle.textContent = t("reminder_unsupported") || "Reminder nicht verfügbar";
+    reminderToggle.title = reminderToggle.textContent;
+    return;
+  }
+  if (permission === "denied") {
+    reminderToggle.textContent = t("reminder_blocked") || "Reminder blockiert";
+    reminderToggle.title = t("reminder_blocked_help") || "Benachrichtigungen sind im Browser blockiert.";
+    return;
+  }
+  reminderToggle.textContent = remindersEnabled && permission === "granted"
+    ? (t("reminder_on") || "Reminder an")
+    : (t("reminder_off") || "Reminder aus");
+  reminderToggle.title = t("reminder_help") || "Erinnert dich 30 Minuten vor favorisierten Acts, solange die App geöffnet ist.";
+}
+
+async function setRemindersEnabled(next) {
+  if (!isReminderSupported()) {
+    showToast(t("reminder_unsupported") || "Reminder nicht verfügbar");
+    updateReminderToggleUI();
+    return;
+  }
+
+  if (next) {
+    let permission = getReminderPermission();
+    if (permission === "default") {
+      permission = await Notification.requestPermission();
+    }
+    if (permission !== "granted") {
+      remindersEnabled = false;
+      localStorage.setItem("fp_reminders_enabled", "0");
+      showToast(permission === "denied"
+        ? (t("reminder_blocked") || "Reminder blockiert")
+        : (t("reminder_permission_needed") || "Benachrichtigungen nicht aktiviert."));
+      updateReminderToggleUI();
+      return;
+    }
+  }
+
+  remindersEnabled = Boolean(next);
+  localStorage.setItem("fp_reminders_enabled", remindersEnabled ? "1" : "0");
+  updateReminderToggleUI();
+  showToast(remindersEnabled ? (t("reminder_enabled") || "Reminder aktiviert.") : (t("reminder_disabled") || "Reminder deaktiviert."));
+  if (remindersEnabled) checkUpcomingFavoriteReminders();
+}
+
+function parseSlotDate(value) {
+  if (!value) return null;
+  const normalized = String(value).replace(" ", "T");
+  const date = new Date(normalized);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function getReminderSlots(now = new Date()) {
+  const slots = [];
+  WEEKENDS.forEach((weekend) => {
+    const wk = state.weekends?.[weekend];
+    const weekendRatings = state.ratingsByWeekend?.[weekend] || {};
+    (wk?.snapshot?.slots || []).forEach((slot) => {
+      const artistId = slot.artistId || "";
+      if (weekendRatings[artistId] !== "liked") return;
+      const startDate = parseSlotDate(slot.start);
+      if (!startDate) return;
+      const minutesUntil = (startDate.getTime() - now.getTime()) / 60000;
+      if (minutesUntil < 0 || minutesUntil > 30) return;
+      slots.push({ weekend, slot, artistId, startDate, minutesUntil });
+    });
+  });
+  return slots;
+}
+
+function reminderKeyFor(item) {
+  const slot = item.slot || {};
+  return `${item.weekend}:${slot.slotId || item.artistId || ""}:${slot.start || ""}`;
+}
+
+function loadReminderKeys() {
+  try {
+    const raw = localStorage.getItem("fp_reminder_notified") || "[]";
+    const keys = JSON.parse(raw);
+    notifiedReminderKeys = new Set(Array.isArray(keys) ? keys.slice(-300) : []);
+  } catch {
+    notifiedReminderKeys = new Set();
+  }
+}
+
+function saveReminderKeys() {
+  try {
+    localStorage.setItem("fp_reminder_notified", JSON.stringify(Array.from(notifiedReminderKeys).slice(-300)));
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+async function showSlotReminder(item) {
+  const slot = item.slot;
+  const name = getArtistName(item.artistId, slot);
+  const time = formatTime(slot.start) || "";
+  const stage = normalizeStage(slot.stage);
+  const title = formatTemplate(t("reminder_title") || "{name} startet bald", { name });
+  const body = formatTemplate(t("reminder_body") || "{time} · {stage} · {weekend}", {
+    time,
+    stage,
+    weekend: item.weekend
+  });
+
+  try {
+    if (navigator.serviceWorker?.ready) {
+      const registration = await navigator.serviceWorker.ready;
+      if (registration?.showNotification) {
+        await registration.showNotification(title, {
+          body,
+          tag: reminderKeyFor(item),
+          icon: "/icons/icon-192.png",
+          badge: "/icons/icon-192.png"
+        });
+        return;
+      }
+    }
+  } catch {
+    // Fall through to Notification constructor.
+  }
+
+  try {
+    new Notification(title, {
+      body,
+      tag: reminderKeyFor(item),
+      icon: "/icons/icon-192.png"
+    });
+  } catch {
+    showToast(`${title} · ${body}`);
+  }
+}
+
+function checkUpcomingFavoriteReminders() {
+  if (!remindersEnabled || getReminderPermission() !== "granted") return;
+  const due = getReminderSlots();
+  due.forEach((item) => {
+    const key = reminderKeyFor(item);
+    if (notifiedReminderKeys.has(key)) return;
+    notifiedReminderKeys.add(key);
+    showSlotReminder(item);
+  });
+  if (due.length) saveReminderKeys();
+}
+
+function setupTimetableReminders() {
+  loadReminderKeys();
+  updateReminderToggleUI();
+  if (reminderTimer) clearInterval(reminderTimer);
+  reminderTimer = setInterval(checkUpcomingFavoriteReminders, 60 * 1000);
+  checkUpcomingFavoriteReminders();
 }
 
 // Shows a short-lived toast message.

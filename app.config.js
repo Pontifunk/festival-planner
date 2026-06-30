@@ -2,7 +2,7 @@
 const DEFAULT_FESTIVAL = "tomorrowland";
 const DEFAULT_YEAR = "2026";
 const DEFAULT_WEEKEND = "W1";
-const BUILD_ID = "2026-06-30-3";
+const BUILD_ID = "2026-06-30-4";
 
 const DONATION_URL = "https://www.buymeacoffee.com/Pontifunk"; 
 const FEEDBACK_URL = "https://github.com/Pontifunk/festival-planner/issues/new/choose";
@@ -89,6 +89,7 @@ const favoritesToggleAll = document.getElementById("favoritesToggleAll");
 const favoritesToggleOnly = document.getElementById("favoritesToggleOnly");
 const viewToggleList = document.getElementById("viewToggleList");
 const viewToggleTimetable = document.getElementById("viewToggleTimetable");
+const reminderToggle = document.getElementById("reminderToggle");
 const ratingProgress = document.getElementById("ratingProgress");
 const onboardingHint = document.getElementById("onboardingHint");
 const onboardingHintText = document.getElementById("onboardingHintText");

@@ -982,6 +982,10 @@ button{
   background:rgba(107,92,255,.25);
   border-color:rgba(107,92,255,.45);
 }
+.reminderToggle.isActive{
+  background:rgba(86,210,155,.16);
+  border-color:rgba(86,210,155,.38);
+}
 .inlineProgress{
   color:var(--muted);
   font-size:12px;

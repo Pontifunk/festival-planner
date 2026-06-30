@@ -13,12 +13,15 @@ const customSelectMap = new WeakMap();
 let ratings = {};
 let favoritesOnly = false;
 let viewMode = localStorage.getItem("fp_view_mode") === "timetable" ? "timetable" : "list";
+let remindersEnabled = localStorage.getItem("fp_reminders_enabled") === "1";
 let lastFilterValue = "all";
 let toastTimer = null;
 let menuOpen = false;
 let menuScrollY = 0;
 let changesDetailsUid = 0;
 let changesSelectionUid = 0;
+let reminderTimer = null;
+let notifiedReminderKeys = new Set();
 
 const state = {
   festival: DEFAULT_FESTIVAL,
