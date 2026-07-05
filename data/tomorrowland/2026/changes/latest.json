@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-04T08:50:16.419Z",
+    "createdAt": "2026-07-05T09:22:35.215Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,133 +8,36 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260703_093425Z_W1.json",
-        "to": "20260704_084949Z_W1.json",
-        "createdAt": "2026-07-04T08:50:16.419Z",
+        "from": "20260704_084949Z_W1.json",
+        "to": "20260705_092208Z_W1.json",
+        "createdAt": "2026-07-05T09:22:35.215Z",
         "version": 1
       },
       "summary": {
-        "added": 3,
-        "removed": 3,
-        "replaced": 3
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "82abb376ba1d2f04",
-        "e279f7726e110a73",
-        "af6051bdd4ebd433"
-      ],
-      "removed": [
-        "ad306c707f48ec66",
-        "0beb2bbc5a523b61",
-        "e32fa68d0b10a283"
-      ],
-      "replaced": [
-        {
-          "positionId": "c80ca03868daaaf3",
-          "from": {
-            "slotId": "ad306c707f48ec66",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          },
-          "to": {
-            "slotId": "82abb376ba1d2f04",
-            "artistId": "efa65189df683742",
-            "artist": "Jop Govers"
-          }
-        },
-        {
-          "positionId": "14628781d936598e",
-          "from": {
-            "slotId": "0beb2bbc5a523b61",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          },
-          "to": {
-            "slotId": "e279f7726e110a73",
-            "artistId": "5fd46180c50d0e7e",
-            "artist": "Manda Moor b2b Sirus Hood"
-          }
-        },
-        {
-          "positionId": "e878a5d49151936e",
-          "from": {
-            "slotId": "e32fa68d0b10a283",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          },
-          "to": {
-            "slotId": "af6051bdd4ebd433",
-            "artistId": "0ef56b5d73effd6e",
-            "artist": "Simon T"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260703_093425Z_W2.json",
-        "to": "20260704_084949Z_W2.json",
-        "createdAt": "2026-07-04T08:50:16.419Z",
+        "from": "20260704_084949Z_W2.json",
+        "to": "20260705_092208Z_W2.json",
+        "createdAt": "2026-07-05T09:22:35.215Z",
         "version": 1
       },
       "summary": {
-        "added": 4,
-        "removed": 3,
-        "replaced": 3
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "0a4460551407f7d8",
-        "0a3791ff01f8ad39",
-        "05c63f21486ef857",
-        "805ec5c30bdee28d"
-      ],
-      "removed": [
-        "9c0f39503e397773",
-        "149d093374091217",
-        "2935a8906927bbd4"
-      ],
-      "replaced": [
-        {
-          "positionId": "7067d6eb20a84e64",
-          "from": {
-            "slotId": "9c0f39503e397773",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          },
-          "to": {
-            "slotId": "0a3791ff01f8ad39",
-            "artistId": "3dc6e62056d2e1e4",
-            "artist": "Cassian b2b Joris Voorn"
-          }
-        },
-        {
-          "positionId": "0aff5c81f066bb23",
-          "from": {
-            "slotId": "149d093374091217",
-            "artistId": "964388e1fbe2ee81",
-            "artist": "Nosefin"
-          },
-          "to": {
-            "slotId": "05c63f21486ef857",
-            "artistId": "f9d6c81fe860d7c7",
-            "artist": "N0sefin"
-          }
-        },
-        {
-          "positionId": "10fb6c5ce5a746f6",
-          "from": {
-            "slotId": "2935a8906927bbd4",
-            "artistId": "63b85f30a118f9c2",
-            "artist": "Goddard & Dread MC"
-          },
-          "to": {
-            "slotId": "805ec5c30bdee28d",
-            "artistId": "bcf4d4948a8ad16c",
-            "artist": "Goddard. & Dread MC"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     }
   }
 }

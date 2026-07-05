@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-04T08:49:49.930Z",
+    "createdAt": "2026-07-05T09:22:08.728Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -31,7 +31,8 @@
       "artistNormalized": "jop govers",
       "artistId": "efa65189df683742",
       "positionId": "c80ca03868daaaf3",
-      "slotId": "82abb376ba1d2f04"
+      "slotId": "82abb376ba1d2f04",
+      "tomorrowlandArtistId": "3045215037"
     },
     {
       "weekend": "W1",
@@ -677,7 +678,8 @@
       "artistNormalized": "camila jun",
       "artistId": "1c9b1563cca0c08f",
       "positionId": "83c62975dae3510a",
-      "slotId": "b2143095bbad6555"
+      "slotId": "b2143095bbad6555",
+      "tomorrowlandArtistId": "1893969378"
     },
     {
       "weekend": "W1",
@@ -858,7 +860,8 @@
       "artistNormalized": "simon t",
       "artistId": "0ef56b5d73effd6e",
       "positionId": "e878a5d49151936e",
-      "slotId": "af6051bdd4ebd433"
+      "slotId": "af6051bdd4ebd433",
+      "tomorrowlandArtistId": "3037800912"
     },
     {
       "weekend": "W1",
@@ -5270,7 +5273,8 @@
       "artistNormalized": "dino",
       "artistId": "cf06b730ed9ccafe",
       "positionId": "49ef46d8e25767b1",
-      "slotId": "bb02b5a4b4f56dc7"
+      "slotId": "bb02b5a4b4f56dc7",
+      "tomorrowlandArtistId": "2651252621"
     },
     {
       "weekend": "UNKNOWN",
@@ -5396,7 +5400,8 @@
       "artistNormalized": "no surprise",
       "artistId": "526df6d1162d038f",
       "positionId": "a2bf3784a775a22c",
-      "slotId": "5131d7348204b13a"
+      "slotId": "5131d7348204b13a",
+      "tomorrowlandArtistId": "1576037997"
     },
     {
       "weekend": "UNKNOWN",
@@ -5421,7 +5426,8 @@
       "artistNormalized": "arten",
       "artistId": "c589c64619482600",
       "positionId": "81917d5ed3d5277b",
-      "slotId": "1662ac3aec6c28ae"
+      "slotId": "1662ac3aec6c28ae",
+      "tomorrowlandArtistId": "1397177066"
     },
     {
       "weekend": "UNKNOWN",
@@ -5445,7 +5451,8 @@
       "artistNormalized": "prinz",
       "artistId": "e4406856ccd25f33",
       "positionId": "f9de03caf6a80b71",
-      "slotId": "f47adb2d1b447eb8"
+      "slotId": "f47adb2d1b447eb8",
+      "tomorrowlandArtistId": "1576010712"
     },
     {
       "weekend": "UNKNOWN",
@@ -5457,7 +5464,8 @@
       "artistNormalized": "camila jun",
       "artistId": "1c9b1563cca0c08f",
       "positionId": "97bf24e0e0d5a404",
-      "slotId": "4db21a7ba7f15bd1"
+      "slotId": "4db21a7ba7f15bd1",
+      "tomorrowlandArtistId": "1893969378"
     },
     {
       "weekend": "UNKNOWN",
@@ -7087,7 +7095,8 @@
       "artistNormalized": "5napback",
       "artistId": "7ee0488ccbe15a15",
       "positionId": "ff3c10c3cadfa609",
-      "slotId": "eb2083989426c989"
+      "slotId": "eb2083989426c989",
+      "tomorrowlandArtistId": "1536107912"
     },
     {
       "weekend": "W2",
@@ -9275,7 +9284,8 @@
       "artistNormalized": "mark with a k & mc chucky",
       "artistId": "5b6b939fe415f101",
       "positionId": "6d9d0c4fad59759e",
-      "slotId": "ac21772998498011"
+      "slotId": "ac21772998498011",
+      "tomorrowlandArtistId": "1295649516"
     },
     {
       "weekend": "W2",
@@ -9409,7 +9419,8 @@
       "artistNormalized": "dino",
       "artistId": "cf06b730ed9ccafe",
       "positionId": "bee64a2b8969a2b0",
-      "slotId": "833a8624c07eb8f4"
+      "slotId": "833a8624c07eb8f4",
+      "tomorrowlandArtistId": "2651252621"
     },
     {
       "weekend": "W2",
@@ -9857,7 +9868,8 @@
       "artistNormalized": "portex",
       "artistId": "cafd5a8bac576bbc",
       "positionId": "dcbc73f5dd152bf2",
-      "slotId": "82e1571744b80766"
+      "slotId": "82e1571744b80766",
+      "tomorrowlandArtistId": "1393192558"
     },
     {
       "weekend": "W2",
