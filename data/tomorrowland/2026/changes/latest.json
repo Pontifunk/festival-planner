@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-07T10:00:23.471Z",
+    "createdAt": "2026-07-08T08:43:32.936Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,26 +8,48 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260706_110141Z_W1.json",
-        "to": "20260707_095954Z_W1.json",
-        "createdAt": "2026-07-07T10:00:23.471Z",
+        "from": "20260707_095954Z_W1.json",
+        "to": "20260708_084306Z_W1.json",
+        "createdAt": "2026-07-08T08:43:32.936Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 3,
+        "removed": 3,
+        "replaced": 1
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "9c096ae8b46ac693",
+        "1171261c6e1d1a8c",
+        "a8dd081e34fa5d5d"
+      ],
+      "removed": [
+        "af6051bdd4ebd433",
+        "c7288643050a69db",
+        "b1c763e3aacfd9bf"
+      ],
+      "replaced": [
+        {
+          "positionId": "e878a5d49151936e",
+          "from": {
+            "slotId": "af6051bdd4ebd433",
+            "artistId": "0ef56b5d73effd6e",
+            "artist": "Simon T"
+          },
+          "to": {
+            "slotId": "9c096ae8b46ac693",
+            "artistId": "2aee23c305d3f9f3",
+            "artist": "SimonT"
+          }
+        }
+      ]
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260706_110141Z_W2.json",
-        "to": "20260707_095954Z_W2.json",
-        "createdAt": "2026-07-07T10:00:23.471Z",
+        "from": "20260707_095954Z_W2.json",
+        "to": "20260708_084306Z_W2.json",
+        "createdAt": "2026-07-08T08:43:32.936Z",
         "version": 1
       },
       "summary": {

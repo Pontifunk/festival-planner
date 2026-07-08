@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-07T09:59:54.888Z",
+    "createdAt": "2026-07-08T08:43:06.389Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -856,12 +856,11 @@
       "stage": "THE RAVE CAVE",
       "start": "2026-07-17 13:00:00+02:00",
       "end": "2026-07-17 14:30:01+02:00",
-      "artist": "Simon T",
-      "artistNormalized": "simon t",
-      "artistId": "0ef56b5d73effd6e",
+      "artist": "SimonT",
+      "artistNormalized": "simont",
+      "artistId": "2aee23c305d3f9f3",
       "positionId": "e878a5d49151936e",
-      "slotId": "af6051bdd4ebd433",
-      "tomorrowlandArtistId": "3037800912"
+      "slotId": "9c096ae8b46ac693"
     },
     {
       "weekend": "W1",
@@ -3345,19 +3344,6 @@
     },
     {
       "weekend": "W1",
-      "date": "2026-07-18",
-      "stage": "CAGE",
-      "start": "2026-07-18 12:00:00+02:00",
-      "end": "2026-07-18 14:00:01+02:00",
-      "artist": "Luna Fields",
-      "artistNormalized": "luna fields",
-      "artistId": "4429fc6470722d2d",
-      "positionId": "5fc8cb40808e6e6c",
-      "slotId": "812603189f787a65",
-      "tomorrowlandArtistId": "1790357496"
-    },
-    {
-      "weekend": "W1",
       "date": "2026-07-17",
       "stage": "THE RAVE CAVE",
       "start": "2026-07-17 23:00:00+02:00",
@@ -3368,6 +3354,19 @@
       "positionId": "79931dcc53484f20",
       "slotId": "79e073e66cef7006",
       "tomorrowlandArtistId": "1594436807"
+    },
+    {
+      "weekend": "W1",
+      "date": "2026-07-18",
+      "stage": "CAGE",
+      "start": "2026-07-18 12:00:00+02:00",
+      "end": "2026-07-18 14:00:01+02:00",
+      "artist": "Luna Fields",
+      "artistNormalized": "luna fields",
+      "artistId": "4429fc6470722d2d",
+      "positionId": "5fc8cb40808e6e6c",
+      "slotId": "812603189f787a65",
+      "tomorrowlandArtistId": "1790357496"
     },
     {
       "weekend": "W1",
@@ -3437,6 +3436,18 @@
     {
       "weekend": "W1",
       "date": "2026-07-18",
+      "stage": "CORE",
+      "start": "2026-07-18 21:30:00+02:00",
+      "end": "2026-07-18 23:00:01+02:00",
+      "artist": "Carlita b2b Malive",
+      "artistNormalized": "carlita b2b malive",
+      "artistId": "79f889e51e10e5f0",
+      "positionId": "947c3a04576a9242",
+      "slotId": "19162d552b9bce4d"
+    },
+    {
+      "weekend": "W1",
+      "date": "2026-07-18",
       "stage": "ELIXIR",
       "start": "2026-07-18 13:00:00+02:00",
       "end": "2026-07-18 14:00:01+02:00",
@@ -3446,18 +3457,6 @@
       "positionId": "8cd3cb25b6b2357f",
       "slotId": "9b31cc1231e52935",
       "tomorrowlandArtistId": "2650265208"
-    },
-    {
-      "weekend": "W1",
-      "date": "2026-07-18",
-      "stage": "CORE",
-      "start": "2026-07-18 21:30:00+02:00",
-      "end": "2026-07-18 23:00:01+02:00",
-      "artist": "Carlita b2b Malive",
-      "artistNormalized": "carlita b2b malive",
-      "artistId": "79f889e51e10e5f0",
-      "positionId": "947c3a04576a9242",
-      "slotId": "19162d552b9bce4d"
     },
     {
       "weekend": "W1",
@@ -4054,18 +4053,6 @@
     },
     {
       "weekend": "W1",
-      "date": "2026-07-18",
-      "stage": "THE GREAT LIBRARY",
-      "start": "2026-07-18 00:00:00+02:00",
-      "end": "2026-07-18 00:55:01+02:00",
-      "artist": "Hardwell b2b Sub Zero Project",
-      "artistNormalized": "hardwell b2b sub zero project",
-      "artistId": "9133f7b469dbb267",
-      "positionId": "f69802245f3d8060",
-      "slotId": "e52f7e45e27611ec"
-    },
-    {
-      "weekend": "W1",
       "date": "2026-07-17",
       "stage": "HOUSE OF FORTUNE BY JBL",
       "start": "2026-07-17 19:00:00+02:00",
@@ -4076,6 +4063,18 @@
       "positionId": "86e1e63e776677ea",
       "slotId": "e93a6871b445d928",
       "tomorrowlandArtistId": "1532622458"
+    },
+    {
+      "weekend": "W1",
+      "date": "2026-07-18",
+      "stage": "THE GREAT LIBRARY",
+      "start": "2026-07-18 00:00:00+02:00",
+      "end": "2026-07-18 00:55:01+02:00",
+      "artist": "Hardwell b2b Sub Zero Project",
+      "artistNormalized": "hardwell b2b sub zero project",
+      "artistId": "9133f7b469dbb267",
+      "positionId": "f69802245f3d8060",
+      "slotId": "e52f7e45e27611ec"
     },
     {
       "weekend": "W1",
@@ -4558,26 +4557,26 @@
       "weekend": "W1",
       "date": "2026-07-17",
       "stage": "PLANAXIS",
-      "start": "2026-07-17 21:30:00+02:00",
-      "end": "2026-07-17 22:30:01+02:00",
+      "start": "2026-07-17 20:00:00+02:00",
+      "end": "2026-07-17 21:00:01+02:00",
       "artist": "Omiki",
       "artistNormalized": "omiki",
       "artistId": "91d55c890d19b2dd",
-      "positionId": "af3ea0ec38e41e74",
-      "slotId": "c7288643050a69db",
+      "positionId": "ce20d4365361cee2",
+      "slotId": "1171261c6e1d1a8c",
       "tomorrowlandArtistId": "1894201211"
     },
     {
       "weekend": "W1",
       "date": "2026-07-17",
       "stage": "PLANAXIS",
-      "start": "2026-07-17 20:00:00+02:00",
-      "end": "2026-07-17 21:30:01+02:00",
+      "start": "2026-07-17 21:00:00+02:00",
+      "end": "2026-07-17 22:30:01+02:00",
       "artist": "Neelix",
       "artistNormalized": "neelix",
       "artistId": "df2d90b283188516",
-      "positionId": "eb03fcc5c8f7b4d2",
-      "slotId": "b1c763e3aacfd9bf",
+      "positionId": "aa568b5961594ecb",
+      "slotId": "a8dd081e34fa5d5d",
       "tomorrowlandArtistId": "1594422778"
     },
     {
@@ -6553,18 +6552,6 @@
     {
       "weekend": "W2",
       "date": "2026-07-25",
-      "stage": "HOUSE OF FORTUNE BY JBL",
-      "start": "2026-07-25 17:00:00+02:00",
-      "end": "2026-07-25 18:00:01+02:00",
-      "artist": "Carly Wilford",
-      "artistNormalized": "carly wilford",
-      "artistId": "406f9fe96d59f517",
-      "positionId": "5ed5b5efb45d84a5",
-      "slotId": "4e264fce646a08bd"
-    },
-    {
-      "weekend": "W2",
-      "date": "2026-07-25",
       "stage": "CRYSTAL GARDEN",
       "start": "2026-07-25 15:00:00+02:00",
       "end": "2026-07-25 16:30:01+02:00",
@@ -6573,6 +6560,18 @@
       "artistId": "690cedf2724cffcf",
       "positionId": "b555067c5693a22a",
       "slotId": "1f49e10b3990ff87"
+    },
+    {
+      "weekend": "W2",
+      "date": "2026-07-25",
+      "stage": "HOUSE OF FORTUNE BY JBL",
+      "start": "2026-07-25 17:00:00+02:00",
+      "end": "2026-07-25 18:00:01+02:00",
+      "artist": "Carly Wilford",
+      "artistNormalized": "carly wilford",
+      "artistId": "406f9fe96d59f517",
+      "positionId": "5ed5b5efb45d84a5",
+      "slotId": "4e264fce646a08bd"
     },
     {
       "weekend": "W2",
@@ -9425,18 +9424,6 @@
     {
       "weekend": "W2",
       "date": "2026-07-26",
-      "stage": "CAGE",
-      "start": "2026-07-26 21:00:00+02:00",
-      "end": "2026-07-26 23:00:01+02:00",
-      "artist": "Freddy K",
-      "artistNormalized": "freddy k",
-      "artistId": "a6e21075f664084f",
-      "positionId": "ddd9db22871d5271",
-      "slotId": "9be2d65c0c582f34"
-    },
-    {
-      "weekend": "W2",
-      "date": "2026-07-26",
       "stage": "ELIXIR",
       "start": "2026-07-26 18:30:00+02:00",
       "end": "2026-07-26 19:30:01+02:00",
@@ -9445,6 +9432,18 @@
       "artistId": "ff7fcb88d66815de",
       "positionId": "39df2848881951fb",
       "slotId": "92b6d88b4ec27c2b"
+    },
+    {
+      "weekend": "W2",
+      "date": "2026-07-26",
+      "stage": "CAGE",
+      "start": "2026-07-26 21:00:00+02:00",
+      "end": "2026-07-26 23:00:01+02:00",
+      "artist": "Freddy K",
+      "artistNormalized": "freddy k",
+      "artistId": "a6e21075f664084f",
+      "positionId": "ddd9db22871d5271",
+      "slotId": "9be2d65c0c582f34"
     },
     {
       "weekend": "W2",
@@ -10008,6 +10007,18 @@
     },
     {
       "weekend": "W2",
+      "date": "2026-07-25",
+      "stage": "CORE",
+      "start": "2026-07-25 15:00:00+02:00",
+      "end": "2026-07-25 16:30:01+02:00",
+      "artist": "SHEE",
+      "artistNormalized": "shee",
+      "artistId": "a5dabe90f063b868",
+      "positionId": "8337fc31b1f88d07",
+      "slotId": "512df94e9bfa1528"
+    },
+    {
+      "weekend": "W2",
       "date": "2026-07-26",
       "stage": "MAINSTAGE",
       "start": "2026-07-26 20:40:00+02:00",
@@ -10018,18 +10029,6 @@
       "positionId": "01265da730e508ba",
       "slotId": "c7d1bc4b53129246",
       "tomorrowlandArtistId": "1262707391"
-    },
-    {
-      "weekend": "W2",
-      "date": "2026-07-25",
-      "stage": "CORE",
-      "start": "2026-07-25 15:00:00+02:00",
-      "end": "2026-07-25 16:30:01+02:00",
-      "artist": "SHEE",
-      "artistNormalized": "shee",
-      "artistId": "a5dabe90f063b868",
-      "positionId": "8337fc31b1f88d07",
-      "slotId": "512df94e9bfa1528"
     },
     {
       "weekend": "W2",
@@ -10181,18 +10180,6 @@
     },
     {
       "weekend": "W2",
-      "date": "2026-07-26",
-      "stage": "THE GREAT LIBRARY",
-      "start": "2026-07-26 23:00:00+02:00",
-      "end": "2026-07-26 23:55:01+02:00",
-      "artist": "Brennan Heart",
-      "artistNormalized": "brennan heart",
-      "artistId": "e972e41009560c95",
-      "positionId": "fc653153b8688c98",
-      "slotId": "668f575f9ce84ace"
-    },
-    {
-      "weekend": "W2",
       "date": "2026-07-25",
       "stage": "CRYSTAL GARDEN",
       "start": "2026-07-25 16:30:00+02:00",
@@ -10202,6 +10189,18 @@
       "artistId": "870b1113c8ebd6f0",
       "positionId": "0f243f1952aad06f",
       "slotId": "e9308b33c6a360ab"
+    },
+    {
+      "weekend": "W2",
+      "date": "2026-07-26",
+      "stage": "THE GREAT LIBRARY",
+      "start": "2026-07-26 23:00:00+02:00",
+      "end": "2026-07-26 23:55:01+02:00",
+      "artist": "Brennan Heart",
+      "artistNormalized": "brennan heart",
+      "artistId": "e972e41009560c95",
+      "positionId": "fc653153b8688c98",
+      "slotId": "668f575f9ce84ace"
     },
     {
       "weekend": "W2",
@@ -10217,6 +10216,18 @@
     },
     {
       "weekend": "W2",
+      "date": "2026-07-25",
+      "stage": "CRYSTAL GARDEN",
+      "start": "2026-07-25 21:00:00+02:00",
+      "end": "2026-07-25 22:30:01+02:00",
+      "artist": "HI-LO b2b Layton Giordani",
+      "artistNormalized": "hi-lo b2b layton giordani",
+      "artistId": "e8165d04bb007985",
+      "positionId": "b11fe5281bf266b1",
+      "slotId": "24a598a5e849d413"
+    },
+    {
+      "weekend": "W2",
       "date": "2026-07-26",
       "stage": "THE GREAT LIBRARY",
       "start": "2026-07-26 21:00:00+02:00",
@@ -10227,18 +10238,6 @@
       "positionId": "4bf1e45da10fc9d8",
       "slotId": "5b8176b58bbb6483",
       "tomorrowlandArtistId": "1262713442"
-    },
-    {
-      "weekend": "W2",
-      "date": "2026-07-25",
-      "stage": "CRYSTAL GARDEN",
-      "start": "2026-07-25 21:00:00+02:00",
-      "end": "2026-07-25 22:30:01+02:00",
-      "artist": "HI-LO b2b Layton Giordani",
-      "artistNormalized": "hi-lo b2b layton giordani",
-      "artistId": "e8165d04bb007985",
-      "positionId": "b11fe5281bf266b1",
-      "slotId": "24a598a5e849d413"
     },
     {
       "weekend": "W2",
@@ -10306,18 +10305,6 @@
     {
       "weekend": "W2",
       "date": "2026-07-26",
-      "stage": "MOOSE BAR",
-      "start": "2026-07-26 20:00:00+02:00",
-      "end": "2026-07-27 00:00:01+02:00",
-      "artist": "Jan V",
-      "artistNormalized": "jan v",
-      "artistId": "30953ab07c4ecc86",
-      "positionId": "d8d365205d61a330",
-      "slotId": "823ec84ccbc9c3de"
-    },
-    {
-      "weekend": "W2",
-      "date": "2026-07-26",
       "stage": "THE GREAT LIBRARY",
       "start": "2026-07-26 17:00:00+02:00",
       "end": "2026-07-26 18:00:01+02:00",
@@ -10326,6 +10313,18 @@
       "artistId": "5cad1defe8e43192",
       "positionId": "47ce1022ec7e3bfa",
       "slotId": "59dc847029f382a0"
+    },
+    {
+      "weekend": "W2",
+      "date": "2026-07-26",
+      "stage": "MOOSE BAR",
+      "start": "2026-07-26 20:00:00+02:00",
+      "end": "2026-07-27 00:00:01+02:00",
+      "artist": "Jan V",
+      "artistNormalized": "jan v",
+      "artistId": "30953ab07c4ecc86",
+      "positionId": "d8d365205d61a330",
+      "slotId": "823ec84ccbc9c3de"
     },
     {
       "weekend": "W2",
