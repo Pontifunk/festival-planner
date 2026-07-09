@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-08T08:43:06.389Z",
+    "createdAt": "2026-07-09T10:05:08.271Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -860,7 +860,8 @@
       "artistNormalized": "simont",
       "artistId": "2aee23c305d3f9f3",
       "positionId": "e878a5d49151936e",
-      "slotId": "9c096ae8b46ac693"
+      "slotId": "9c096ae8b46ac693",
+      "tomorrowlandArtistId": "3037800912"
     },
     {
       "weekend": "W1",
@@ -1283,7 +1284,8 @@
       "artistNormalized": "the chainsmokers",
       "artistId": "f2e86a555efaae47",
       "positionId": "d0b1c9fa235b4e96",
-      "slotId": "c13e87252dc625ff"
+      "slotId": "c13e87252dc625ff",
+      "tomorrowlandArtistId": "2655168539"
     },
     {
       "weekend": "W1",
