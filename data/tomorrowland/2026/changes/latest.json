@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-10T09:52:45.459Z",
+    "createdAt": "2026-07-11T08:14:46.817Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,26 +8,44 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260709_100508Z_W1.json",
-        "to": "20260710_095217Z_W1.json",
-        "createdAt": "2026-07-10T09:52:45.459Z",
+        "from": "20260710_095217Z_W1.json",
+        "to": "20260711_081418Z_W1.json",
+        "createdAt": "2026-07-11T08:14:46.817Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 1,
+        "removed": 1,
+        "replaced": 1
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "f7ea6d44827d4308"
+      ],
+      "removed": [
+        "fd4a8477eb900030"
+      ],
+      "replaced": [
+        {
+          "positionId": "1e3e26a3131ec698",
+          "from": {
+            "slotId": "fd4a8477eb900030",
+            "artistId": "56da4bbe08737058",
+            "artist": "More to be announced"
+          },
+          "to": {
+            "slotId": "f7ea6d44827d4308",
+            "artistId": "fcddb558919951de",
+            "artist": "Illenium"
+          }
+        }
+      ]
     },
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260709_100508Z_W2.json",
-        "to": "20260710_095217Z_W2.json",
-        "createdAt": "2026-07-10T09:52:45.459Z",
+        "from": "20260710_095217Z_W2.json",
+        "to": "20260711_081418Z_W2.json",
+        "createdAt": "2026-07-11T08:14:46.817Z",
         "version": 1
       },
       "summary": {

@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-10T09:52:17.886Z",
+    "createdAt": "2026-07-11T08:14:18.307Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -14,12 +14,11 @@
       "stage": "THE GREAT LIBRARY",
       "start": "2026-07-19 00:00:00+02:00",
       "end": "2026-07-19 00:55:01+02:00",
-      "artist": "More to be announced",
-      "artistNormalized": "more to be announced",
-      "artistId": "56da4bbe08737058",
+      "artist": "Illenium",
+      "artistNormalized": "illenium",
+      "artistId": "fcddb558919951de",
       "positionId": "1e3e26a3131ec698",
-      "slotId": "fd4a8477eb900030",
-      "tomorrowlandArtistId": "1395014940"
+      "slotId": "f7ea6d44827d4308"
     },
     {
       "weekend": "W1",
@@ -5485,6 +5484,18 @@
       "weekend": "W2",
       "date": "2026-07-25",
       "stage": "THE GREAT LIBRARY",
+      "start": "2026-07-25 00:00:00+02:00",
+      "end": "2026-07-25 00:55:01+02:00",
+      "artist": "Illenium",
+      "artistNormalized": "illenium",
+      "artistId": "fcddb558919951de",
+      "positionId": "c3e9287ce44b8495",
+      "slotId": "b5e4711d6fa96963"
+    },
+    {
+      "weekend": "W2",
+      "date": "2026-07-25",
+      "stage": "THE GREAT LIBRARY",
       "start": "2026-07-25 12:00:00+02:00",
       "end": "2026-07-25 13:00:01+02:00",
       "artist": "Luna & Lenthe",
@@ -6647,18 +6658,6 @@
       "artistId": "aba468ccea68758c",
       "positionId": "615ecd828b9efeca",
       "slotId": "34736e466127729b"
-    },
-    {
-      "weekend": "W2",
-      "date": "2026-07-25",
-      "stage": "THE GREAT LIBRARY",
-      "start": "2026-07-25 00:00:00+02:00",
-      "end": "2026-07-25 00:55:01+02:00",
-      "artist": "Illenium",
-      "artistNormalized": "illenium",
-      "artistId": "fcddb558919951de",
-      "positionId": "c3e9287ce44b8495",
-      "slotId": "b5e4711d6fa96963"
     },
     {
       "weekend": "W2",

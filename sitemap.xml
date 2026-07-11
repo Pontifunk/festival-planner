@@ -22,10 +22,13 @@
     <loc>https://festival-planner.org/impressum/</loc>
   </url>
   <url>
-    <loc>https://festival-planner.org/tomorrowland/2026/w1/artists/more-to-be-announced/</loc>
+    <loc>https://festival-planner.org/tomorrowland/2026/w1/artists/illenium/</loc>
   </url>
   <url>
     <loc>https://festival-planner.org/tomorrowland/2026/w1/artists/jop-govers/</loc>
+  </url>
+  <url>
+    <loc>https://festival-planner.org/tomorrowland/2026/w1/artists/more-to-be-announced/</loc>
   </url>
   <url>
     <loc>https://festival-planner.org/tomorrowland/2026/w1/artists/manda-moor-b2b-sirus-hood/</loc>
@@ -1303,6 +1306,9 @@
     <loc>https://festival-planner.org/tomorrowland/2026/unknown/artists/</loc>
   </url>
   <url>
+    <loc>https://festival-planner.org/tomorrowland/2026/w2/artists/illenium/</loc>
+  </url>
+  <url>
     <loc>https://festival-planner.org/tomorrowland/2026/w2/artists/luna-and-lenthe/</loc>
   </url>
   <url>
@@ -1568,9 +1574,6 @@
   </url>
   <url>
     <loc>https://festival-planner.org/tomorrowland/2026/w2/artists/mosimann-b2b-elfigo/</loc>
-  </url>
-  <url>
-    <loc>https://festival-planner.org/tomorrowland/2026/w2/artists/illenium/</loc>
   </url>
   <url>
     <loc>https://festival-planner.org/tomorrowland/2026/w2/artists/lou8/</loc>
