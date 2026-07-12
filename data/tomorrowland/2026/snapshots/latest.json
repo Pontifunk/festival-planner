@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-11T08:14:18.307Z",
+    "createdAt": "2026-07-12T08:30:36.119Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -18,7 +18,8 @@
       "artistNormalized": "illenium",
       "artistId": "fcddb558919951de",
       "positionId": "1e3e26a3131ec698",
-      "slotId": "f7ea6d44827d4308"
+      "slotId": "f7ea6d44827d4308",
+      "tomorrowlandArtistId": "2655381348"
     },
     {
       "weekend": "W1",
@@ -5490,7 +5491,8 @@
       "artistNormalized": "illenium",
       "artistId": "fcddb558919951de",
       "positionId": "c3e9287ce44b8495",
-      "slotId": "b5e4711d6fa96963"
+      "slotId": "b5e4711d6fa96963",
+      "tomorrowlandArtistId": "2655381348"
     },
     {
       "weekend": "W2",
