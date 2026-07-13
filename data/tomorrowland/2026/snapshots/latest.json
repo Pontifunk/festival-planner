@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-12T08:30:36.119Z",
+    "createdAt": "2026-07-13T09:47:11.410Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -4985,12 +4985,11 @@
       "stage": "FREEDOM BY BUD",
       "start": "2026-07-17 19:30:00+02:00",
       "end": "2026-07-17 21:00:01+02:00",
-      "artist": "Miss Monique",
-      "artistNormalized": "miss monique",
-      "artistId": "b5181e219fd8b778",
+      "artist": "Miss Monique Presents BioRhythm",
+      "artistNormalized": "miss monique presents biorhythm",
+      "artistId": "ec92c0ff0fc79813",
       "positionId": "c41cbec1559a097a",
-      "slotId": "a5908b437303a495",
-      "tomorrowlandArtistId": "1262711176"
+      "slotId": "97b96bc9fb7e7388"
     },
     {
       "weekend": "W1",
