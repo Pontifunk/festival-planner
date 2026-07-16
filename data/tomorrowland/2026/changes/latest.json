@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-15T08:35:16.414Z",
+    "createdAt": "2026-07-16T08:34:18.690Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,95 +8,34 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260714_082707Z_W1.json",
-        "to": "20260715_083451Z_W1.json",
-        "createdAt": "2026-07-15T08:35:16.414Z",
+        "from": "20260715_083451Z_W1.json",
+        "to": "20260716_083351Z_W1.json",
+        "createdAt": "2026-07-16T08:34:18.690Z",
         "version": 1
       },
       "summary": {
-        "added": 12,
-        "removed": 12,
-        "replaced": 4
+        "added": 1,
+        "removed": 1,
+        "replaced": 1
       },
       "added": [
-        "228288e9f1f682ff",
-        "5b3cf529cef2f7e4",
-        "75ede12bcfbd3d20",
-        "46f03bcf941fb3b8",
-        "7ac509f5efca01ae",
-        "f8961ac4fef4d745",
-        "6ea4fe94c98e686c",
-        "c7f76faa27ef30f0",
-        "95dae6f4e1f58105",
-        "105ce6334fe73b3b",
-        "dbda3ed52f768549",
-        "a8c2d5b528d6b6c3"
+        "70152ed698d93fa8"
       ],
       "removed": [
-        "776754b460e1b2ca",
-        "c5a89abf2a3dd238",
-        "46f10c44e218abac",
-        "901dea87dec8c486",
-        "75891653bccdf411",
-        "43036aa4d33417c3",
-        "b022bbaaa8346ff3",
-        "2ca0428e114331bb",
-        "04c6c0fbda14daa0",
-        "d31a0afcc5a9d204",
-        "ca8e5064ab311aaa",
-        "507fb44bdb32e415"
+        "402548a4d5101c35"
       ],
       "replaced": [
         {
-          "positionId": "be528e29f8fec4ce",
+          "positionId": "200c2377d27dbfc2",
           "from": {
-            "slotId": "776754b460e1b2ca",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          },
-          "to": {
-            "slotId": "228288e9f1f682ff",
+            "slotId": "402548a4d5101c35",
             "artistId": "84bebaa7c99f80e2",
             "artist": "Da Tweekaz"
-          }
-        },
-        {
-          "positionId": "96fced53d6cc2235",
-          "from": {
-            "slotId": "c5a89abf2a3dd238",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
           },
           "to": {
-            "slotId": "5b3cf529cef2f7e4",
-            "artistId": "5f9036b86efdf9d3",
-            "artist": "Linska"
-          }
-        },
-        {
-          "positionId": "354f7e3b83f00043",
-          "from": {
-            "slotId": "46f10c44e218abac",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          },
-          "to": {
-            "slotId": "75ede12bcfbd3d20",
-            "artistId": "6ed25e6761f95822",
-            "artist": "Manuals b2b Averix"
-          }
-        },
-        {
-          "positionId": "28f25b9cad965ea6",
-          "from": {
-            "slotId": "2ca0428e114331bb",
-            "artistId": "5f9036b86efdf9d3",
-            "artist": "Linska"
-          },
-          "to": {
-            "slotId": "46f03bcf941fb3b8",
-            "artistId": "950641606a845eef",
-            "artist": "MR. Belt & Wezol"
+            "slotId": "70152ed698d93fa8",
+            "artistId": "dd136d6ebd6a716c",
+            "artist": "SIX40TWO"
           }
         }
       ]
@@ -104,49 +43,79 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260714_082707Z_W2.json",
-        "to": "20260715_083451Z_W2.json",
-        "createdAt": "2026-07-15T08:35:16.414Z",
+        "from": "20260715_083451Z_W2.json",
+        "to": "20260716_083351Z_W2.json",
+        "createdAt": "2026-07-16T08:34:18.690Z",
         "version": 1
       },
       "summary": {
-        "added": 7,
-        "removed": 10,
-        "replaced": 1
+        "added": 4,
+        "removed": 4,
+        "replaced": 4
       },
       "added": [
-        "6bb22ae29ba836fc",
-        "cc3b92682646b948",
-        "233d32067649a500",
-        "3c95c7cb10e852ed",
-        "917950c9db20b9d0",
-        "ed96928592750347",
-        "830afc2bbf15ac69"
+        "dc6bf0fa72449413",
+        "210af3eb96d1023b",
+        "6453ae241b306f24",
+        "fc16fe2aa83536df"
       ],
       "removed": [
-        "16c4209bbbc81afe",
-        "471e98bd991b3b51",
-        "f8e0fbc789d9b9f6",
-        "3c577ee001adfc0d",
-        "ad2ee63809540874",
-        "4938bfb395f8c12f",
-        "ae6d2aa04980dec1",
-        "4141f4c61327bc4c",
-        "143a031c82539d0b",
-        "7f6e4b11d5afe93b"
+        "a741b172dd3ac3e4",
+        "e11b108d6622e741",
+        "6e5247ff6df9ddcc",
+        "a97f67f4b32b5d7f"
       ],
       "replaced": [
         {
-          "positionId": "95f3e88d8ed18e77",
+          "positionId": "78150fd2fff10b9e",
           "from": {
-            "slotId": "f8e0fbc789d9b9f6",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
+            "slotId": "e11b108d6622e741",
+            "artistId": "e1ba5bd481b3b597",
+            "artist": "DJ Boring"
           },
           "to": {
-            "slotId": "6bb22ae29ba836fc",
-            "artistId": "4c051800fe621037",
-            "artist": "Dada Life"
+            "slotId": "dc6bf0fa72449413",
+            "artistId": "56da4bbe08737058",
+            "artist": "More to be announced"
+          }
+        },
+        {
+          "positionId": "085d5ec3de12acf6",
+          "from": {
+            "slotId": "a741b172dd3ac3e4",
+            "artistId": "57528cd9310abbf1",
+            "artist": "Skream b2b dj Seinfeld"
+          },
+          "to": {
+            "slotId": "210af3eb96d1023b",
+            "artistId": "91234b5847225ed1",
+            "artist": "DJ Boring b2b Dj Seinfeld"
+          }
+        },
+        {
+          "positionId": "6851ae03ae091e07",
+          "from": {
+            "slotId": "6e5247ff6df9ddcc",
+            "artistId": "7dba8b799c72cffd",
+            "artist": "EME"
+          },
+          "to": {
+            "slotId": "6453ae241b306f24",
+            "artistId": "20dc1cd31d947356",
+            "artist": "Mashpop"
+          }
+        },
+        {
+          "positionId": "eb293fd6cb53963c",
+          "from": {
+            "slotId": "a97f67f4b32b5d7f",
+            "artistId": "6220ad08983cae00",
+            "artist": "Deorro"
+          },
+          "to": {
+            "slotId": "fc16fe2aa83536df",
+            "artistId": "eeaef80c769bc1a6",
+            "artist": "Vicetone"
           }
         }
       ]
