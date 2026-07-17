@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-16T08:34:18.690Z",
+    "createdAt": "2026-07-17T08:27:45.436Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260715_083451Z_W1.json",
-        "to": "20260716_083351Z_W1.json",
-        "createdAt": "2026-07-16T08:34:18.690Z",
+        "from": "20260716_083351Z_W1.json",
+        "to": "20260717_082721Z_W1.json",
+        "createdAt": "2026-07-17T08:27:45.436Z",
         "version": 1
       },
       "summary": {
@@ -19,23 +19,23 @@
         "replaced": 1
       },
       "added": [
-        "70152ed698d93fa8"
+        "3fc09cb4db067efe"
       ],
       "removed": [
-        "402548a4d5101c35"
+        "ffdc2b505b511466"
       ],
       "replaced": [
         {
-          "positionId": "200c2377d27dbfc2",
+          "positionId": "2d41cb3ad0b9a00c",
           "from": {
-            "slotId": "402548a4d5101c35",
-            "artistId": "84bebaa7c99f80e2",
-            "artist": "Da Tweekaz"
+            "slotId": "ffdc2b505b511466",
+            "artistId": "7e952efc32a02b66",
+            "artist": "Dimitri Vegas & Like Mike"
           },
           "to": {
-            "slotId": "70152ed698d93fa8",
-            "artistId": "dd136d6ebd6a716c",
-            "artist": "SIX40TWO"
+            "slotId": "3fc09cb4db067efe",
+            "artistId": "573c0e97911e19d5",
+            "artist": "Dimitri Vegas"
           }
         }
       ]
@@ -43,79 +43,49 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260715_083451Z_W2.json",
-        "to": "20260716_083351Z_W2.json",
-        "createdAt": "2026-07-16T08:34:18.690Z",
+        "from": "20260716_083351Z_W2.json",
+        "to": "20260717_082721Z_W2.json",
+        "createdAt": "2026-07-17T08:27:45.436Z",
         "version": 1
       },
       "summary": {
-        "added": 4,
-        "removed": 4,
-        "replaced": 4
+        "added": 2,
+        "removed": 2,
+        "replaced": 2
       },
       "added": [
-        "dc6bf0fa72449413",
-        "210af3eb96d1023b",
-        "6453ae241b306f24",
-        "fc16fe2aa83536df"
+        "da4e0c9fca9e9a36",
+        "f9441c357beeeff0"
       ],
       "removed": [
-        "a741b172dd3ac3e4",
-        "e11b108d6622e741",
-        "6e5247ff6df9ddcc",
-        "a97f67f4b32b5d7f"
+        "8c62c692ed7825a6",
+        "9e4e532569f42720"
       ],
       "replaced": [
         {
-          "positionId": "78150fd2fff10b9e",
+          "positionId": "155e34d8e22deeb7",
           "from": {
-            "slotId": "e11b108d6622e741",
-            "artistId": "e1ba5bd481b3b597",
-            "artist": "DJ Boring"
+            "slotId": "8c62c692ed7825a6",
+            "artistId": "7e952efc32a02b66",
+            "artist": "Dimitri Vegas & Like Mike"
           },
           "to": {
-            "slotId": "dc6bf0fa72449413",
+            "slotId": "da4e0c9fca9e9a36",
+            "artistId": "573c0e97911e19d5",
+            "artist": "Dimitri Vegas"
+          }
+        },
+        {
+          "positionId": "ac836e1ae5c801df",
+          "from": {
+            "slotId": "9e4e532569f42720",
+            "artistId": "4c2ae7d154026ccc",
+            "artist": "Like Mike"
+          },
+          "to": {
+            "slotId": "f9441c357beeeff0",
             "artistId": "56da4bbe08737058",
             "artist": "More to be announced"
-          }
-        },
-        {
-          "positionId": "085d5ec3de12acf6",
-          "from": {
-            "slotId": "a741b172dd3ac3e4",
-            "artistId": "57528cd9310abbf1",
-            "artist": "Skream b2b dj Seinfeld"
-          },
-          "to": {
-            "slotId": "210af3eb96d1023b",
-            "artistId": "91234b5847225ed1",
-            "artist": "DJ Boring b2b Dj Seinfeld"
-          }
-        },
-        {
-          "positionId": "6851ae03ae091e07",
-          "from": {
-            "slotId": "6e5247ff6df9ddcc",
-            "artistId": "7dba8b799c72cffd",
-            "artist": "EME"
-          },
-          "to": {
-            "slotId": "6453ae241b306f24",
-            "artistId": "20dc1cd31d947356",
-            "artist": "Mashpop"
-          }
-        },
-        {
-          "positionId": "eb293fd6cb53963c",
-          "from": {
-            "slotId": "a97f67f4b32b5d7f",
-            "artistId": "6220ad08983cae00",
-            "artist": "Deorro"
-          },
-          "to": {
-            "slotId": "fc16fe2aa83536df",
-            "artistId": "eeaef80c769bc1a6",
-            "artist": "Vicetone"
           }
         }
       ]
