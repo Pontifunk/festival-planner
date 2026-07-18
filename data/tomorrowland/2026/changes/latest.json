@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-17T08:27:45.436Z",
+    "createdAt": "2026-07-18T08:08:04.570Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,34 +8,59 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260716_083351Z_W1.json",
-        "to": "20260717_082721Z_W1.json",
-        "createdAt": "2026-07-17T08:27:45.436Z",
+        "from": "20260717_082721Z_W1.json",
+        "to": "20260718_080735Z_W1.json",
+        "createdAt": "2026-07-18T08:08:04.570Z",
         "version": 1
       },
       "summary": {
-        "added": 1,
-        "removed": 1,
-        "replaced": 1
+        "added": 7,
+        "removed": 7,
+        "replaced": 2
       },
       "added": [
-        "3fc09cb4db067efe"
+        "a7441ead6b1a1fcf",
+        "1d5bb406aae3353b",
+        "d4a6a747841ebac6",
+        "f9d60edc79d17e45",
+        "e2053a65fc7a5100",
+        "71222eefd6346f66",
+        "7a64757f65858dcb"
       ],
       "removed": [
-        "ffdc2b505b511466"
+        "979df999b58ba4f2",
+        "ee9ac42aac5a1d3d",
+        "972746c8b7a6ba68",
+        "d21287bec2dc3e77",
+        "70433dfa29a25e90",
+        "901b4c8686a16324",
+        "65c3e806c1996202"
       ],
       "replaced": [
         {
-          "positionId": "2d41cb3ad0b9a00c",
+          "positionId": "80023736ab562fc2",
           "from": {
-            "slotId": "ffdc2b505b511466",
-            "artistId": "7e952efc32a02b66",
-            "artist": "Dimitri Vegas & Like Mike"
+            "slotId": "ee9ac42aac5a1d3d",
+            "artistId": "f688d2ae78723a2a",
+            "artist": "Jack Shore"
           },
           "to": {
-            "slotId": "3fc09cb4db067efe",
-            "artistId": "573c0e97911e19d5",
-            "artist": "Dimitri Vegas"
+            "slotId": "1d5bb406aae3353b",
+            "artistId": "a91f0bd49c477693",
+            "artist": "Jack Shore (live)"
+          }
+        },
+        {
+          "positionId": "cbd912c43a259c36",
+          "from": {
+            "slotId": "70433dfa29a25e90",
+            "artistId": "849e6f3f07b8cd3f",
+            "artist": "GPF b2b DR DONK"
+          },
+          "to": {
+            "slotId": "e2053a65fc7a5100",
+            "artistId": "b6477ed298c96bc8",
+            "artist": "DR DONK"
           }
         }
       ]
@@ -43,52 +68,19 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260716_083351Z_W2.json",
-        "to": "20260717_082721Z_W2.json",
-        "createdAt": "2026-07-17T08:27:45.436Z",
+        "from": "20260717_082721Z_W2.json",
+        "to": "20260718_080735Z_W2.json",
+        "createdAt": "2026-07-18T08:08:04.570Z",
         "version": 1
       },
       "summary": {
-        "added": 2,
-        "removed": 2,
-        "replaced": 2
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "da4e0c9fca9e9a36",
-        "f9441c357beeeff0"
-      ],
-      "removed": [
-        "8c62c692ed7825a6",
-        "9e4e532569f42720"
-      ],
-      "replaced": [
-        {
-          "positionId": "155e34d8e22deeb7",
-          "from": {
-            "slotId": "8c62c692ed7825a6",
-            "artistId": "7e952efc32a02b66",
-            "artist": "Dimitri Vegas & Like Mike"
-          },
-          "to": {
-            "slotId": "da4e0c9fca9e9a36",
-            "artistId": "573c0e97911e19d5",
-            "artist": "Dimitri Vegas"
-          }
-        },
-        {
-          "positionId": "ac836e1ae5c801df",
-          "from": {
-            "slotId": "9e4e532569f42720",
-            "artistId": "4c2ae7d154026ccc",
-            "artist": "Like Mike"
-          },
-          "to": {
-            "slotId": "f9441c357beeeff0",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     }
   }
 }
