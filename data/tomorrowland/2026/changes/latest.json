@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-18T08:08:04.570Z",
+    "createdAt": "2026-07-19T08:32:53.620Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,59 +8,61 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260717_082721Z_W1.json",
-        "to": "20260718_080735Z_W1.json",
-        "createdAt": "2026-07-18T08:08:04.570Z",
+        "from": "20260718_080735Z_W1.json",
+        "to": "20260719_083225Z_W1.json",
+        "createdAt": "2026-07-19T08:32:53.620Z",
         "version": 1
       },
       "summary": {
-        "added": 7,
-        "removed": 7,
+        "added": 8,
+        "removed": 8,
         "replaced": 2
       },
       "added": [
-        "a7441ead6b1a1fcf",
-        "1d5bb406aae3353b",
-        "d4a6a747841ebac6",
-        "f9d60edc79d17e45",
-        "e2053a65fc7a5100",
-        "71222eefd6346f66",
-        "7a64757f65858dcb"
+        "5a46ed480a69872d",
+        "a268e5c3da87a4be",
+        "6ef5ab5391f282b1",
+        "15f7ab4142f43c8b",
+        "8e6c7843da6b7ec2",
+        "547080557229f63f",
+        "f467ae6995395cf5",
+        "d5afb278fc3c76ba"
       ],
       "removed": [
-        "979df999b58ba4f2",
-        "ee9ac42aac5a1d3d",
-        "972746c8b7a6ba68",
-        "d21287bec2dc3e77",
-        "70433dfa29a25e90",
-        "901b4c8686a16324",
-        "65c3e806c1996202"
+        "f7ea6d44827d4308",
+        "2ebbf26fb2b6c541",
+        "7e81e7f0a46dc2c2",
+        "beb34861cc21d36b",
+        "f043ed50dc121de0",
+        "d83ab2ce9e48784e",
+        "1cd857c06d4ecdf6",
+        "f9d60edc79d17e45"
       ],
       "replaced": [
         {
-          "positionId": "80023736ab562fc2",
+          "positionId": "f44b3ed104881fe4",
           "from": {
-            "slotId": "ee9ac42aac5a1d3d",
-            "artistId": "f688d2ae78723a2a",
-            "artist": "Jack Shore"
+            "slotId": "7e81e7f0a46dc2c2",
+            "artistId": "2825eb7f80633093",
+            "artist": "Je Broer"
           },
           "to": {
-            "slotId": "1d5bb406aae3353b",
-            "artistId": "a91f0bd49c477693",
-            "artist": "Jack Shore (live)"
+            "slotId": "a268e5c3da87a4be",
+            "artistId": "9182f0f0ee211029",
+            "artist": "Wilbert Pigmans"
           }
         },
         {
-          "positionId": "cbd912c43a259c36",
+          "positionId": "916b538f29bbdfcc",
           "from": {
-            "slotId": "70433dfa29a25e90",
-            "artistId": "849e6f3f07b8cd3f",
-            "artist": "GPF b2b DR DONK"
+            "slotId": "2ebbf26fb2b6c541",
+            "artistId": "9182f0f0ee211029",
+            "artist": "Wilbert Pigmans"
           },
           "to": {
-            "slotId": "e2053a65fc7a5100",
-            "artistId": "b6477ed298c96bc8",
-            "artist": "DR DONK"
+            "slotId": "6ef5ab5391f282b1",
+            "artistId": "2825eb7f80633093",
+            "artist": "Je Broer"
           }
         }
       ]
@@ -68,19 +70,92 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260717_082721Z_W2.json",
-        "to": "20260718_080735Z_W2.json",
-        "createdAt": "2026-07-18T08:08:04.570Z",
+        "from": "20260718_080735Z_W2.json",
+        "to": "20260719_083225Z_W2.json",
+        "createdAt": "2026-07-19T08:32:53.620Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 9,
+        "removed": 9,
+        "replaced": 4
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "3eaf64bce8884f0e",
+        "d46b6f9adcf5afe2",
+        "973a44929a4958c2",
+        "1e7327cb18858bec",
+        "e38b6cba59a182ce",
+        "c1d9bc393bd13f78",
+        "76fd947c8d6c5eed",
+        "38d7b2795635a323",
+        "6925df3a84d77304"
+      ],
+      "removed": [
+        "dc6bf0fa72449413",
+        "b5e4711d6fa96963",
+        "609a9116a176c062",
+        "b0038b6405c834c4",
+        "369bc73e0710f13a",
+        "d0ea726c18e3d235",
+        "f9441c357beeeff0",
+        "fdf2063b237dddf6",
+        "668f575f9ce84ace"
+      ],
+      "replaced": [
+        {
+          "positionId": "78150fd2fff10b9e",
+          "from": {
+            "slotId": "dc6bf0fa72449413",
+            "artistId": "56da4bbe08737058",
+            "artist": "More to be announced"
+          },
+          "to": {
+            "slotId": "3eaf64bce8884f0e",
+            "artistId": "805affcaf45aedea",
+            "artist": "Sam Alfred"
+          }
+        },
+        {
+          "positionId": "373c4b0a2719c984",
+          "from": {
+            "slotId": "609a9116a176c062",
+            "artistId": "56da4bbe08737058",
+            "artist": "More to be announced"
+          },
+          "to": {
+            "slotId": "973a44929a4958c2",
+            "artistId": "1ad2d4d231446b2d",
+            "artist": "Volkoder"
+          }
+        },
+        {
+          "positionId": "d0bc2cf5f86185ca",
+          "from": {
+            "slotId": "fdf2063b237dddf6",
+            "artistId": "61d8566ff30fdbf7",
+            "artist": "Brina Knauss"
+          },
+          "to": {
+            "slotId": "76fd947c8d6c5eed",
+            "artistId": "9e5e659c225fe1be",
+            "artist": "Sunnery James & Ryan Marciano"
+          }
+        },
+        {
+          "positionId": "ac836e1ae5c801df",
+          "from": {
+            "slotId": "f9441c357beeeff0",
+            "artistId": "56da4bbe08737058",
+            "artist": "More to be announced"
+          },
+          "to": {
+            "slotId": "38d7b2795635a323",
+            "artistId": "61d8566ff30fdbf7",
+            "artist": "Brina Knauss"
+          }
+        }
+      ]
     }
   }
 }
