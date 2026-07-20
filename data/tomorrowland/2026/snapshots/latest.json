@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-19T08:32:25.543Z",
+    "createdAt": "2026-07-20T09:33:06.501Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -1954,19 +1954,6 @@
       "positionId": "a5c45f45da6647b6",
       "slotId": "8e6c7843da6b7ec2",
       "tomorrowlandArtistId": "1345813384"
-    },
-    {
-      "weekend": "W1",
-      "date": "2026-07-19",
-      "stage": "MELODIA BY CORONA",
-      "start": "2026-07-19 21:00:00+02:00",
-      "end": "2026-07-19 22:00:01+02:00",
-      "artist": "Dave Hang",
-      "artistNormalized": "dave hang",
-      "artistId": "bea9a1347203138a",
-      "positionId": "608b0b9a357cc13b",
-      "slotId": "1c64c5d9b41efb84",
-      "tomorrowlandArtistId": "2650515852"
     },
     {
       "weekend": "W1",
