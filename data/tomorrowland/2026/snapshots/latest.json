@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-22T08:43:28.823Z",
+    "createdAt": "2026-07-23T08:43:35.617Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -6408,12 +6408,12 @@
       "date": "2026-07-25",
       "stage": "THE ROSE GARDEN",
       "start": "2026-07-25 00:00:00+02:00",
-      "end": "2026-07-25 01:00:01+02:00",
+      "end": "2026-07-25 00:50:01+02:00",
       "artist": "Sullivan King",
       "artistNormalized": "sullivan king",
       "artistId": "1a2f783d9d3fbe3b",
-      "positionId": "3e2735d04dcdb39d",
-      "slotId": "d609f34ceb0ea5eb"
+      "positionId": "f880269791039f35",
+      "slotId": "b97b8521a575c9ae"
     },
     {
       "weekend": "W2",
@@ -6927,12 +6927,12 @@
       "date": "2026-07-25",
       "stage": "THE ROSE GARDEN",
       "start": "2026-07-25 23:00:00+02:00",
-      "end": "2026-07-26 01:00:01+02:00",
+      "end": "2026-07-26 00:50:01+02:00",
       "artist": "Cherry Moon Legends (& Friends)",
       "artistNormalized": "cherry moon legends (& friends)",
       "artistId": "3c04f916af218e2b",
-      "positionId": "861fb07adf5f4cda",
-      "slotId": "ac05ef9041f28230"
+      "positionId": "e0fb5c297adb21ac",
+      "slotId": "a4cdc1f730c97f71"
     },
     {
       "weekend": "W2",
@@ -7102,12 +7102,11 @@
       "stage": "THE GREAT LIBRARY",
       "start": "2026-07-24 17:00:00+02:00",
       "end": "2026-07-24 18:00:01+02:00",
-      "artist": "B Jones",
-      "artistNormalized": "b jones",
-      "artistId": "c6a529afc8e3a708",
+      "artist": "More to be announced",
+      "artistNormalized": "more to be announced",
+      "artistId": "56da4bbe08737058",
       "positionId": "bc3b7525942f84c3",
-      "slotId": "cd20f37a817895ea",
-      "tomorrowlandArtistId": "1262706986"
+      "slotId": "54944d7fd9a0de9f"
     },
     {
       "weekend": "W2",
@@ -9484,12 +9483,12 @@
       "date": "2026-07-26",
       "stage": "PLANAXIS",
       "start": "2026-07-26 23:00:00+02:00",
-      "end": "2026-07-26 23:50:01+02:00",
+      "end": "2026-07-26 23:45:01+02:00",
       "artist": "Chuckie",
       "artistNormalized": "chuckie",
       "artistId": "95111620362f21f9",
-      "positionId": "18148ca32490f8e0",
-      "slotId": "f6b6d8bf206af2ad"
+      "positionId": "c2dcd66b781af149",
+      "slotId": "b00af874c845bef2"
     },
     {
       "weekend": "W2",
@@ -10084,12 +10083,12 @@
       "date": "2026-07-26",
       "stage": "CRYSTAL GARDEN",
       "start": "2026-07-26 21:30:00+02:00",
-      "end": "2026-07-27 00:00:01+02:00",
+      "end": "2026-07-26 23:30:01+02:00",
       "artist": "Kevin de Vries b2b Meduza",
       "artistNormalized": "kevin de vries b2b meduza",
       "artistId": "9af2767ae199d4e5",
-      "positionId": "3bf43a3e6c82e2ec",
-      "slotId": "faa69295dd64dd27"
+      "positionId": "7d4a230b23f6dd43",
+      "slotId": "a7ff7cb07dcecb2d"
     },
     {
       "weekend": "W2",

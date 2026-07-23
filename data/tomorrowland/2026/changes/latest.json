@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-22T08:43:56.043Z",
+    "createdAt": "2026-07-23T08:44:03.129Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260721_084310Z_W1.json",
-        "to": "20260722_084328Z_W1.json",
-        "createdAt": "2026-07-22T08:43:56.043Z",
+        "from": "20260722_084328Z_W1.json",
+        "to": "20260723_084335Z_W1.json",
+        "createdAt": "2026-07-23T08:44:03.129Z",
         "version": 1
       },
       "summary": {
@@ -25,19 +25,45 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260721_084310Z_W2.json",
-        "to": "20260722_084328Z_W2.json",
-        "createdAt": "2026-07-22T08:43:56.043Z",
+        "from": "20260722_084328Z_W2.json",
+        "to": "20260723_084335Z_W2.json",
+        "createdAt": "2026-07-23T08:44:03.129Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
-        "replaced": 0
+        "added": 5,
+        "removed": 5,
+        "replaced": 1
       },
-      "added": [],
-      "removed": [],
-      "replaced": []
+      "added": [
+        "b97b8521a575c9ae",
+        "a4cdc1f730c97f71",
+        "54944d7fd9a0de9f",
+        "b00af874c845bef2",
+        "a7ff7cb07dcecb2d"
+      ],
+      "removed": [
+        "d609f34ceb0ea5eb",
+        "ac05ef9041f28230",
+        "cd20f37a817895ea",
+        "f6b6d8bf206af2ad",
+        "faa69295dd64dd27"
+      ],
+      "replaced": [
+        {
+          "positionId": "bc3b7525942f84c3",
+          "from": {
+            "slotId": "cd20f37a817895ea",
+            "artistId": "c6a529afc8e3a708",
+            "artist": "B Jones"
+          },
+          "to": {
+            "slotId": "54944d7fd9a0de9f",
+            "artistId": "56da4bbe08737058",
+            "artist": "More to be announced"
+          }
+        }
+      ]
     }
   }
 }
