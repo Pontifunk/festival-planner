@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-23T08:43:35.617Z",
+    "createdAt": "2026-07-24T08:41:32.650Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -7102,11 +7102,11 @@
       "stage": "THE GREAT LIBRARY",
       "start": "2026-07-24 17:00:00+02:00",
       "end": "2026-07-24 18:00:01+02:00",
-      "artist": "More to be announced",
-      "artistNormalized": "more to be announced",
-      "artistId": "56da4bbe08737058",
+      "artist": "Kris Kross Amsterdam ft. Luísa Sonza",
+      "artistNormalized": "kris kross amsterdam ft. luísa sonza",
+      "artistId": "276a665d4009118e",
       "positionId": "bc3b7525942f84c3",
-      "slotId": "54944d7fd9a0de9f"
+      "slotId": "9f017ddfa4df2fb4"
     },
     {
       "weekend": "W2",
@@ -8771,11 +8771,11 @@
       "stage": "CORE",
       "start": "2026-07-25 16:30:00+02:00",
       "end": "2026-07-25 18:30:01+02:00",
-      "artist": "Dino Lenny b2b Radioslave",
-      "artistNormalized": "dino lenny b2b radioslave",
-      "artistId": "2257b3d2c06fd523",
+      "artist": "Dino Lenny b2b Radio Slave",
+      "artistNormalized": "dino lenny b2b radio slave",
+      "artistId": "8dd1d2e76f5d5f97",
       "positionId": "c35444be26c7f893",
-      "slotId": "80be180e21773add"
+      "slotId": "5cbef66784d8557b"
     },
     {
       "weekend": "W2",

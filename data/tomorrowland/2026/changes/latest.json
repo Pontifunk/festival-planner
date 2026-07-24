@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-23T08:44:03.129Z",
+    "createdAt": "2026-07-24T08:41:58.131Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260722_084328Z_W1.json",
-        "to": "20260723_084335Z_W1.json",
-        "createdAt": "2026-07-23T08:44:03.129Z",
+        "from": "20260723_084335Z_W1.json",
+        "to": "20260724_084132Z_W1.json",
+        "createdAt": "2026-07-24T08:41:58.131Z",
         "version": 1
       },
       "summary": {
@@ -25,42 +25,49 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260722_084328Z_W2.json",
-        "to": "20260723_084335Z_W2.json",
-        "createdAt": "2026-07-23T08:44:03.129Z",
+        "from": "20260723_084335Z_W2.json",
+        "to": "20260724_084132Z_W2.json",
+        "createdAt": "2026-07-24T08:41:58.131Z",
         "version": 1
       },
       "summary": {
-        "added": 5,
-        "removed": 5,
-        "replaced": 1
+        "added": 2,
+        "removed": 2,
+        "replaced": 2
       },
       "added": [
-        "b97b8521a575c9ae",
-        "a4cdc1f730c97f71",
-        "54944d7fd9a0de9f",
-        "b00af874c845bef2",
-        "a7ff7cb07dcecb2d"
+        "9f017ddfa4df2fb4",
+        "5cbef66784d8557b"
       ],
       "removed": [
-        "d609f34ceb0ea5eb",
-        "ac05ef9041f28230",
-        "cd20f37a817895ea",
-        "f6b6d8bf206af2ad",
-        "faa69295dd64dd27"
+        "54944d7fd9a0de9f",
+        "80be180e21773add"
       ],
       "replaced": [
         {
           "positionId": "bc3b7525942f84c3",
           "from": {
-            "slotId": "cd20f37a817895ea",
-            "artistId": "c6a529afc8e3a708",
-            "artist": "B Jones"
-          },
-          "to": {
             "slotId": "54944d7fd9a0de9f",
             "artistId": "56da4bbe08737058",
             "artist": "More to be announced"
+          },
+          "to": {
+            "slotId": "9f017ddfa4df2fb4",
+            "artistId": "276a665d4009118e",
+            "artist": "Kris Kross Amsterdam ft. Luísa Sonza"
+          }
+        },
+        {
+          "positionId": "c35444be26c7f893",
+          "from": {
+            "slotId": "80be180e21773add",
+            "artistId": "2257b3d2c06fd523",
+            "artist": "Dino Lenny b2b Radioslave"
+          },
+          "to": {
+            "slotId": "5cbef66784d8557b",
+            "artistId": "8dd1d2e76f5d5f97",
+            "artist": "Dino Lenny b2b Radio Slave"
           }
         }
       ]
