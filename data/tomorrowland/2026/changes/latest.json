@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-24T08:41:58.131Z",
+    "createdAt": "2026-07-25T08:23:45.342Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260723_084335Z_W1.json",
-        "to": "20260724_084132Z_W1.json",
-        "createdAt": "2026-07-24T08:41:58.131Z",
+        "from": "20260724_084132Z_W1.json",
+        "to": "20260725_082318Z_W1.json",
+        "createdAt": "2026-07-25T08:23:45.342Z",
         "version": 1
       },
       "summary": {
@@ -25,52 +25,19 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260723_084335Z_W2.json",
-        "to": "20260724_084132Z_W2.json",
-        "createdAt": "2026-07-24T08:41:58.131Z",
+        "from": "20260724_084132Z_W2.json",
+        "to": "20260725_082318Z_W2.json",
+        "createdAt": "2026-07-25T08:23:45.342Z",
         "version": 1
       },
       "summary": {
-        "added": 2,
-        "removed": 2,
-        "replaced": 2
+        "added": 0,
+        "removed": 0,
+        "replaced": 0
       },
-      "added": [
-        "9f017ddfa4df2fb4",
-        "5cbef66784d8557b"
-      ],
-      "removed": [
-        "54944d7fd9a0de9f",
-        "80be180e21773add"
-      ],
-      "replaced": [
-        {
-          "positionId": "bc3b7525942f84c3",
-          "from": {
-            "slotId": "54944d7fd9a0de9f",
-            "artistId": "56da4bbe08737058",
-            "artist": "More to be announced"
-          },
-          "to": {
-            "slotId": "9f017ddfa4df2fb4",
-            "artistId": "276a665d4009118e",
-            "artist": "Kris Kross Amsterdam ft. Luísa Sonza"
-          }
-        },
-        {
-          "positionId": "c35444be26c7f893",
-          "from": {
-            "slotId": "80be180e21773add",
-            "artistId": "2257b3d2c06fd523",
-            "artist": "Dino Lenny b2b Radioslave"
-          },
-          "to": {
-            "slotId": "5cbef66784d8557b",
-            "artistId": "8dd1d2e76f5d5f97",
-            "artist": "Dino Lenny b2b Radio Slave"
-          }
-        }
-      ]
+      "added": [],
+      "removed": [],
+      "replaced": []
     }
   }
 }
