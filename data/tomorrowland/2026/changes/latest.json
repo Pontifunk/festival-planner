@@ -1,6 +1,6 @@
 {
   "meta": {
-    "createdAt": "2026-07-25T08:23:45.342Z",
+    "createdAt": "2026-07-26T08:39:03.026Z",
     "version": 1,
     "note": "latest changes per weekend"
   },
@@ -8,9 +8,9 @@
     "W1": {
       "meta": {
         "weekend": "W1",
-        "from": "20260724_084132Z_W1.json",
-        "to": "20260725_082318Z_W1.json",
-        "createdAt": "2026-07-25T08:23:45.342Z",
+        "from": "20260725_082318Z_W1.json",
+        "to": "20260726_083837Z_W1.json",
+        "createdAt": "2026-07-26T08:39:03.026Z",
         "version": 1
       },
       "summary": {
@@ -25,18 +25,34 @@
     "W2": {
       "meta": {
         "weekend": "W2",
-        "from": "20260724_084132Z_W2.json",
-        "to": "20260725_082318Z_W2.json",
-        "createdAt": "2026-07-25T08:23:45.342Z",
+        "from": "20260725_082318Z_W2.json",
+        "to": "20260726_083837Z_W2.json",
+        "createdAt": "2026-07-26T08:39:03.026Z",
         "version": 1
       },
       "summary": {
-        "added": 0,
-        "removed": 0,
+        "added": 7,
+        "removed": 7,
         "replaced": 0
       },
-      "added": [],
-      "removed": [],
+      "added": [
+        "190bbc2dde153496",
+        "25670fdad7a68b87",
+        "a6435a7e0724a76c",
+        "85f7e83fd8fb3294",
+        "fd300a408d8836ce",
+        "72829b9a18fc6c10",
+        "8665e4e0c275dab6"
+      ],
+      "removed": [
+        "40078dc08dc5aff6",
+        "7f61102ce2c656e3",
+        "34736e466127729b",
+        "dbc874e96d33c024",
+        "56ce6bcf5a00ffff",
+        "10762564aaad4345",
+        "67d20cdab3eef633"
+      ],
       "replaced": []
     }
   }

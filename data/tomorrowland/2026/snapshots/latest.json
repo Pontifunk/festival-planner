@@ -3,7 +3,7 @@
     "festival": "tomorrowland",
     "year": 2026,
     "weekend": "W1+W2",
-    "createdAt": "2026-07-25T08:23:18.228Z",
+    "createdAt": "2026-07-26T08:38:37.890Z",
     "source": "belgium.tomorrowland.com (playwright)",
     "version": 1
   },
@@ -5897,13 +5897,13 @@
       "weekend": "W2",
       "date": "2026-07-25",
       "stage": "FREEDOM BY BUD",
-      "start": "2026-07-25 15:00:00+02:00",
-      "end": "2026-07-25 16:00:01+02:00",
+      "start": "2026-07-25 14:45:00+02:00",
+      "end": "2026-07-25 15:45:01+02:00",
       "artist": "PHILOU",
       "artistNormalized": "philou",
       "artistId": "c0835814f7847fed",
-      "positionId": "72cf7b340b351717",
-      "slotId": "40078dc08dc5aff6"
+      "positionId": "8778683d6588af39",
+      "slotId": "190bbc2dde153496"
     },
     {
       "weekend": "W2",
@@ -6202,12 +6202,12 @@
       "date": "2026-07-25",
       "stage": "FREEDOM BY BUD",
       "start": "2026-07-25 13:30:00+02:00",
-      "end": "2026-07-25 15:00:01+02:00",
+      "end": "2026-07-25 14:45:01+02:00",
       "artist": "Calao",
       "artistNormalized": "calao",
       "artistId": "a3fac0c6355447de",
-      "positionId": "df90bb2ebc55a193",
-      "slotId": "7f61102ce2c656e3"
+      "positionId": "016f3adbe338926b",
+      "slotId": "25670fdad7a68b87"
     },
     {
       "weekend": "W2",
@@ -6636,13 +6636,13 @@
       "weekend": "W2",
       "date": "2026-07-25",
       "stage": "FREEDOM BY BUD",
-      "start": "2026-07-25 16:00:00+02:00",
-      "end": "2026-07-25 17:00:01+02:00",
+      "start": "2026-07-25 15:45:00+02:00",
+      "end": "2026-07-25 16:45:01+02:00",
       "artist": "Mosimann b2b ELFIGO",
       "artistNormalized": "mosimann b2b elfigo",
       "artistId": "aba468ccea68758c",
-      "positionId": "615ecd828b9efeca",
-      "slotId": "34736e466127729b"
+      "positionId": "8b7c5593a170d49c",
+      "slotId": "a6435a7e0724a76c"
     },
     {
       "weekend": "W2",
@@ -6938,51 +6938,51 @@
       "weekend": "W2",
       "date": "2026-07-25",
       "stage": "FREEDOM BY BUD",
-      "start": "2026-07-25 17:00:00+02:00",
-      "end": "2026-07-25 18:00:01+02:00",
+      "start": "2026-07-25 16:45:00+02:00",
+      "end": "2026-07-25 17:45:01+02:00",
       "artist": "Andromedik",
       "artistNormalized": "andromedik",
       "artistId": "b8cad92b72d6b80e",
-      "positionId": "a8345d872035be91",
-      "slotId": "dbc874e96d33c024",
+      "positionId": "a5d3dca1c98e151e",
+      "slotId": "85f7e83fd8fb3294",
       "tomorrowlandArtistId": "1262708699"
     },
     {
       "weekend": "W2",
       "date": "2026-07-25",
       "stage": "FREEDOM BY BUD",
-      "start": "2026-07-25 18:00:00+02:00",
-      "end": "2026-07-25 19:00:01+02:00",
+      "start": "2026-07-25 17:50:00+02:00",
+      "end": "2026-07-25 18:50:01+02:00",
       "artist": "Symphony Of Unity",
       "artistNormalized": "symphony of unity",
       "artistId": "0ab44e426171d33e",
-      "positionId": "45a3e536a13bba67",
-      "slotId": "56ce6bcf5a00ffff",
+      "positionId": "a4fde1243d5d834a",
+      "slotId": "fd300a408d8836ce",
       "tomorrowlandArtistId": "1532622883"
     },
     {
       "weekend": "W2",
       "date": "2026-07-25",
       "stage": "FREEDOM BY BUD",
-      "start": "2026-07-25 19:00:00+02:00",
-      "end": "2026-07-25 20:00:01+02:00",
+      "start": "2026-07-25 18:54:00+02:00",
+      "end": "2026-07-25 19:54:01+02:00",
       "artist": "Massano",
       "artistNormalized": "massano",
       "artistId": "71f76b5a5b00d793",
-      "positionId": "3374819d26730f6c",
-      "slotId": "10762564aaad4345"
+      "positionId": "d3493b38a20523c8",
+      "slotId": "72829b9a18fc6c10"
     },
     {
       "weekend": "W2",
       "date": "2026-07-25",
       "stage": "FREEDOM BY BUD",
-      "start": "2026-07-25 20:00:00+02:00",
-      "end": "2026-07-25 21:00:01+02:00",
+      "start": "2026-07-25 19:56:00+02:00",
+      "end": "2026-07-25 20:56:01+02:00",
       "artist": "Argy presents NEWORLD",
       "artistNormalized": "argy presents neworld",
       "artistId": "2e885dfa704b02fe",
-      "positionId": "6f9b311e733d84c7",
-      "slotId": "67d20cdab3eef633"
+      "positionId": "82e115c8f0f08f9c",
+      "slotId": "8665e4e0c275dab6"
     },
     {
       "weekend": "W2",
