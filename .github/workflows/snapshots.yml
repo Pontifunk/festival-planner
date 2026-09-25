@@ -2,8 +2,7 @@ name: Generate lineup snapshot
 
 on:
   workflow_dispatch: {}
-  schedule:
-    - cron: "15 6 * * *"   # daily 06:15 UTC
+  # Daily schedule disabled: Tomorrowland 2026 has ended.
 
 permissions:
   contents: write
