@@ -2139,3 +2139,16 @@ body.simplePage .layout{
 a:focus-visible {
   box-shadow: 0 0 0 2px rgba(122, 162, 255, 0.35);
 }
+
+/* Permanent archive notice above the Tomorrowland planner. */
+.archiveNotice{
+  margin:0 0 18px;
+  padding:16px;
+  border:1px solid rgba(242,201,76,.45);
+  border-left:4px solid var(--warn);
+  border-radius:var(--radius-sm);
+  background:rgba(242,201,76,.08);
+  color:var(--text);
+}
+.archiveNotice h2{margin:0 0 8px;font-size:16px;line-height:1.4;color:var(--warn)}
+.archiveNotice p{margin:0;font-size:14px;line-height:1.6}
